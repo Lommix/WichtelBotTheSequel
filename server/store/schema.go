@@ -24,6 +24,7 @@ func SchemaUp(db *sql.DB){
 			group_id TEXT DEFAULT NULL,
 			notice TEXT DEFAULT NULL,
 			allergies TEXT DEFAULT NULL,
+			role TEXT DEFAULT 'normal'
 			FOREIGN KEY (session_id) REFERENCES sessions(id)
 		);
 

@@ -15,6 +15,7 @@ type User struct {
 	GroupId    string
 	Notice     string
 	Allergies  string
+	Role       string
 }
 
 func FindUserById(id int, db *sql.DB) (User, error) {
@@ -31,6 +32,7 @@ func FindUserById(id int, db *sql.DB) (User, error) {
 		&user.GroupId,
 		&user.Notice,
 		&user.Allergies,
+		&user.Role,
 	)
 	if err != nil {
 		return user, err
@@ -54,6 +56,7 @@ func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, er
 		&user.GroupId,
 		&user.Notice,
 		&user.Allergies,
+		&user.Role,
 	)
 	if err != nil {
 		return user, err
@@ -62,14 +65,23 @@ func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, er
 }
 
 func CreateUser(user *User, db *sql.DB) error {
-	sql := `INSERT INTO users (Session_id, Created, Name, Password, Notice, Allergies)
-			VALUES (?,?,?,?,?,?);`
+	sql := `INSERT INTO users (session_id, created, name, password, notice, allergies, role)
+			VALUES (?,?,?,?,?,?,?);`
 	stm, err := db.Prepare(sql)
 	if err != nil {
 		return err
 	}
 
-	result, err := stm.Exec(user.Session_id, time.Now().Unix(), user.Name, user.Password, user.Notice, user.Allergies)
+	result, err := stm.Exec(
+		&user.Session_id,
+		time.Now().Unix(),
+		&user.Name,
+		&user.Password,
+		&user.Notice,
+		&user.Allergies,
+		&user.Role,
+	)
+
 	if err != nil {
 		return err
 	}
@@ -81,10 +93,9 @@ func CreateUser(user *User, db *sql.DB) error {
 
 func (user *User) Update(db *sql.DB) error {
 	sql := `
-		UPDATE users SET name=? password=? partner_id=? group_id=? notice=? allergies=?
+		UPDATE users SET name=? password=? partner_id=? group_id=? notice=? allergies=? role=?
 		WHERE users.id=?`
 	stm, err := db.Prepare(sql)
-
 	if err != nil {
 		return err
 	}
@@ -95,6 +106,7 @@ func (user *User) Update(db *sql.DB) error {
 		&user.GroupId,
 		&user.Notice,
 		&user.Allergies,
+		&user.Role,
 		&user.Id,
 	)
 
