@@ -8,7 +8,7 @@ func SchemaUp(db *sql.DB){
 		CREATE TABLE sessions (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
-			state STRING NOT NULL,
+			state INTEGER NOT NULL,
 			key STRING NOT NULL,
 			rules STRING DEFAULT NULL
 		);
@@ -21,7 +21,7 @@ func SchemaUp(db *sql.DB){
 			name TEXT NOT NULL,
 			password TEXT NOT NULL,
 			partner_id INTEGER DEFAULT NULL,
-			group_id TEXT DEFAULT NULL,
+			exclude_id TEXT DEFAULT NULL,
 			notice TEXT DEFAULT NULL,
 			allergies TEXT DEFAULT NULL,
 			role TEXT DEFAULT 'normal'

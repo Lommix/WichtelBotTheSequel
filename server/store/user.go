@@ -12,7 +12,7 @@ type User struct {
 	Name       string
 	Password   string
 	PartnerId  int64
-	GroupId    string
+	ExcludeId  int64
 	Notice     string
 	Allergies  string
 	Role       string
@@ -29,7 +29,7 @@ func FindUserById(id int, db *sql.DB) (User, error) {
 		&user.Name,
 		&user.Password,
 		&user.PartnerId,
-		&user.GroupId,
+		&user.ExcludeId,
 		&user.Notice,
 		&user.Allergies,
 		&user.Role,
@@ -53,7 +53,7 @@ func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, er
 		&user.Name,
 		&user.Password,
 		&user.PartnerId,
-		&user.GroupId,
+		&user.ExcludeId,
 		&user.Notice,
 		&user.Allergies,
 		&user.Role,
@@ -64,36 +64,52 @@ func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, er
 	return user, nil
 }
 
-func CreateUser(user *User, db *sql.DB) error {
+func CreateUser(
+	db *sql.DB,
+	session_id int64,
+	name string,
+	password string,
+	notice string,
+	allergies string,
+	role string,
+) (User, error) {
+
+	var user User
 	sql := `INSERT INTO users (session_id, created, name, password, notice, allergies, role)
 			VALUES (?,?,?,?,?,?,?);`
 	stm, err := db.Prepare(sql)
 	if err != nil {
-		return err
+		return user,err
 	}
 
 	result, err := stm.Exec(
-		&user.Session_id,
+		session_id,
 		time.Now().Unix(),
-		&user.Name,
-		&user.Password,
-		&user.Notice,
-		&user.Allergies,
-		&user.Role,
+		name,
+		password,
+		notice,
+		allergies,
+		role,
 	)
 
 	if err != nil {
-		return err
+		return user,err
 	}
 
 	user.Id, _ = result.LastInsertId()
+	user.Session_id = session_id
+	user.Name = name
+	user.Password = password
+	user.Notice = notice
+	user.Allergies = allergies
+	user.Role = role
 
-	return nil
+	return user, nil
 }
 
 func (user *User) Update(db *sql.DB) error {
 	sql := `
-		UPDATE users SET name=? password=? partner_id=? group_id=? notice=? allergies=? role=?
+		UPDATE users SET name=? password=? partner_id=? exclude_id=? notice=? allergies=? role=?
 		WHERE users.id=?`
 	stm, err := db.Prepare(sql)
 	if err != nil {
@@ -103,7 +119,7 @@ func (user *User) Update(db *sql.DB) error {
 		&user.Name,
 		&user.Password,
 		&user.PartnerId,
-		&user.GroupId,
+		&user.ExcludeId,
 		&user.Notice,
 		&user.Allergies,
 		&user.Role,
