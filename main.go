@@ -27,6 +27,7 @@ func main() {
 
 	switch command {
 	case "init":
+		store.SchemaDown(db)
 		store.SchemaUp(db)
 	case "dev":
 		tmpl := server.Templates{

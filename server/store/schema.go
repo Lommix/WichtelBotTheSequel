@@ -2,10 +2,9 @@ package store
 
 import "database/sql"
 
-func SchemaUp(db *sql.DB){
+func SchemaUp(db *sql.DB) error {
 	sql := `
-		DROP TABLE IF EXISTS sessions;
-		CREATE TABLE sessions (
+		CREATE TABLE IF NOT EXISTS sessions (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
 			state INTEGER NOT NULL,
@@ -13,8 +12,7 @@ func SchemaUp(db *sql.DB){
 			rules STRING DEFAULT NULL
 		);
 
-		DROP TABLE IF EXISTS users;
-		CREATE TABLE users (
+		CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			session_id INTEGER NOT NULL,
 			created INTEGER NOT NULL,
@@ -28,12 +26,21 @@ func SchemaUp(db *sql.DB){
 			FOREIGN KEY (session_id) REFERENCES sessions(id)
 		);
 
-		DROP TABLE IF EXISTS stats;
-		CREATE TABLE stats (
+		CREATE TABLE IF NOT EXIST stats (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
 			games_played INTEGER DEFAULT NULL,
 			user_registered INTEGER DEFAULT NULL
 		);`
-	db.Exec(sql,nil)
+	_, err := db.Exec(sql, nil)
+	return err
+}
+
+func SchemaDown(db *sql.DB) error {
+	sql := `
+		DROP TABLE IF EXISTS users;
+		DROP TABLE IF EXISTS sessions;
+		DROP TABLE IF EXISTS stats;`
+	_, err := db.Exec(sql, nil)
+	return err
 }

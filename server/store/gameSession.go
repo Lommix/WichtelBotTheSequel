@@ -133,3 +133,43 @@ func (session *GameSession) Delete(db *sql.DB) error {
 	}
 	return nil
 }
+
+
+func (session *GameSession) Update(db *sql.DB) error{
+
+	sql := `
+		UPDATE sessions SET state=? rules=? WHERE id=?
+		WHERE users.id=?`
+	stm, err := db.Prepare(sql)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = stm.Exec(
+		&session.State,
+		&session.Rules,
+		&session.Id,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+
+func (session *GameSession) RollPartners (db *sql.DB) error{
+	users, err := FindUsersBySessionId(session.Id, db)
+	if err != nil {
+		return err
+	}
+
+	for _, user := range users{
+		user.PartnerId = 69
+		user.Update(db)
+	}
+
+	return nil
+}
