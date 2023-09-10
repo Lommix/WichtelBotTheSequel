@@ -5,6 +5,13 @@ import (
 	"time"
 )
 
+type UserRole int
+
+const (
+	DefaultUser UserRole = iota
+	Moderator
+)
+
 type User struct {
 	Id         int64
 	Session_id int64
@@ -15,7 +22,7 @@ type User struct {
 	ExcludeId  int64
 	Notice     string
 	Allergies  string
-	Role       string
+	Role       UserRole
 }
 
 func FindUserById(id int, db *sql.DB) (User, error) {
@@ -101,7 +108,7 @@ func CreateUser(
 	password string,
 	notice string,
 	allergies string,
-	role string,
+	role UserRole,
 ) (User, error) {
 	var user User
 	sql := `INSERT INTO users (session_id, created, name, password, notice, allergies, role)

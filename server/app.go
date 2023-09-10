@@ -13,22 +13,23 @@ const (
 )
 
 type AppState struct {
-	Db   *sql.DB
-	Tmpl Templates
-	Mode RunState
+	Db       *sql.DB
+	Tmpl     Templates
+	Mode     RunState
+	Sessions CookieJar
 }
 
 func (app *AppState) ListenAndServe(adr string) {
-	//pages
+	// pages
 	http.HandleFunc("/", app.Home)
 	http.HandleFunc("/profile", app.Profile)
 	http.HandleFunc("/login", app.Login)
 	http.HandleFunc("/logout", app.Logout)
-	//static
+	// static
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 
-	//api
+	// api
 
 	println("staring server, listing on: ", adr)
 	http.ListenAndServe(adr, nil)

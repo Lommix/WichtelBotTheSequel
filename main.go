@@ -45,6 +45,7 @@ func main() {
 			Db:   db,
 			Tmpl: tmpl,
 			Mode: server.Debug,
+			Sessions: server.CookieJar{},
 		}
 
 		app.ListenAndServe(":3000")
