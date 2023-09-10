@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"lommix/wichtelbot/server"
+	"lommix/wichtelbot/server/store"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,16 +18,17 @@ func main() {
 	}
 	command := os.Args[1]
 
+
+	db, err := sql.Open("sqlite3", "wichtel.db")
+	if err != nil {
+		fmt.Println("Failed to open DB Connection: ", err)
+		return
+	}
+
 	switch command {
 	case "init":
-		fmt.Println("setting up database")
+		store.SchemaUp(db)
 	case "dev":
-		db, err := sql.Open("sqlite3", "wichtel.db")
-		if err != nil {
-			fmt.Println("Failed to open DB Connection: ", err)
-			return
-		}
-
 		tmpl := server.Templates{
 			Dir: "./templates",
 		}
@@ -49,7 +51,7 @@ func main() {
 	case "prod":
 		fmt.Println("Not implemented yet")
 	default:
-		fmt.Println("Invalid command")
+		fmt.Println("Invalid command\nOptions are\n'init' 'dev' 'prod' ")
 	}
 }
 

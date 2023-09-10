@@ -22,7 +22,8 @@ func (app *AppState) ListenAndServe(adr string) {
 	//pages
 	http.HandleFunc("/", app.Home)
 	http.HandleFunc("/profile", app.Profile)
-
+	http.HandleFunc("/login", app.Login)
+	http.HandleFunc("/logout", app.Logout)
 	//static
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
@@ -60,14 +61,7 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 }
 
 // ----------------------------------
-// Static
-func (app *AppState) Static(writer http.ResponseWriter, request *http.Request) {
-
-}
-
-// ----------------------------------
 // Api
-
 func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 }
 

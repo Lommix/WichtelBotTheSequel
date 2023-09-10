@@ -2,19 +2,19 @@
 
 <div class="w-full">
 	<h2>Login</h2>
-	<form hx-post="/login" hx-swap="none">
-		<input class="p-1" type="text" name="username" placeholder="Username" />
-		<input class="p-1" type="text" name="room" placeholder="Username" />
-		<input class="p-1" type="password" name="password" placeholder="Password" />
+	<form hx-post="/login" hx-swap="none" class="flex flex-col space-y-1 text-black">
+		<input class="p-1" type="text" name="Username" placeholder="Username" />
+		<input class="p-1" type="text" name="Room" placeholder="Room" />
+		<input class="p-1" type="password" name="Password" placeholder="Password" />
 		<button type="submit" class="border-white border-2 rounded-lg p-1">Login</button>
 	</form>
 </div>
 
 <div class="w-full">
 	<h2>Register</h2>
-	<form hx-post="/register" hx-swap="none">
-		<input class="p-1" type="text" name="username" placeholder="Username" />
-		<input class="p-1" type="password" name="password" placeholder="Password" />
+	<form hx-post="/register" hx-swap="none" class="flex flex-col space-y-1 text-black">
+		<input class="p-1" type="text" name="Username" placeholder="Username" />
+		<input class="p-1" type="password" name="Password" placeholder="Password" />
 		<button type="submit" class="border-white border-2 rounded-lg p-1">Register</button>
 	</form>
 </div>
