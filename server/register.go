@@ -22,13 +22,25 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		return
 	}
 
-	if formData.Password != formData.Retry{
+	if formData.Password != formData.Retry {
 		http.Error(writer, "Passwords not matching", http.StatusBadRequest)
 		return
 	}
 
+
+	roomKey := func() string {
+		if len(formData.roomKey) > 0 {
+			return formData.roomKey
+		}
+		queryParams := request.URL.Query()
+		if len(queryParams.Get("roomKey")) > 0 {
+			return queryParams.Get("roomKey")
+		}
+		return ""
+	}()
+
 	var session store.GameSession
-	if len(formData.roomKey) == 0 {
+	if len(roomKey) == 0 {
 		session, err = store.CreateSession(app.Db)
 		if err != nil {
 			http.Error(writer, "invalid post", http.StatusBadRequest)
@@ -53,7 +65,7 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		store.Moderator,
 	)
 
-	cookie,err := app.Sessions.CreateSession(user.Id)
+	cookie, err := app.Sessions.CreateSession(user.Id)
 
 	writer.Header().Add("Set-Cookie", cookie.IntoCookie())
 	writer.Write([]byte("ok"))

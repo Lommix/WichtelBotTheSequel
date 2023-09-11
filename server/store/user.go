@@ -176,3 +176,13 @@ func (user *User) Delete(db *sql.DB) error {
 	}
 	return nil
 }
+
+
+func DeleteAllUserInSession(db *sql.DB, sessionId int64) error {
+	sql := `DELETE FROM users WHERE sesssion_id=?`
+	_, err := db.Exec(sql, sessionId)
+	if err != nil {
+		return err
+	}
+	return nil
+}

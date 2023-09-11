@@ -22,11 +22,11 @@ func SchemaUp(db *sql.DB) error {
 			exclude_id TEXT DEFAULT NULL,
 			notice TEXT DEFAULT NULL,
 			allergies TEXT DEFAULT NULL,
-			role INTEGER DEFAULT 'normal'
+			role INTEGER DEFAULT 0,
 			FOREIGN KEY (session_id) REFERENCES sessions(id)
 		);
 
-		CREATE TABLE IF NOT EXIST stats (
+		CREATE TABLE IF NOT EXISTS stats (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
 			games_played INTEGER DEFAULT NULL,

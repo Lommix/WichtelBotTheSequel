@@ -17,6 +17,7 @@ const (
 	User
 	Moderator
 )
+const CookieExpirationaTime time.Duration = time.Hour * 24 * 4
 
 type Session struct {
 	UserId  int64
@@ -69,4 +70,13 @@ func (app *AppState) UserIdFromRequest(request *http.Request) (int64, error) {
 	}
 
 	return 0, errors.New("Not Found")
+}
+
+func (app *CookieJar) CleanupExpired() {
+	for i := 0; i < len(app.store); i++ {
+		if app.store[i].Created.Unix() > time.Now().Add(-CookieExpirationaTime).Unix() {
+			app.store = append(app.store[:i], app.store[i+1:]...)
+			i--
+		}
+	}
 }

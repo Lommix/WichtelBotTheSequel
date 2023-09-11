@@ -1,7 +1,7 @@
 {{define "content"}}
 
 <div class="w-full">
-	<h2>Login</h2>
+	<h2>Join room</h2>
 	<form hx-post="/login" hx-swap="none" class="flex flex-col space-y-1 text-black">
 		<input class="p-1" type="text" name="Username" placeholder="Username" />
 		<input class="p-1" type="text" name="Room" placeholder="Room" />
@@ -11,7 +11,7 @@
 </div>
 
 <div class="w-full">
-	<h2>Register</h2>
+	<h2>Create room</h2>
 	<form hx-post="/register" hx-swap="none" class="flex flex-col space-y-1 text-black">
 		<input class="p-1" type="text" name="Username" placeholder="Username" />
 		<input class="p-1" type="password" name="Password" placeholder="Password" />
