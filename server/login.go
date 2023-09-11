@@ -8,9 +8,9 @@ import (
 )
 
 type LoginForm struct {
-	Username string
-	Password string
-	RoomKey  string
+	Username string `required:"true"`
+	Password string `required:"true"`
+	RoomKey  string `required:"true"`
 }
 
 func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
@@ -20,7 +20,7 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	form := &LoginForm{}
-	ParseFormInto(request, form)
+	FromFormData(request, form)
 
 	if len(form.Username) == 0 || len(form.Password) == 0 {
 		http.Error(writer, "invalid data", http.StatusBadRequest)
@@ -29,6 +29,7 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 
 	user, err := store.FindUserByNameAndRoomKey(form.Username, form.RoomKey, app.Db)
 	if err != nil {
+		println(err.Error())
 		http.Error(writer, "invalid user", http.StatusBadRequest)
 		return
 	}

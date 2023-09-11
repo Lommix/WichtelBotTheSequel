@@ -87,7 +87,7 @@ func FindSessionByKey(key string, db *sql.DB) (GameSession, error) {
 
 func CreateSession(db *sql.DB) (GameSession, error) {
 	var session GameSession
-	sql := `INSERT INTO session (created, state, key, rules) VALUES(?,?,?,?)`
+	sql := `INSERT INTO sessions (created, state, key, rules) VALUES(?,?,?,?)`
 	stmt, err := db.Prepare(sql)
 	if err != nil {
 		return session, err

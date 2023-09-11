@@ -1,5 +1,5 @@
 *.so
 main
 *.db
-wichtelbot
+/static/compiled.css
 uberwichtelbot

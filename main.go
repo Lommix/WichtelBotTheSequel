@@ -48,8 +48,8 @@ func main() {
 			Sessions: server.CookieJar{},
 		}
 
-		println("starting cleaner")
-		go app.CleanupRoutine()
+		// println("starting cleaner")
+		// go app.CleanupRoutine()
 
 		app.ListenAndServe(":3000")
 

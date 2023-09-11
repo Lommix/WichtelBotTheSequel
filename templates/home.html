@@ -1,22 +1,79 @@
 {{define "content"}}
 
-<div class="w-full">
-	<h2>Join room</h2>
-	<form hx-post="/login" hx-swap="none" class="flex flex-col space-y-1 text-black">
-		<input class="p-1" type="text" name="Username" placeholder="Username" />
-		<input class="p-1" type="text" name="Room" placeholder="Room" />
-		<input class="p-1" type="password" name="Password" placeholder="Password" />
-		<button type="submit" class="border-white border-2 rounded-lg p-1">Login</button>
-	</form>
-</div>
+<h1 class="font-bold text-xl">Register</h1>
+<hr />
+<div class="flex flex-col mt-4">
+	<div class="w-full">
+		<h2>Join Party</h2>
+		<form
+			hx-post="/register"
+			hx-swap="none"
+			class="flex flex-col space-y-1 text-black"
+		>
+			<input
+				class="p-1"
+				type="text"
+				name="RoomKey"
+				placeholder="Room Key"
+			/>
+			<input
+				class="p-1"
+				type="text"
+				name="Username"
+				placeholder="Username"
+			/>
+			<input
+				class="p-1"
+				type="password"
+				name="Password"
+				placeholder="Password"
+			/>
+			<input
+				class="p-1"
+				type="password"
+				name="Password"
+				placeholder="Password"
+			/>
+			<button type="submit" class="border-white border-2 rounded-lg p-1"
+				>Register</button
+			>
+		</form>
+	</div>
 
-<div class="w-full">
-	<h2>Create room</h2>
-	<form hx-post="/register" hx-swap="none" class="flex flex-col space-y-1 text-black">
-		<input class="p-1" type="text" name="Username" placeholder="Username" />
-		<input class="p-1" type="password" name="Password" placeholder="Password" />
-		<button type="submit" class="border-white border-2 rounded-lg p-1">Register</button>
-	</form>
+	<div class="w-full">
+		<h2>Create Party</h2>
+		<form
+			method="POST"
+			hx-post="/register"
+			hx-swap="innerHTML"
+			hx-ext="response-targets"
+			hx-target-400="#create-error"
+			class="flex flex-col space-y-1 text-black"
+		>
+			<input
+				class="p-1"
+				type="text"
+				name="Username"
+				placeholder="Username"
+			/>
+			<input
+				class="p-1"
+				type="password"
+				name="Password"
+				placeholder="Password"
+			/>
+			<input
+				class="p-1"
+				type="password"
+				name="Retry"
+				placeholder="Repeat Password"
+			/>
+			<input class="p-1" type="hidden" name="RoomKey" value="" />
+			<p id="create-error" class="text-red-500"></p>
+			<button type="submit" class="border-white border-2 rounded-lg p-1"
+				>Register</button
+			>
+		</form>
+	</div>
 </div>
-
 {{end}} {{ template "layout.html" . }}

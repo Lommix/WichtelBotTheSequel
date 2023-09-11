@@ -18,8 +18,8 @@ func SchemaUp(db *sql.DB) error {
 			created INTEGER NOT NULL,
 			name TEXT NOT NULL,
 			password TEXT NOT NULL,
-			partner_id INTEGER DEFAULT NULL,
-			exclude_id TEXT DEFAULT NULL,
+			partner_id INTEGER DEFAULT 0,
+			exclude_id TEXT DEFAULT 0,
 			notice TEXT DEFAULT NULL,
 			allergies TEXT DEFAULT NULL,
 			role INTEGER DEFAULT 0,
@@ -29,8 +29,8 @@ func SchemaUp(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS stats (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
-			games_played INTEGER DEFAULT NULL,
-			user_registered INTEGER DEFAULT NULL
+			games_played INTEGER DEFAULT 0,
+			user_registered INTEGER DEFAULT 0
 		);`
 	_, err := db.Exec(sql, nil)
 	return err

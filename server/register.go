@@ -8,29 +8,32 @@ import (
 )
 
 type RegisterForm struct {
-	Username string
-	Password string
-	Retry    string
-	roomKey  string
+	Username string `required:"true"`
+	Password string `required:"true"`
+	Retry    string `required:"true"`
+	RoomKey  string
 }
 
 func (app *AppState) Register(writer http.ResponseWriter, request *http.Request) {
 	var formData RegisterForm
-	err := ParseFormInto(request, &formData)
+	err := FromFormData(request, &formData)
 	if err != nil {
+		println(err.Error())
 		http.Error(writer, "Invalid post", http.StatusBadRequest)
 		return
 	}
 
 	if formData.Password != formData.Retry {
+		writer.Header().Add("HX-Target", "#create-error")
+		writer.Header().Add("HX-Swap", "innerHTML")
 		http.Error(writer, "Passwords not matching", http.StatusBadRequest)
 		return
 	}
 
 
 	roomKey := func() string {
-		if len(formData.roomKey) > 0 {
-			return formData.roomKey
+		if len(formData.RoomKey) > 0 {
+			return formData.RoomKey
 		}
 		queryParams := request.URL.Query()
 		if len(queryParams.Get("roomKey")) > 0 {
@@ -43,13 +46,14 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 	if len(roomKey) == 0 {
 		session, err = store.CreateSession(app.Db)
 		if err != nil {
-			http.Error(writer, "invalid post", http.StatusBadRequest)
+			fmt.Println(err.Error())
+			http.Error(writer, "something wen wrong", http.StatusBadRequest)
 			return
 		}
 	} else {
-		session, err = store.FindSessionByKey(formData.roomKey, app.Db)
+		session, err = store.FindSessionByKey(roomKey, app.Db)
 		if err != nil {
-			http.Error(writer, "invalid post", http.StatusBadRequest)
+			http.Error(writer, "invalid room", http.StatusBadRequest)
 			return
 		}
 	}
@@ -68,5 +72,5 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 	cookie, err := app.Sessions.CreateSession(user.Id)
 
 	writer.Header().Add("Set-Cookie", cookie.IntoCookie())
-	writer.Write([]byte("ok"))
+	writer.Header().Add("HX-Redirect","/profile")
 }

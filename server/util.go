@@ -8,7 +8,7 @@ import (
 
 
 
-func ParseFormInto(r *http.Request, s interface{}) error {
+func FromFormData(r *http.Request, s interface{}) error {
 	v := reflect.ValueOf(s).Elem()
 	t := v.Type()
 	for i := 0; i < t.NumField(); i++ {
@@ -24,7 +24,9 @@ func ParseFormInto(r *http.Request, s interface{}) error {
 				v.Field(i).SetInt(int64(intValue))
 			}
 		} else {
-			return fmt.Errorf("lol")
+			if t.Field(i).Tag.Get("required") == "true" {
+				return fmt.Errorf("missing required field %s", t.Field(i).Name)
+			}
 		}
 	}
 	return nil

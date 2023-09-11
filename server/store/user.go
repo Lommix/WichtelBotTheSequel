@@ -25,7 +25,7 @@ type User struct {
 	Role       UserRole
 }
 
-func FindUserById(id int, db *sql.DB) (User, error) {
+func FindUserById(id int64, db *sql.DB) (User, error) {
 	var user User
 	query := "SELECT * FROM users WHERE id = ?"
 	row := db.QueryRow(query, id)
@@ -79,8 +79,8 @@ func FindUsersBySessionId(id int64, db *sql.DB) ([]User, error) {
 
 func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, error) {
 	var user User
-	query := `SELECT * FROM users
-			  JOIN sessions ON users.session_id = sessions.id
+	query := `SELECT users.* FROM users
+			  INNER JOIN sessions ON users.session_id = sessions.id
 			  WHERE users.name = ? AND sessions.key = ?;`
 	row := db.QueryRow(query, name, roomKey)
 	err := row.Scan(
@@ -178,8 +178,8 @@ func (user *User) Delete(db *sql.DB) error {
 }
 
 
-func DeleteAllUserInSession(db *sql.DB, sessionId int64) error {
-	sql := `DELETE FROM users WHERE sesssion_id=?`
+func DeleteUsersInSession(db *sql.DB, sessionId int64) error {
+	sql := `DELETE FROM users WHERE session_id=?`
 	_, err := db.Exec(sql, sessionId)
 	if err != nil {
 		return err

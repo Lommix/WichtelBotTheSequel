@@ -6,6 +6,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
+	"lommix/wichtelbot/server/store"
 	"net/http"
 	"time"
 )
@@ -48,6 +49,8 @@ func (jar *CookieJar) CreateSession(userId int64) (Session, error) {
 	session.key = hex.EncodeToString(hash[:])
 	session.Created = time.Now()
 
+	jar.store = append(jar.store, session)
+
 	return session, nil
 }
 
@@ -57,19 +60,30 @@ func (session *Session) IntoCookie() string {
 	return out
 }
 
-func (app *AppState) UserIdFromRequest(request *http.Request) (int64, error) {
+func (app *AppState) CurrentUserFromSession(request *http.Request) (store.User, error) {
+	var user store.User
 	cookie, err := request.Cookie("user")
 	if err != nil {
-		return 0, err
+		return user, err
 	}
 
 	for _, session := range app.Sessions.store {
 		if session.key == cookie.Value {
-			return session.UserId, nil
+			return store.FindUserById(session.UserId, app.Db)
 		}
 	}
 
-	return 0, errors.New("Not Found")
+	return user, errors.New("Not Found")
+}
+
+func (app *CookieJar) DeleteSession(userId int64) error {
+	for i := 0; i < len(app.store); i++ {
+		if app.store[i].UserId == userId {
+			app.store = append(app.store[:i], app.store[i+1:]...)
+			i--
+		}
+	}
+	return nil
 }
 
 func (app *CookieJar) CleanupExpired() {

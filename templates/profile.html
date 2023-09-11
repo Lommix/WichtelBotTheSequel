@@ -1,0 +1,6 @@
+{{define "content"}}
+<h1>Welcome to your Party!</h1>
+<div hx-get="/user" hx-trigger="click">
+	loading ...
+</div>
+{{end}} {{ template "layout.html" . }}

@@ -20,7 +20,7 @@ func (app *AppState) CleanupRoutine() {
 		if len(expiredSessions) > 0 {
 			fmt.Printf("Cleaning %d expired sessions\n", len(expiredSessions))
 			for _, session := range expiredSessions {
-				err = store.DeleteAllUserInSession(app.Db, session.Id)
+				err = store.DeleteUsersInSession(app.Db, session.Id)
 				if err != nil {
 					panic(err)
 				}
