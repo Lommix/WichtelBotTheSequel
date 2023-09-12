@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// Game and Session Garbage Collector
 func (app *AppState) CleanupRoutine() {
 	for {
 

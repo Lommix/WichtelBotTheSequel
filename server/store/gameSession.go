@@ -35,6 +35,8 @@ type GameSession struct {
 	Key     string
 	State   GameState
 	Rules   string
+
+	users *[]User
 }
 
 func FindSessionByID(id int64, db *sql.DB) (GameSession, error) {
@@ -96,7 +98,7 @@ func CreateSession(db *sql.DB) (GameSession, error) {
 	session.Created = time.Now().Unix()
 	session.State = Created
 
-	//fix potential collions at some point
+	// fix potential collions at some point
 	session.Key = create_random_unique_key()
 	session.Rules = "none"
 
@@ -106,7 +108,6 @@ func CreateSession(db *sql.DB) (GameSession, error) {
 		&session.Key,
 		&session.Rules,
 	)
-
 	if err != nil {
 		return session, err
 	}
@@ -139,12 +140,10 @@ func (session *GameSession) Delete(db *sql.DB) error {
 }
 
 func (session *GameSession) Update(db *sql.DB) error {
-
 	sql := `
 		UPDATE sessions SET state=? rules=? WHERE id=?
 		WHERE users.id=?`
 	stm, err := db.Prepare(sql)
-
 	if err != nil {
 		return err
 	}
@@ -195,12 +194,11 @@ func FindExpiredSessions(db *sql.DB) ([]GameSession, error) {
 		now.Add(-JoiningTimeoutDuration).Unix(),
 		now.Add(-PlayedTimeoutDuration).Unix(),
 	)
-
 	if err != nil {
 		return sessions, err
 	}
 
-	for result.Next(){
+	for result.Next() {
 		var session GameSession
 		err = result.Scan(
 			&session.Id,

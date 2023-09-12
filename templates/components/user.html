@@ -1,3 +1,65 @@
 {{ define "user" }}
-<div class=""> {{ .Name }} </div>
+<div class="w-full my-2 flex-col flex space-y-4 max-w-lg">
+
+	{{ if .Role }}
+		<h1 class="font-bold text-xl"> Hello, Moderator {{ .Name }} </h1>
+		<button class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded" hx-trigger="click" hx-swap="none">Time to Play?</button>
+		<p>Preperation phase. Time to leave some infos</p>
+	{{ else }}
+		<h1 class="font-bold text-xl"> Hello, Moderator {{ .Name }} </h1>
+		<p>Preperation phase. Time to leave some infos</p>
+	{{ end }}
+
+			<button onclick="setEditMode('user-detail-edit', true)" class="edit-hide">edit</button>
+	<form
+		id="user-detail-edit"
+		hx-put="/user"
+		hx-swap="innerHTML"
+		hx-target="#user-detail"
+		hx-ext="response-targets"
+		hx-target-403="#update-error"
+		class="flex flex-col w-full">
+		<div class="flex flex-row justify-between">
+			<label class="font-bold" for="Notice">Notice</label>
+		</div>
+
+		<div class="w-full">
+			<textarea
+				class="p-1 text-black rounded-sm w-full resize-none hidden edit-show"
+				id="Notice"
+				type="text"
+				name="Notice"
+				placeholder="Leave a notice for the one gifting you">{{.Notice}}</textarea>
+			<p class="edit-hide">{{.Notice}}</p>
+		</div>
+
+		<button onclick="setEditMode('user-detail-edit', false)" class="edit-show hidden">close</button>
+		<label class="font-bold" for="Allergies">Allergies</label>
+		<div class="">
+			<textarea
+				class="p-1 text-black rounded-sm w-full resize-none hidden edit-show"
+				id="Allergies"
+				type="text"
+				name="Allergies"
+				placeholder="Is there something that might kill you?"
+			/>{{.Allergies}}</textarea>
+			<p class="edit-hide">{{.Allergies}}</p>
+		</div>
+
+		<label class="font-bold" for="Exclude">Exclude</label>
+		<div class="w-full">
+			<input
+				class="p-1 text-black rounded-sm w-full resize-none hidden edit-show"
+				type="text"
+				name="Exclude"
+				placeholder="Exclude"
+			/>
+			<p class="edit-hide">Test Exclude</p>
+		</div>
+		<p class="text-red-500 font-bold" id="update-error"></p>
+		<input
+			class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-4 font-bold py-2 px-4 rounded cursor-pointer"
+			type="submit" value="Save" />
+	</form>
+</div>
 {{end}}

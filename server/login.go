@@ -13,8 +13,9 @@ type LoginForm struct {
 	RoomKey  string `required:"true"`
 }
 
+// ----------------------------------
+// login controller
 func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
-
 	println("requesting login")
 
 	switch request.Method {
@@ -27,18 +28,22 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
+// ----------------------------------
+// login get
 func loginGet(app *AppState, writer http.ResponseWriter, request *http.Request) {
 	if app.Mode == Debug {
-		app.Tmpl.Load()
+		app.Templates.Load()
 	}
 
-	err := app.Tmpl.Render(writer, "login.html", nil)
+	err := app.Templates.Render(writer, "login.html", nil)
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "Bad Request", http.StatusBadRequest)
 	}
 }
 
+// ----------------------------------
+// login post
 func loginPost(app *AppState, writer http.ResponseWriter, request *http.Request) {
 	form := &LoginForm{}
 	FromFormData(request, form)

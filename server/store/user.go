@@ -23,6 +23,8 @@ type User struct {
 	Notice     string
 	Allergies  string
 	Role       UserRole
+
+	GameSession *GameSession
 }
 
 func FindUserById(id int64, db *sql.DB) (User, error) {
@@ -144,14 +146,14 @@ func CreateUser(
 
 func (user *User) Update(db *sql.DB) error {
 	sql := `
-		UPDATE users SET name=? password=? partner_id=? exclude_id=? notice=? allergies=? role=?
-		WHERE users.id=?`
+		UPDATE users
+		SET password = ?, partner_id = ?, exclude_id = ?, notice = ?, allergies = ?, role = ?
+		WHERE id=?`
 	stm, err := db.Prepare(sql)
 	if err != nil {
 		return err
 	}
 	_, err = stm.Exec(
-		&user.Name,
 		&user.Password,
 		&user.PartnerId,
 		&user.ExcludeId,

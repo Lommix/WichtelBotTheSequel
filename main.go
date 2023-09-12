@@ -41,7 +41,7 @@ func main() {
 
 		app := server.AppState{
 			Db:   db,
-			Tmpl: tmpl,
+			Templates: tmpl,
 			Mode: server.Debug,
 			Sessions: server.CookieJar{},
 		}

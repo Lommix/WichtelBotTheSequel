@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"lommix/wichtelbot/server/store"
 	"net/http"
 	"strings"
 )
@@ -14,10 +15,10 @@ const (
 )
 
 type AppState struct {
-	Db       *sql.DB
-	Tmpl     Templates
-	Mode     RunState
-	Sessions CookieJar
+	Db        *sql.DB
+	Templates Templates
+	Mode      RunState
+	Sessions  CookieJar
 }
 
 func (app *AppState) ListenAndServe(adr string) {
@@ -40,7 +41,7 @@ func (app *AppState) ListenAndServe(adr string) {
 }
 
 // ----------------------------------
-// Pages
+// home page
 func (app *AppState) Home(writer http.ResponseWriter, request *http.Request) {
 	path := request.URL.Path
 	if path != "/" && !strings.HasPrefix(path, "/key/") {
@@ -48,30 +49,33 @@ func (app *AppState) Home(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	if app.Mode == Debug {
-		app.Tmpl.Load()
+		app.Templates.Load()
 	}
 
-	err := app.Tmpl.Render(writer, "home.html", nil)
+
+	err := app.Templates.Render(writer, "home.html", app.defaultContext(writer, request))
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "Bad Request", http.StatusBadRequest)
 	}
 }
 
+// ----------------------------------
+// profile page
 func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) {
 	if app.Mode == Debug {
-		app.Tmpl.Load()
+		app.Templates.Load()
 	}
 
 	println("requesting profile")
 
-	user, err := app.CurrentUserFromSession(request)
-	if err != nil {
+	context := app.defaultContext(writer, request)
+	if context.User.Id == 0 {
 		http.Redirect(writer, request, "/login", http.StatusFound)
 		return
 	}
 
-	err = app.Tmpl.Render(writer, "profile.html", user)
+	err := app.Templates.Render(writer, "profile.html", context)
 
 	if err != nil {
 		println(err.Error())
@@ -80,7 +84,7 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 }
 
 // ----------------------------------
-// Api
+// Logout
 func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 	cookie := http.Cookie{
 		Name:  "user",
@@ -94,21 +98,20 @@ func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 		app.Sessions.DeleteSession(user.Id)
 	}
 
-	// http.Redirect(writer, request, "/login", http.StatusFound)
-	writer.Header().Add("HX-Redirect","/profile")
+	writer.Header().Add("HX-Redirect", "/login")
 }
 
-func (app *AppState) User(writer http.ResponseWriter, request *http.Request) {
+
+func (app *AppState) defaultContext(writer http.ResponseWriter, request *http.Request) *TemplateContext {
+	var context TemplateContext
 	user, err := app.CurrentUserFromSession(request)
-	if err != nil {
-		http.Error(writer, "forbidden", http.StatusBadRequest)
-		return
+	if err == nil {
+		context.User = user
+		session,err := store.FindSessionByID(user.Session_id,app.Db)
+		if err == nil {
+			context.User.GameSession = &session
+		}
 	}
 
-	err = app.Tmpl.Render(writer, "user", user)
-	if err != nil {
-		http.Error(writer, "forbidden", http.StatusBadRequest)
-		return
-	}
-
+	return &context
 }

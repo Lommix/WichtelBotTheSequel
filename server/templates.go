@@ -4,6 +4,7 @@ import (
 	"errors"
 	"html/template"
 	"io"
+	"lommix/wichtelbot/server/store"
 	"os"
 	"path/filepath"
 )
@@ -12,6 +13,11 @@ const (
 	ComponentsDir = "./templates/components"
 	PagesDir      = "./templates/pages"
 )
+
+type TemplateContext struct {
+	Snippets map[string]string
+	User store.User
+}
 
 type Templates struct {
 	shared *template.Template
