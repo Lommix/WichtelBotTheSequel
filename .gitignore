@@ -2,4 +2,4 @@
 main
 *.db
 /static/compiled.css
-./uberwichtelbot
+uberwichtelbot

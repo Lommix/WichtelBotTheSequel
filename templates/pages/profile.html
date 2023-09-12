@@ -1,0 +1,7 @@
+{{template "layout.html" }}
+{{block "content" . }}
+<h1>Welcome to your Party!</h1>
+
+<button hx-get="/logout" hx-trigger="click" hx-swap="none">Logout</button>
+
+{{end}}

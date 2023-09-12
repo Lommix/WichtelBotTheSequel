@@ -3,7 +3,9 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 	"reflect"
+	"strings"
 )
 
 
@@ -31,3 +33,23 @@ func FromFormData(r *http.Request, s interface{}) error {
 	}
 	return nil
 }
+
+
+func getFirstSlug(urlString string) string {
+	parsedURL, err := url.Parse(urlString)
+	if err != nil {
+		return ""
+	}
+
+	host := parsedURL.Host
+	if strings.HasPrefix(host, "https://") {
+		host = strings.TrimPrefix(host, "https://")
+	}
+	// Split the path into slugs
+	pathSlugs := strings.Split(parsedURL.Path, "/")
+	if len(pathSlugs) == 0 {
+		return ""
+	}
+	return pathSlugs[0]
+}
+

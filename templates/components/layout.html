@@ -3,22 +3,24 @@
 		<title></title>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link href="static/compiled.css" rel="stylesheet" />
+		<link href="/static/compiled.css" rel="stylesheet" />
 	</head>
 
 	<body>
 		<div class="wrapper w-full h-full">
 			<div
 				class="w-full h-full bg-blue-600 flex justify-center items-center"
+			>
+				<div
+					class="w-xl border-white border-4 rounded-lg p-4 text-white"
 				>
-				<div class="w-xl border-white border-4 rounded-lg p-4 text-white">
-					{{block "content" .}}
-					<p> Default Content </p>
-					{{end}}
+					{{ block "content" . }}
+					{{ end }}
 				</div>
 			</div>
 		</div>
-		<script src="static/htmx.min.js"></script>
-		<script src="static/response-targets.min.js"></script>
+		<script src="/static/htmx.min.js"></script>
+		<script src="/static/response-targets.min.js"></script>
+		<script src="/static/main.js"></script>
 	</body>
 </html>

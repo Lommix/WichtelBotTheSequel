@@ -1,5 +1,5 @@
-{{define "content"}}
-
+{{ template "layout.html" }}
+{{ block "content" . }}
 <h1 class="font-bold text-xl">Register</h1>
 <hr />
 <div class="flex flex-col mt-4">
@@ -7,12 +7,15 @@
 		<h2>Join Party</h2>
 		<form
 			hx-post="/register"
-			hx-swap="none"
+			hx-swap="innerHTML"
+			hx-ext="response-targets"
+			hx-target-400="#join-error"
 			class="flex flex-col space-y-1 text-black"
 		>
 			<input
 				class="p-1"
 				type="text"
+				id="RoomKey"
 				name="RoomKey"
 				placeholder="Room Key"
 			/>
@@ -31,9 +34,10 @@
 			<input
 				class="p-1"
 				type="password"
-				name="Password"
+				name="Retry"
 				placeholder="Password"
 			/>
+			<p id="join-error" class="text-red-500"></p>
 			<button type="submit" class="border-white border-2 rounded-lg p-1"
 				>Register</button
 			>
@@ -76,4 +80,4 @@
 		</form>
 	</div>
 </div>
-{{end}} {{ template "layout.html" . }}
+{{end}}

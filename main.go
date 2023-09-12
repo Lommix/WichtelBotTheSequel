@@ -30,10 +30,8 @@ func main() {
 		store.SchemaDown(db)
 		store.SchemaUp(db)
 	case "dev":
-		tmpl := server.Templates{
-			Dir: "./templates",
-		}
 
+		tmpl := server.Templates{}
 		err = tmpl.Load()
 
 		if err != nil {

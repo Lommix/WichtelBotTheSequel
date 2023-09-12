@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"lommix/wichtelbot/server/store"
 	"net/http"
 	"time"
@@ -54,10 +53,16 @@ func (jar *CookieJar) CreateSession(userId int64) (Session, error) {
 	return session, nil
 }
 
-func (session *Session) IntoCookie() string {
-	var out string
-	out = fmt.Sprintf("user=%s", session.key)
-	return out
+func (session *Session) IntoCookie() http.Cookie {
+	return http.Cookie{
+		Name:     "user",
+		Value:    session.key,
+		Path:     "/",
+		Expires:  time.Now().Add(CookieExpirationaTime),
+		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
+	}
 }
 
 func (app *AppState) CurrentUserFromSession(request *http.Request) (store.User, error) {

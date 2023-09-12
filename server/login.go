@@ -14,11 +14,32 @@ type LoginForm struct {
 }
 
 func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
-	if request.Method != http.MethodPost {
-		http.Error(writer, "invalid request", http.StatusBadRequest)
-		return
+
+	println("requesting login")
+
+	switch request.Method {
+	case http.MethodGet:
+		loginGet(app, writer, request)
+	case http.MethodPost:
+		loginPost(app, writer, request)
+	default:
+		http.Error(writer, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+}
+
+func loginGet(app *AppState, writer http.ResponseWriter, request *http.Request) {
+	if app.Mode == Debug {
+		app.Tmpl.Load()
 	}
 
+	err := app.Tmpl.Render(writer, "login.html", nil)
+	if err != nil {
+		println(err.Error())
+		http.Error(writer, "Bad Request", http.StatusBadRequest)
+	}
+}
+
+func loginPost(app *AppState, writer http.ResponseWriter, request *http.Request) {
 	form := &LoginForm{}
 	FromFormData(request, form)
 
@@ -42,8 +63,9 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	cookie, err := app.Sessions.CreateSession(user.Id)
-
-	writer.Header().Add("Set-Cookie", cookie.IntoCookie())
+	session, err := app.Sessions.CreateSession(user.Id)
+	cookie := session.IntoCookie()
+	http.SetCookie(writer, &cookie)
+	writer.Header().Add("HX-Redirect", "/profile")
 	writer.Write([]byte("ok"))
 }

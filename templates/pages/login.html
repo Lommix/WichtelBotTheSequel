@@ -1,0 +1,38 @@
+{{template "layout.html" }}
+
+{{ define "content" }}
+<h1>Log in now</h1>
+		<form
+			hx-post="/login/"
+			hx-swap="none"
+			hx-ext="response-targets"
+			hx-target-400="#login-error"
+			class="flex flex-col space-y-1 text-black"
+		>
+			<input
+				class="p-1"
+				type="text"
+				id="RoomKey"
+				name="RoomKey"
+				placeholder="Room Key"
+			/>
+			<input
+				class="p-1"
+				type="text"
+				name="Username"
+				placeholder="Username"
+			/>
+			<input
+				class="p-1"
+				type="password"
+				name="Password"
+				placeholder="Password"
+			/>
+			<p id="login-error" class="text-red-500 font-bold"></p>
+			<button type="submit" class="border-white border-2 rounded-lg p-1"
+				>Login</button
+			>
+		</form>
+	</div>
+{{end}}
+

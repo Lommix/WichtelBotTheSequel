@@ -42,16 +42,21 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		return ""
 	}()
 
-	var session store.GameSession
+
+	var role store.UserRole
+
+	var gameSession store.GameSession
 	if len(roomKey) == 0 {
-		session, err = store.CreateSession(app.Db)
+		gameSession, err = store.CreateSession(app.Db)
+		role = store.Moderator
 		if err != nil {
 			fmt.Println(err.Error())
-			http.Error(writer, "something wen wrong", http.StatusBadRequest)
+			http.Error(writer, "something went wrong", http.StatusBadRequest)
 			return
 		}
 	} else {
-		session, err = store.FindSessionByKey(roomKey, app.Db)
+		gameSession, err = store.FindSessionByKey(roomKey, app.Db)
+		role = store.DefaultUser
 		if err != nil {
 			http.Error(writer, "invalid room", http.StatusBadRequest)
 			return
@@ -61,16 +66,16 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 	hash := sha256.Sum256([]byte(formData.Password))
 	user, err := store.CreateUser(
 		app.Db,
-		session.Id,
+		gameSession.Id,
 		formData.Username,
 		fmt.Sprintf("%x", hash),
 		"",
 		"",
-		store.Moderator,
+		role,
 	)
 
-	cookie, err := app.Sessions.CreateSession(user.Id)
-
-	writer.Header().Add("Set-Cookie", cookie.IntoCookie())
+	session, err := app.Sessions.CreateSession(user.Id)
+	cookie := session.IntoCookie()
+	http.SetCookie(writer, &cookie)
 	writer.Header().Add("HX-Redirect","/profile")
 }
