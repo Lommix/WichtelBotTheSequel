@@ -28,17 +28,16 @@ func (app *AppState) User(writer http.ResponseWriter, request *http.Request) {
 
 type updateForm struct {
 	Notice    string
-	Allergies string
-	Exclude   string
+	ExcludeId int
 }
 
 func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) error {
 	form := &updateForm{}
 	err := FromFormData(request, form)
 	if err != nil {
+		println(err.Error())
 		return err
 	}
-
 
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil {
@@ -46,7 +45,7 @@ func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) e
 	}
 
 	user.Notice = form.Notice
-	user.Allergies = form.Allergies
+	user.ExcludeId = int64(form.ExcludeId)
 
 	err = user.Update(app.Db)
 	if err != nil {

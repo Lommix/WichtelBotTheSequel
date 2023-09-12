@@ -23,10 +23,8 @@ const (
 type GameRuleSet int
 
 const (
-	// the basic game
 	Default GameRuleSet = iota
-	// couples can exclude each other
-	CoupleBlacklist
+	WithBlacklist
 )
 
 type GameSession struct {
@@ -34,9 +32,9 @@ type GameSession struct {
 	Created int64
 	Key     string
 	State   GameState
-	Rules   string
+	RuleSet GameRuleSet
 
-	users *[]User
+	Users *[]User
 }
 
 func FindSessionByID(id int64, db *sql.DB) (GameSession, error) {
@@ -53,11 +51,16 @@ func FindSessionByID(id int64, db *sql.DB) (GameSession, error) {
 		&session.Created,
 		&session.State,
 		&session.Key,
-		&session.Rules,
+		&session.RuleSet,
 	)
 
 	if err != nil {
 		return session, err
+	}
+
+	users, err := FindUsersBySessionId(session.Id, db)
+	if err == nil {
+		session.Users = &users
 	}
 
 	return session, nil
@@ -77,7 +80,7 @@ func FindSessionByKey(key string, db *sql.DB) (GameSession, error) {
 		&session.Created,
 		&session.State,
 		&session.Key,
-		&session.Rules,
+		&session.RuleSet,
 	)
 
 	if err != nil {
@@ -89,7 +92,7 @@ func FindSessionByKey(key string, db *sql.DB) (GameSession, error) {
 
 func CreateSession(db *sql.DB) (GameSession, error) {
 	var session GameSession
-	sql := `INSERT INTO sessions (created, state, key, rules) VALUES(?,?,?,?)`
+	sql := `INSERT INTO sessions (created, state, key, rule_set) VALUES(?,?,?,?)`
 	stmt, err := db.Prepare(sql)
 	if err != nil {
 		return session, err
@@ -100,13 +103,13 @@ func CreateSession(db *sql.DB) (GameSession, error) {
 
 	// fix potential collions at some point
 	session.Key = create_random_unique_key()
-	session.Rules = "none"
+	session.RuleSet = Default
 
 	result, err := stmt.Exec(
 		&session.Created,
 		&session.State,
 		&session.Key,
-		&session.Rules,
+		&session.RuleSet,
 	)
 	if err != nil {
 		return session, err
@@ -141,7 +144,7 @@ func (session *GameSession) Delete(db *sql.DB) error {
 
 func (session *GameSession) Update(db *sql.DB) error {
 	sql := `
-		UPDATE sessions SET state=? rules=? WHERE id=?
+		UPDATE sessions SET state=? rule_set=? WHERE id=?
 		WHERE users.id=?`
 	stm, err := db.Prepare(sql)
 	if err != nil {
@@ -150,7 +153,7 @@ func (session *GameSession) Update(db *sql.DB) error {
 
 	_, err = stm.Exec(
 		&session.State,
-		&session.Rules,
+		&session.RuleSet,
 		&session.Id,
 	)
 
@@ -205,7 +208,7 @@ func FindExpiredSessions(db *sql.DB) ([]GameSession, error) {
 			&session.Created,
 			&session.State,
 			&session.Key,
-			&session.Rules,
+			&session.RuleSet,
 		)
 
 		if err != nil {

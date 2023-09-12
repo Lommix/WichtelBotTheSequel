@@ -70,7 +70,6 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		formData.Username,
 		fmt.Sprintf("%x", hash),
 		"",
-		"",
 		role,
 	)
 

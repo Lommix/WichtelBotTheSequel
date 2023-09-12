@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"lommix/wichtelbot/server/store"
 	"net/http"
 	"strings"
@@ -70,6 +71,7 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 	println("requesting profile")
 
 	context := app.defaultContext(writer, request)
+	fmt.Print(context.User)
 	if context.User.Id == 0 {
 		http.Redirect(writer, request, "/login", http.StatusFound)
 		return

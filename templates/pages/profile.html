@@ -1,5 +1,8 @@
-{{template "layout.html" }} {{ define "content"}}
-<div id="user-detail" hx-get="/user" hx-trigger="load" hx-swap="innerHTML"></div>
+{{template "layout.html" . }}
+{{ define "content" }}
+<div id="user-detail">
+	{{template "user" .User}}
+</div>
 <button
 	class="w-full bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
 	hx-get="/logout" hx-trigger="click" hx-swap="none">Logout</button>

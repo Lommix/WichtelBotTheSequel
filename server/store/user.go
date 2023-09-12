@@ -21,7 +21,6 @@ type User struct {
 	PartnerId  int64
 	ExcludeId  int64
 	Notice     string
-	Allergies  string
 	Role       UserRole
 
 	GameSession *GameSession
@@ -40,12 +39,17 @@ func FindUserById(id int64, db *sql.DB) (User, error) {
 		&user.PartnerId,
 		&user.ExcludeId,
 		&user.Notice,
-		&user.Allergies,
 		&user.Role,
 	)
 	if err != nil {
 		return user, err
 	}
+
+	session, err := FindSessionByID(user.Session_id, db)
+	if err == nil {
+		user.GameSession = &session
+	}
+
 	return user, nil
 }
 
@@ -67,7 +71,6 @@ func FindUsersBySessionId(id int64, db *sql.DB) ([]User, error) {
 			&user.PartnerId,
 			&user.ExcludeId,
 			&user.Notice,
-			&user.Allergies,
 			&user.Role,
 		)
 		if err != nil {
@@ -94,7 +97,6 @@ func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, er
 		&user.PartnerId,
 		&user.ExcludeId,
 		&user.Notice,
-		&user.Allergies,
 		&user.Role,
 	)
 	if err != nil {
@@ -109,12 +111,11 @@ func CreateUser(
 	name string,
 	password string,
 	notice string,
-	allergies string,
 	role UserRole,
 ) (User, error) {
 	var user User
-	sql := `INSERT INTO users (session_id, created, name, password, notice, allergies, role)
-			VALUES (?,?,?,?,?,?,?);`
+	sql := `INSERT INTO users (session_id, created, name, password, notice, role)
+			VALUES (?,?,?,?,?,?);`
 	stm, err := db.Prepare(sql)
 	if err != nil {
 		return user, err
@@ -126,7 +127,6 @@ func CreateUser(
 		name,
 		password,
 		notice,
-		allergies,
 		role,
 	)
 	if err != nil {
@@ -138,7 +138,6 @@ func CreateUser(
 	user.Name = name
 	user.Password = password
 	user.Notice = notice
-	user.Allergies = allergies
 	user.Role = role
 
 	return user, nil
@@ -147,7 +146,7 @@ func CreateUser(
 func (user *User) Update(db *sql.DB) error {
 	sql := `
 		UPDATE users
-		SET password = ?, partner_id = ?, exclude_id = ?, notice = ?, allergies = ?, role = ?
+		SET password = ?, partner_id = ?, exclude_id = ?, notice = ?, role = ?
 		WHERE id=?`
 	stm, err := db.Prepare(sql)
 	if err != nil {
@@ -158,7 +157,6 @@ func (user *User) Update(db *sql.DB) error {
 		&user.PartnerId,
 		&user.ExcludeId,
 		&user.Notice,
-		&user.Allergies,
 		&user.Role,
 		&user.Id,
 	)

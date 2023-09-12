@@ -9,7 +9,7 @@ func SchemaUp(db *sql.DB) error {
 			created INTEGER NOT NULL,
 			state INTEGER NOT NULL,
 			key STRING NOT NULL,
-			rules STRING DEFAULT NULL
+			rule_set INTEGER DEFAULT 0
 		);
 
 		CREATE TABLE IF NOT EXISTS users (
@@ -21,7 +21,6 @@ func SchemaUp(db *sql.DB) error {
 			partner_id INTEGER DEFAULT 0,
 			exclude_id TEXT DEFAULT 0,
 			notice TEXT DEFAULT NULL,
-			allergies TEXT DEFAULT NULL,
 			role INTEGER DEFAULT 0,
 			FOREIGN KEY (session_id) REFERENCES sessions(id)
 		);
