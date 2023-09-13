@@ -1,86 +1,72 @@
 {{ define "user" }}
+
 <div class="w-full my-2 flex-col flex space-y-4 max-w-lg">
-	{{ if .Role }}
-	<h1 class="font-bold text-xl"> Hello, Moderator {{ .Name }} </h1>
-	<button
-		class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
-		hx-trigger="click"
-		hx-swap="none"
-		>Time to Play?</button
-	>
-	{{ else }}
-	<h1 class="font-bold text-xl"> Hello, {{ .Name }} </h1>
+
+	<h1 class="font-bold text-xl"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
+
+	{{ if .User.Role }}
+	<button class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
+		hx-trigger="click" hx-swap="none">
+		{{ template "icon" "dice" }}<p class="w-full">{{ .Snippets.button_play }}</p></button>
 	{{ end }}
 
-	<button
-		class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded w-full"
-		onclick="saveToClipboard(event,this)"
-		href="/key/{{.GameSession.Key}}"
-		>Invite Link</button
-	>
-
-	<form
-		id="user-detail-edit"
-		hx-put="/user"
-		hx-swap="innerHTML"
-		hx-target="#user-detail"
-		hx-ext="response-targets"
-		hx-target-403="#update-error"
-		class="flex flex-col w-full"
-	>
+	<form id="user-detail-edit" hx-put="/user" hx-swap="innerHTML" hx-target="#user-detail" hx-ext="response-targets"
+		hx-target-403="#update-error" class="flex flex-col w-full">
 		<div class="flex flex-row justify-between">
-			<label class="font-bold" for="Notice">Notice</label>
-			<button
-				onclick="setEditMode(event,'user-detail-edit', true)"
-				class="edit-hide"
-				>edit</button
-			>
-			<button
-				onclick="setEditMode(event,'user-detail-edit', false)"
-				class="edit-show hidden"
-				>close</button
-			>
+			<label class="font-bold" for="Notice">{{ .Snippets.field_notice }}</label>
+			<button onclick="setEditMode(event,'user-detail-edit', true)" class="edit-hide">{{ template "icon"
+				"edit"}}</button>
+			<button onclick="setEditMode(event,'user-detail-edit', false)" class="edit-show hidden">{{ template "icon"
+				"close"}}</button>
 		</div>
 
 		<div class="w-full">
-			<textarea
-				class="p-1 text-black rounded-sm w-full resize-none hidden edit-show"
-				id="Notice"
-				type="text"
-				name="Notice"
-				placeholder="Leave a notice for the one gifting you"
-			>
-{{.Notice}}</textarea
-			>
-			<p class="edit-hide">{{.Notice}}</p>
+			<textarea class="p-1 h-12 text-xs text-black rounded-sm w-full resize-none hidden edit-show rounded-sm"
+				id="Notice" type="text" name="Notice"
+				placeholder="{{.Snippets.field_notice_info}}">{{.User.Notice}}</textarea>
+			<p class="edit-hide h-12 text-sm bg-cyan-500 w-full block p-1 rounded-sm">
+				{{ if eq .User.Notice ""}}
+				-
+				{{else}}
+				{{.User.Notice}}
+				{{end}}
+			</p>
 		</div>
 
-		<label class="font-bold" for="Exclude">Exclude</label>
-		<div class="w-full">
-			<select
-				class="p-1 text-black rounded-sm w-full resize-none hidden edit-show"
-				type="text"
-				name="ExcludeId"
-				placeholder="Exclude"
-			>
-				<option value="0">none</option>
-				{{ range .GameSession.Users}}
+		<label class="font-bold" for="Exclude">{{ .Snippets.field_exclude }}</label>
+		<div class="w-full flex-col">
+			<select class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show" type="text"
+				name="ExcludeId" placeholder="Exclude">
+				<option value="0">-</option>
+				{{ $ownId := .User.Id}}
+				{{ range .User.GameSession.Users}}
+				{{ if ne $ownId .Id}}
 				<option value="{{.Id}}">{{.Name}}</option>
 				{{ end }}
-			</select>
-			{{ $exlude := .ExcludeId}}
-			{{ range .GameSession.Users}}
-				{{ if eq $exlude .Id}}
-					<p class="edit-hide">{{.Name}}</p>
 				{{ end }}
+			</select>
+
+			{{ $exlude := .User.ExcludeId}}
+			{{ $excludeName := "" }}
+			{{ range .User.GameSession.Users}}
+			{{ if eq $exlude .Id}}
+			{{ $excludeName = .Name }}
 			{{ end }}
+			{{ end }}
+
+			{{ if ne $excludeName ""}}
+			<p class="edit-hide h-8 text-sm p-1">{{ $excludeName }}</p>
+			{{ else }}
+			<p class="edit-hide h-8 text-sm p-1">-</p>
+			{{ end }}
+
 		</div>
 		<p class="text-red-500 font-bold" id="update-error"></p>
 		<input
-			class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-4 font-bold py-2 px-4 rounded cursor-pointer"
-			type="submit"
-			value="Save"
-		/>
+			class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-2 font-bold py-2 px-4 rounded cursor-pointer"
+			type="submit" value="{{ .Snippets.button_save }}" />
+		<button class="edit-hide w-full bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 mt-2 rounded"
+			hx-get="/logout" hx-trigger="click" hx-swap="none">{{.Snippets.button_logout}}</button>
 	</form>
 </div>
 {{end}}

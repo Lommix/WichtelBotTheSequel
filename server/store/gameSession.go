@@ -124,7 +124,6 @@ func CreateSession(db *sql.DB) (GameSession, error) {
 }
 
 func create_random_unique_key() string {
-	rand.Seed(time.Now().UnixNano())
 	chars := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 	randomString := make([]byte, 16)
 	for i := range randomString {

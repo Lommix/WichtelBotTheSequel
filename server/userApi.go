@@ -52,7 +52,7 @@ func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) e
 		return err
 	}
 
-	err = app.Templates.Render(writer, "user", user)
+	err = app.Templates.Render(writer, "user", app.defaultContext(writer, request))
 	if err != nil {
 		return err
 	}

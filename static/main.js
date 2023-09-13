@@ -2,12 +2,12 @@
  * toggles element inside a form.
  * identified by classes `edit-show` and `edit-hide`
  * @param {Event} event
- * @param {string} formId
+ * @param {string} parentId
  * @param {boolean} visible
  */
-function setEditMode(event, formId, visible) {
+function setEditMode(event, parentId, visible) {
 	event.preventDefault();
-	const form = document.getElementById(formId);
+	const form = document.getElementById(parentId);
 	if (form) {
 		const inputs = form.querySelectorAll(".edit-show");
 		const rendered = form.querySelectorAll(".edit-hide");
@@ -23,6 +23,20 @@ function setEditMode(event, formId, visible) {
 }
 
 /**
+ * toggles element visibility
+ * @param {Event} event
+ * @param {string} element_id
+ * @param {boolean} state
+ */
+function setVisibilty(event, id, state) {
+	event.preventDefault();
+	const element = document.getElementById(id);
+	if (element) {
+		element.style.display = state ? "block" : "none";
+	}
+}
+
+/**
  * copies link to clipboard
  * @param {Event} event
  * @param {DOMElement} element
@@ -30,6 +44,7 @@ function setEditMode(event, formId, visible) {
 function saveToClipboard(event, element) {
 	event.preventDefault();
 	const link = element.href;
+
 	navigator.clipboard.writeText(link);
 	alert("Link copied to clipboard " + link);
 }

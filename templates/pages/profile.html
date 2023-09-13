@@ -1,9 +1,12 @@
-{{template "layout.html" . }}
+{{ template "layout.html" . }}
 {{ define "content" }}
-<div id="user-detail">
-	{{template "user" .User}}
+
+<div class="bg-indigo-400" data-key="{{.User.GameSession.Key}}">
+	{{ template "room" .User.GameSession }}
 </div>
-<button
-	class="w-full bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded"
-	hx-get="/logout" hx-trigger="click" hx-swap="none">Logout</button>
+
+<div id="user-detail"  class="px-2">
+	{{ template "user" . }}
+</div>
+
 {{end}}

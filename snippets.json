@@ -1,0 +1,98 @@
+{
+	"title": {
+		"de": "Wichtelbot",
+		"en": "Wichtelbot"
+	},
+	"description": {
+		"de": "Würfel Wichtelpartner mit deinen Freunden online! No tracking, no ads.",
+		"en": "Dice Wichtelpartner with your friends online! No tracking, no ads."
+	},
+	"keywords": {
+		"de": "Wichtel, Wichtelbot, Würfel, Würfelbot",
+		"en": "Wichtel, Wichtelbot, Dice, Dicebot"
+	},
+	"button_join": {
+		"de": "Beitreten",
+		"en": "Join"
+	},
+	"button_create": {
+		"de": "Erstellen",
+		"en": "Create"
+	},
+	"button_edit": {
+		"de": "Bearbeiten",
+		"en": "Edit"
+	},
+	"button_logout": {
+		"de": "Abmelden",
+		"en": "Logout"
+	},
+	"button_save": {
+		"de": "Speichern",
+		"en": "Save"
+	},
+	"button_login": {
+		"de": "Anmelden",
+		"en": "Login"
+	},
+	"button_register": {
+		"de": "Registrieren",
+		"en": "Register"
+	},
+	"button_invite": {
+		"de": "Einladen",
+		"en": "Invite link"
+	},
+	"button_play": {
+		"de": "Rolle die Würfel!",
+		"en": "Roll the dice!"
+	},
+	"button_play_description": {
+		"de": "Lass die Würfe rollen! Danach ist das Spiel abgeschlossen und eure Zugänge noch 3 Tage gültig.",
+		"en": "Let the dice roll! Then the game is over and your access is still valid for 3 days."
+	},
+	"field_name":{
+		"de": "Name",
+		"en": "Name"
+	},
+	"field_password":{
+		"de": "Passwort",
+		"en": "Password"
+	},
+	"field_key":{
+		"de": "Gruppen Schüssel",
+		"en": "Group key"
+	},
+	"field_notice":{
+		"de": "Hinweis",
+		"en": "Notice"
+	},
+	"field_notice_info":{
+		"de": "Hinterlasse deinem Gönner einen Hinweis oder eine Notiz!",
+		"en": "Leave the person gifting you a hint or notice!"
+	},
+	"field_exclude":{
+		"de": "Schwarze Liste",
+		"en": "Blacklist"
+	},
+	"field_exclude_info":{
+		"de": "Eine Person die du nicht ziehen kannst! Zum Beispiel deine Partner. Das wäre langweilig.",
+		"en": "A person you cannot gift! For example your partner. That would be boring."
+	},
+	"field_retry":{
+		"de": "Passwort wiederholen",
+		"en": "Password again"
+	},
+	"home_join_info": {
+		"de": "Trete einer existierenden Gruppe bei! Du brauchst einen gültigen Schüsselcode.",
+		"en": "Join an existing group! You need a valid key."
+	},
+	"home_create_info": {
+		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein!",
+		"en": "Create a new group and invite your friends!"
+	},
+	"profile_welcome" : {
+		"de": "Wilkommen",
+		"en": "Welcome"
+	}
+}

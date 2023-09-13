@@ -35,7 +35,7 @@ func loginGet(app *AppState, writer http.ResponseWriter, request *http.Request) 
 		app.Templates.Load()
 	}
 
-	err := app.Templates.Render(writer, "login.html", nil)
+	err := app.Templates.Render(writer, "login.html", app.defaultContext(writer, request))
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "Bad Request", http.StatusBadRequest)
@@ -56,7 +56,7 @@ func loginPost(app *AppState, writer http.ResponseWriter, request *http.Request)
 	user, err := store.FindUserByNameAndRoomKey(form.Username, form.RoomKey, app.Db)
 	if err != nil {
 		println(err.Error())
-		http.Error(writer, "invalid user", http.StatusBadRequest)
+		http.Error(writer, "invalid credentials", http.StatusBadRequest)
 		return
 	}
 
@@ -64,13 +64,14 @@ func loginPost(app *AppState, writer http.ResponseWriter, request *http.Request)
 	pw := hex.EncodeToString(hash[:])
 
 	if user.Password != pw {
-		http.Error(writer, "wrong password", http.StatusBadRequest)
+		http.Error(writer, "invalid credentials", http.StatusBadRequest)
 		return
 	}
 
 	session, err := app.Sessions.CreateSession(user.Id)
 	cookie := session.IntoCookie()
 	http.SetCookie(writer, &cookie)
+
 	writer.Header().Add("HX-Redirect", "/profile")
 	writer.Write([]byte("ok"))
 }

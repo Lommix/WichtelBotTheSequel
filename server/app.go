@@ -2,9 +2,11 @@ package server
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"lommix/wichtelbot/server/store"
 	"net/http"
+	"os"
 	"strings"
 )
 
@@ -14,6 +16,15 @@ const (
 	Debug RunState = iota
 	Prod
 )
+
+type Language string
+
+const (
+	German  Language = "de"
+	English Language = "en"
+)
+
+const SnippetPath string = "snippets.json"
 
 type AppState struct {
 	Db        *sql.DB
@@ -53,7 +64,6 @@ func (app *AppState) Home(writer http.ResponseWriter, request *http.Request) {
 		app.Templates.Load()
 	}
 
-
 	err := app.Templates.Render(writer, "home.html", app.defaultContext(writer, request))
 	if err != nil {
 		println(err.Error())
@@ -78,7 +88,6 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 	}
 
 	err := app.Templates.Render(writer, "profile.html", context)
-
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "forbidden", http.StatusBadRequest)
@@ -103,17 +112,40 @@ func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Add("HX-Redirect", "/login")
 }
 
+// ----------------------------------
+// helper function
+func loadSnippets(lang Language) ( map[string]interface{}, error ) {
+
+	var out = make(map[string] interface{})
+	// read a file from disc
+	snippets, err := os.ReadFile(SnippetPath)
+	if err != nil {
+		return out, err
+	}
+	s := string(snippets)
+	var data map[string]map[string]string
+	json.Unmarshal([]byte(s), &data)
+
+	for key, snippet := range data {
+		out[key] = snippet[string(lang)]
+	}
+
+	return out, nil
+}
 
 func (app *AppState) defaultContext(writer http.ResponseWriter, request *http.Request) *TemplateContext {
 	var context TemplateContext
 	user, err := app.CurrentUserFromSession(request)
 	if err == nil {
 		context.User = user
-		session,err := store.FindSessionByID(user.Session_id,app.Db)
+		session, err := store.FindSessionByID(user.Session_id, app.Db)
 		if err == nil {
 			context.User.GameSession = &session
 		}
 	}
+	// todo cache this, add lang select
+	snippets, err := loadSnippets(German)
+	context.Snippets = snippets
 
 	return &context
 }

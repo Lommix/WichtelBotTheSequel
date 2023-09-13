@@ -15,8 +15,8 @@ const (
 )
 
 type TemplateContext struct {
-	Snippets map[string]string
-	User store.User
+	Snippets map[string]interface{}
+	User     store.User
 }
 
 type Templates struct {
