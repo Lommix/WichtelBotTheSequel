@@ -1,12 +1,9 @@
 {{ template "layout.html" . }}
 {{ define "content" }}
-
 <div class="bg-indigo-400" data-key="{{.User.GameSession.Key}}">
 	{{ template "room" .User.GameSession }}
 </div>
-
 <div id="user-detail"  class="px-2">
 	{{ template "user" . }}
 </div>
-
 {{end}}

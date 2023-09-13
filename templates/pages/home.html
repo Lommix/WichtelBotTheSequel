@@ -1,16 +1,13 @@
 {{ template "layout.html" . }}
 {{ define "content" }}
-
 <h1 class="font-bold text-4xl text-center w-full">{{.Snippets.title}}</h1>
 <hr class="w-full" />
-
 <div class="w-full mt-6 flex justify-between items-center">
 	<button class="font-bold text-xl rounded-sm p-2 bg-blue-500 hover:bg-blue-700 text-white"
 		onclick="setEditMode(event,'register-form', true)">{{.Snippets.button_join}}</button>
 	<button class="font-bold text-xl rounded-sm p-2 bg-blue-500 hover:bg-blue-700 text-white"
 		onclick="setEditMode(event,'register-form', false)">{{.Snippets.button_create}}</button>
 </div>
-
 <div class="flex flex-row mt-4" id="register-form">
 	<div class="w-full hidden edit-show">
 		<p class="py-3">{{.Snippets.home_join_info}}</p>
@@ -25,7 +22,6 @@
 				class="p-2 text-xl bg-blue-500 hover:bg-blue-700 text-white font-bold">Register</button>
 		</form>
 	</div>
-
 	<div class="w-full edit-hide">
 		<p class="py-3">{{.Snippets.home_create_info}}</p>
 		<form method="POST" hx-post="/register" hx-swap="innerHTML" hx-ext="response-targets"

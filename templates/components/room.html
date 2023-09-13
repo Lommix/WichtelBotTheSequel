@@ -6,7 +6,7 @@
 		class="w-full flex flex-row items-center justify-center cursor-pointer"
 		>
 		<div class="">
-			{{ template "icon" "key" }}
+			<img src="/static/images/key.svg"/>
 		</div>
 		<div class="">
 			{{ .Key }}
@@ -14,7 +14,7 @@
 	</a>
 	<div class="w-fit flex flex-row justify-end px-1 items-center">
 		<div class="relative">
-			{{ template "icon" "group" }}
+			<img src="/static/images/group.svg"/>
 			<div class="absolute flex w-full h-full top-2 right-0 justify-center items-center">
 				<div class=" font-bold text-white rounded-full h-4 w-4 text-center text-xs overflow-hidden">
 					{{ len .Users}}

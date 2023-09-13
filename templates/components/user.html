@@ -7,17 +7,15 @@
 	{{ if .User.Role }}
 	<button class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
 		hx-trigger="click" hx-swap="none">
-		{{ template "icon" "dice" }}<p class="w-full">{{ .Snippets.button_play }}</p></button>
+		<img src="/static/images/dice.svg"/><p class="w-full">{{ .Snippets.button_play }}</p></button>
 	{{ end }}
 
 	<form id="user-detail-edit" hx-put="/user" hx-swap="innerHTML" hx-target="#user-detail" hx-ext="response-targets"
 		hx-target-403="#update-error" class="flex flex-col w-full">
 		<div class="flex flex-row justify-between">
 			<label class="font-bold" for="Notice">{{ .Snippets.field_notice }}</label>
-			<button onclick="setEditMode(event,'user-detail-edit', true)" class="edit-hide">{{ template "icon"
-				"edit"}}</button>
-			<button onclick="setEditMode(event,'user-detail-edit', false)" class="edit-show hidden">{{ template "icon"
-				"close"}}</button>
+			<button onclick="setEditMode(event,'user-detail-edit', true)" class="edit-hide"><img src="/static/images/edit.svg"/></button>
+			<button onclick="setEditMode(event,'user-detail-edit', false)" class="edit-show hidden"><img src="/static/images/close.svg"/></button>
 		</div>
 
 		<div class="w-full">
