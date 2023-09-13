@@ -5,7 +5,7 @@
 	<h1 class="font-bold text-xl"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
 
 	{{ if .User.Role }}
-	<button class="bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
+	<button class="bg-green-800 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
 		hx-trigger="click" hx-swap="none">
 		<img src="/static/images/dice.svg"/><p class="w-full">{{ .Snippets.button_play }}</p></button>
 	{{ end }}
@@ -19,10 +19,10 @@
 		</div>
 
 		<div class="w-full">
-			<textarea class="p-1 h-12 text-xs text-black rounded-sm w-full resize-none hidden edit-show rounded-sm"
+			<textarea class="p-1 h-32 text-sm text-black rounded-sm w-full resize-none hidden edit-show rounded-sm"
 				id="Notice" type="text" name="Notice"
 				placeholder="{{.Snippets.field_notice_info}}">{{.User.Notice}}</textarea>
-			<p class="edit-hide h-12 text-sm bg-cyan-500 w-full block p-1 rounded-sm">
+			<p class="edit-hide h-32 text-sm bg-sky-600 w-full block p-1 rounded-sm overflow-scroll">
 				{{ if eq .User.Notice ""}}
 				-
 				{{else}}
@@ -37,14 +37,14 @@
 				name="ExcludeId" placeholder="Exclude">
 				<option value="0">-</option>
 				{{ $ownId := .User.Id}}
+				{{ $exlude := .User.ExcludeId}}
 				{{ range .User.GameSession.Users}}
 				{{ if ne $ownId .Id}}
-				<option value="{{.Id}}">{{.Name}}</option>
+				<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}  >{{.Name}}</option>
 				{{ end }}
 				{{ end }}
 			</select>
 
-			{{ $exlude := .User.ExcludeId}}
 			{{ $excludeName := "" }}
 			{{ range .User.GameSession.Users}}
 			{{ if eq $exlude .Id}}
@@ -53,18 +53,23 @@
 			{{ end }}
 
 			{{ if ne $excludeName ""}}
-			<p class="edit-hide h-8 text-sm p-1">{{ $excludeName }}</p>
+			<div class="edit-hide">
+				<div class="h-8 text-sm pt-2 flex flex-row">
+					<img src="/static/images/user.svg"/>
+					<span class="font-bold">{{ $excludeName }}</span>
+				</div>
+			</div>
 			{{ else }}
-			<p class="edit-hide h-8 text-sm p-1">-</p>
+				<p class="edit-hide h-8 text-sm p-1">-</p>
 			{{ end }}
 
 		</div>
 		<p class="text-red-500 font-bold" id="update-error"></p>
-		<input
-			class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-2 font-bold py-2 px-4 rounded cursor-pointer"
-			type="submit" value="{{ .Snippets.button_save }}" />
-		<button class="edit-hide w-full bg-blue-500 hover:bg-blue-900 text-white font-bold py-2 px-4 mt-2 rounded"
-			hx-get="/logout" hx-trigger="click" hx-swap="none">{{.Snippets.button_logout}}</button>
+		<div class="h-10">
+			<input
+				class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-2 font-bold py-2 px-4 rounded cursor-pointer"
+				type="submit" value="{{ .Snippets.button_save }}" />
+		</div>
 	</form>
 </div>
 {{end}}

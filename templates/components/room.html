@@ -3,24 +3,14 @@
 	<a
 		onclick="saveToClipboard(event,this)"
 		href="/key/{{.Key}}"
-		class="w-full flex flex-row items-center justify-center cursor-pointer"
+		class="w-full flex flex-row items-center space-x-1 justify-start cursor-pointer"
 		>
-		<div class="">
-			<img src="/static/images/key.svg"/>
-		</div>
-		<div class="">
-			{{ .Key }}
-		</div>
+		<img class="ml-1" src="/static/images/key.svg"/>
+		<span class="font-bold">{{ .Key }}</span>
 	</a>
 	<div class="w-fit flex flex-row justify-end px-1 items-center">
-		<div class="relative">
-			<img src="/static/images/group.svg"/>
-			<div class="absolute flex w-full h-full top-2 right-0 justify-center items-center">
-				<div class=" font-bold text-white rounded-full h-4 w-4 text-center text-xs overflow-hidden">
-					{{ len .Users}}
-				</div>
-			</div>
-		</div>
+		<span class="font-bold">{{ len .Users}}</span>
+		<img src="/static/images/group.svg"/>
 	</div>
 </div>
 {{ end }}

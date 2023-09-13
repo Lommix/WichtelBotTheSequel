@@ -1,6 +1,6 @@
 {{ template "layout.html" . }}
 {{ define "content" }}
-<div class="bg-indigo-400" data-key="{{.User.GameSession.Key}}">
+<div class="bg-indigo-800 rounded-tl-lg rounded-tr-lg" data-key="{{.User.GameSession.Key}}">
 	{{ template "room" .User.GameSession }}
 </div>
 <div id="user-detail"  class="px-2">

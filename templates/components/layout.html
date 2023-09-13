@@ -11,13 +11,19 @@
 <body>
 	<div class="wrapper w-full h-full">
 		<div class="w-full h-full bg-blue-600 flex justify-center items-center">
-			<div class="w-72 border-white flex flex-col border-4 rounded-lg text-white">
+			<div class="w-72 border-blue-200 shadow-lg shadow-blue-900 flex flex-col border-4 rounded-lg text-white">
 				{{ block "content" . }}
 				{{ end }}
-				<a href="https://lommix.de" target="_blank" class="w-full flex flex-col justify-center items-center mt-4">
-					<img src="/static/images/coffee.svg"/>
-					<p>Donate</p>
-				</a>
+				<hr class="my-2 border-dashed">
+				<div class="w-full flex-row flex justify-between p-1">
+					<a href="https://lommix.de" target="_blank" class="">
+						<img class="-mt-1" src="/static/images/coffee.svg"/>
+					</a>
+					<a href="https://github.com/lommix" target="_blank" class="">
+						<img src="/static/images/git.svg"/>
+					</a>
+					<a class="cursor-pointer" hx-get="/logout" hx-trigger="click" hx-swap="none"><img src="/static/images/logout.svg"/></a>
+				</div>
 			</div>
 		</div>
 	</div>
