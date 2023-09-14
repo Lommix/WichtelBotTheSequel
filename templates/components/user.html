@@ -81,4 +81,13 @@
 		</div>
 	</form>
 </div>
+
+<div
+	hx-get="/ping"
+	hx-ext="response-targets"
+	hx-target="#user-detail"
+	hx-trigger="every 5s"
+	hx-swap="innerHTML"
+	></div>
+
 {{end}}

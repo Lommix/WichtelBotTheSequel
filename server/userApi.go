@@ -2,6 +2,7 @@ package server
 
 import (
 	"lommix/wichtelbot/server/components"
+	"lommix/wichtelbot/server/store"
 	"net/http"
 )
 
@@ -10,7 +11,7 @@ import (
 func (app *AppState) User(writer http.ResponseWriter, request *http.Request) {
 	switch request.Method {
 	case http.MethodGet:
-		err := userGet(app, writer, request)
+		err := UserGet(app, writer, request)
 		if err != nil {
 			println(err.Error())
 			http.Error(writer, "forbidden", http.StatusForbidden)
@@ -61,13 +62,21 @@ func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) e
 	return nil
 }
 
-func userGet(app *AppState, writer http.ResponseWriter, request *http.Request) error {
+func UserGet(app *AppState, writer http.ResponseWriter, request *http.Request) error {
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil {
 		return err
 	}
 
+	if user.PartnerId != 0 {
+		partner, err := store.FindUserById(user.PartnerId, app.Db)
+		if err == nil {
+			user.Partner = &partner
+		}
+	}
+
 	err = app.Templates.Render(writer, "user", user)
+
 	if err != nil {
 		return err
 	}

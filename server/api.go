@@ -64,7 +64,24 @@ func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 		app.Sessions.DeleteSession(user.Id)
 	}
 
-	writer.Header().Add("HX-Redirect", "/login")
+	writer.Header().Add("HX-Redirect", "/login/" + user.GameSession.Key)
+}
+
+// ----------------------------------
+// Ping Party
+func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request) {
+	user, err := app.CurrentUserFromSession(request)
+	if err != nil {
+		http.Error(writer, "not authorized", http.StatusForbidden)
+		return
+	}
+
+	if user.GameSession.State != store.Played {
+		http.Error(writer, "not played yet", http.StatusNoContent)
+		return
+	}
+
+	writer.Header().Add("HX-Refresh", "true")
 }
 
 // ----------------------------------

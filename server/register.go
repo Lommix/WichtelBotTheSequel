@@ -43,10 +43,9 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		return ""
 	}()
 
-
 	var role store.UserRole
-
 	var party store.Party
+
 	if len(roomKey) == 0 {
 		party, err = store.CreateParty(app.Db)
 		role = store.Moderator
@@ -60,6 +59,10 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		role = store.DefaultUser
 		if err != nil {
 			http.Error(writer, "invalid room", http.StatusBadRequest)
+			return
+		}
+		if party.State == store.Played {
+			http.Error(writer, "The party played without you", http.StatusBadRequest)
 			return
 		}
 	}

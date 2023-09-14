@@ -92,12 +92,12 @@
 		"en": "Create a new group and invite your friends!"
 	},
 	"profile_invite" : {
-		"de": "Einladen",
-		"en": "Invite"
+		"de": "Freunde einladen",
+		"en": "Invite friends"
 	},
 	"profile_wait_info" : {
 		"de": "Passe dein Profil an! Wenn das Spiel vorbei ist, siehst du hier deinen Partner. Mit dem folgenden Link kannst du dich jederzeit wieder einloggen:",
-		"en": "Edit your profile! If the game is over, you will see your partner here. With the following link you can log in again anytime:"
+		"en": "Edit your profile! If the game is over, you will see your partner here. With the following link you can log in again anytime]"
 	},
 	"profile_welcome" : {
 		"de": "Wilkommen",

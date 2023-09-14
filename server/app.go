@@ -49,6 +49,7 @@ func (app *AppState) ListenAndServe(adr string) {
 	http.HandleFunc("/register", app.Register)
 	http.HandleFunc("/user", app.User)
 	http.HandleFunc("/roll", app.RollDice)
+	http.HandleFunc("/ping", app.PingParty)
 
 	println("staring server, listing on: ", adr)
 	http.ListenAndServe(adr, nil)

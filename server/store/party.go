@@ -7,22 +7,20 @@ import (
 	"time"
 )
 
-type GameState int
-
-const (
-	Created GameState = iota
-	Joining
-	Played
-)
-
 const (
 	CreatedTimeoutDuration time.Duration = time.Hour * 8
 	JoiningTimeoutDuration time.Duration = time.Hour * 24
 	PlayedTimeoutDuration  time.Duration = time.Hour * 72
 )
 
-type GameRuleSet int
+type GameState int
+const (
+	Created GameState = iota
+	Joining
+	Played
+)
 
+type GameRuleSet int
 const (
 	Default GameRuleSet = iota
 	WithBlacklist
@@ -102,8 +100,23 @@ func CreateParty(db *sql.DB) (Party, error) {
 	party.Created = time.Now().Unix()
 	party.State = Created
 
-	// fix potential collions at some point
-	party.Key = createRandomKey()
+	var key string
+	// timeout := 0
+	// for {
+	key = createRandomKey()
+	// 	_, err := FindPartyByKey(key, db)
+	// 	if err != nil {
+	// 		timeout ++
+	// 		continue
+	// 	}
+	//
+	// 	if timeout > 50 {
+	// 		return party, errors.New("Server are busy")
+	// 	}
+	// 	break
+	// }
+
+	party.Key = key
 	party.RuleSet = Default
 
 	result, err := stmt.Exec(
@@ -125,7 +138,7 @@ func CreateParty(db *sql.DB) (Party, error) {
 }
 
 func (party *Party) Delete(db *sql.DB) error {
-	sql := `PRAGMA foreign_keys = ON;DELETE FROM parties WHERE id = ?`
+	sql := `DELETE FROM parties WHERE id = ?`
 	_, err := db.Exec(sql, party.Id)
 	if err != nil {
 		return err
@@ -134,9 +147,7 @@ func (party *Party) Delete(db *sql.DB) error {
 }
 
 func (party *Party) Update(db *sql.DB) error {
-	sql := `
-		UPDATE parties SET state=? rule_set=? WHERE id=?
-		WHERE users.id=?`
+	sql := `UPDATE parties SET state=?, rule_set=? WHERE id=?`
 	stm, err := db.Prepare(sql)
 	if err != nil {
 		return err
@@ -171,7 +182,6 @@ func (party *Party) RollPartners(db *sql.DB) error {
 
 //&& (user.ExcludeId != u.Id && party.RuleSet == WithBlacklist)
 
-
 		for _, u := range users {
 			if user.Id != u.Id && u.PartnerId == 0 {
 				potentialPartner = append(potentialPartner, u)
@@ -188,7 +198,8 @@ func (party *Party) RollPartners(db *sql.DB) error {
 		user.Update(db)
 	}
 
-	return nil
+	party.State = Played
+	return party.Update(db)
 }
 
 func filter(slice []interface{}, fn func(interface{}) bool) []interface{} {

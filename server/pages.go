@@ -1,7 +1,6 @@
 package server
 
 import (
-	"fmt"
 	"lommix/wichtelbot/server/store"
 	"net/http"
 	"strings"
@@ -70,11 +69,7 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 		app.Templates.Load()
 	}
 
-	println("requesting profile")
-
 	context := app.defaultContext(writer, request)
-
-
 	if context.User.PartnerId != 0 {
 		partner, err := store.FindUserById(context.User.PartnerId, app.Db)
 		if err == nil {
@@ -82,7 +77,6 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 		}
 	}
 
-	fmt.Print(context.User)
 	if context.User.Id == 0 {
 		http.Redirect(writer, request, "/login", http.StatusFound)
 		return
