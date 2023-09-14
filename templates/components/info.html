@@ -1,0 +1,13 @@
+{{ define "info" }} {{ $id := len . }}
+<div clas="w-full">
+	<button onclick="toggleVisibilty(event,'key-info')"
+		class="before:border-2 before:border-sky-600 before:bg-sky-600 before:shadow-sm before:shadow-sky-950 font-bold text-sm before:rounded-full before:-z-10 z-0 before:h-5 before:w-5 before:absolute flex justify-center items-center rounded-full relative text-md text-center">?</button>
+	<div id="key-info" class="hidden" onclick="toggleVisibilty(event,'key-info')">
+		<div class="relative w-0 h-0">
+			<div class="absolute cursor-pointer w-64 h-fit top-1 right-1 bg-sky-600 text-sm shadow-sky-950 shadow-sm text-center text-white border-sky-500 border-2 p-2 rounded-sm">
+				{{ . }}
+			</div>
+		</div>
+	</div>
+</div>
+{{ end }}

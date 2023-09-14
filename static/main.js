@@ -37,6 +37,20 @@ function setVisibilty(event, id, state) {
 }
 
 /**
+ * toggles element visibility
+ * @param {Event} event
+ * @param {string} element_id
+ */
+function toggleVisibilty(event, id) {
+	event.preventDefault();
+	const element = document.getElementById(id);
+	if (element) {
+		element.style.display =
+			element.style.display === "block" ? "none" : "block";
+	}
+}
+
+/**
  * copies link to clipboard
  * @param {Event} event
  * @param {DOMElement} element

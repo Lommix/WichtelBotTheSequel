@@ -24,6 +24,7 @@ type User struct {
 	Role      UserRole
 
 	GameSession *Party
+	Partner     *User
 }
 
 func FindUserById(id int64, db *sql.DB) (User, error) {
@@ -49,6 +50,7 @@ func FindUserById(id int64, db *sql.DB) (User, error) {
 	if err == nil {
 		user.GameSession = &session
 	}
+
 
 	return user, nil
 }

@@ -2,12 +2,12 @@ package server
 
 import (
 	"database/sql"
-	"encoding/json"
+	"errors"
 	"fmt"
+	"lommix/wichtelbot/server/components"
 	"lommix/wichtelbot/server/store"
 	"net/http"
-	"os"
-	"strings"
+	"time"
 )
 
 type RunState int
@@ -28,9 +28,9 @@ const SnippetPath string = "snippets.json"
 
 type AppState struct {
 	Db        *sql.DB
-	Templates Templates
+	Templates *components.Templates
+	Sessions  *components.CookieJar
 	Mode      RunState
-	Sessions  CookieJar
 }
 
 func (app *AppState) ListenAndServe(adr string) {
@@ -48,109 +48,65 @@ func (app *AppState) ListenAndServe(adr string) {
 	http.HandleFunc("/logout", app.Logout)
 	http.HandleFunc("/register", app.Register)
 	http.HandleFunc("/user", app.User)
+	http.HandleFunc("/roll", app.RollDice)
 
 	println("staring server, listing on: ", adr)
 	http.ListenAndServe(adr, nil)
 }
 
-// ----------------------------------
-// create page
-func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
-	path := request.URL.Path
-	if path != "/" && !strings.HasPrefix(path, "/key/") {
-		return
-	}
 
-	if app.Mode == Debug {
-		app.Templates.Load()
-	}
+// Game and Session Garbage Collector
+func (app *AppState) CleanupRoutine() {
+	for {
 
-	err := app.Templates.Render(writer, "create.html", app.defaultContext(writer, request))
+		time.Sleep(time.Minute)
 
-	if err != nil {
-		println(err.Error())
-		http.Error(writer, "Bad Request", http.StatusBadRequest)
-	}
-}
+		// cleaning up any left over game sessions
+		expiredSessions, err := store.FindExpiredParties(app.Db)
+		if err != nil {
+			panic(err)
+		}
 
-func (app *AppState) Join (writer http.ResponseWriter, request *http.Request) {
-	if app.Mode == Debug {
-		app.Templates.Load()
-	}
+		if len(expiredSessions) > 0 {
+			fmt.Printf("Cleaning %d expired sessions\n", len(expiredSessions))
+			for _, session := range expiredSessions {
+				err = store.DeleteUsersInParty(app.Db, session.Id)
+				if err != nil {
+					panic(err)
+				}
+				err = session.Delete(app.Db)
+				if err != nil {
+					panic(err)
+				}
+			}
+		}
 
-	err := app.Templates.Render(writer, "join.html", app.defaultContext(writer, request))
-
-	if err != nil {
-		println(err.Error())
-		http.Error(writer, "Bad Request", http.StatusBadRequest)
-	}
-}
-
-
-// ----------------------------------
-// profile page
-func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) {
-	if app.Mode == Debug {
-		app.Templates.Load()
-	}
-
-	println("requesting profile")
-
-	context := app.defaultContext(writer, request)
-	fmt.Print(context.User)
-	if context.User.Id == 0 {
-		http.Redirect(writer, request, "/login", http.StatusFound)
-		return
-	}
-
-	err := app.Templates.Render(writer, "profile.html", context)
-	if err != nil {
-		println(err.Error())
-		http.Error(writer, "forbidden", http.StatusBadRequest)
+		// cleaning session memeory
+		app.Sessions.CleanupExpired()
 	}
 }
 
-// ----------------------------------
-// Logout
-func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
-	cookie := http.Cookie{
-		Name:  "user",
-		Value: "",
+func (app *AppState) CurrentUserFromSession(request *http.Request) (store.User, error) {
+	var user store.User
+	cookie, err := request.Cookie("user")
+	if err != nil {
+		return user, err
 	}
 
-	http.SetCookie(writer, &cookie)
-
-	user, err := app.CurrentUserFromSession(request)
-	if err == nil {
-		app.Sessions.DeleteSession(user.Id)
+	for _, session := range app.Sessions.Store {
+		if session.Key == cookie.Value {
+			return store.FindUserById(session.UserId, app.Db)
+		}
 	}
 
-	writer.Header().Add("HX-Redirect", "/login")
+	return user, errors.New("Not Found")
 }
 
 // ----------------------------------
 // helper function
-func loadSnippets(lang Language) ( map[string]interface{}, error ) {
 
-	var out = make(map[string] interface{})
-	// read a file from disc
-	snippets, err := os.ReadFile(SnippetPath)
-	if err != nil {
-		return out, err
-	}
-	s := string(snippets)
-	var data map[string]map[string]string
-	json.Unmarshal([]byte(s), &data)
-
-	for key, snippet := range data {
-		out[key] = snippet[string(lang)]
-	}
-
-	return out, nil
-}
-
-func (app *AppState) defaultContext(writer http.ResponseWriter, request *http.Request) *TemplateContext {
-	var context TemplateContext
+func (app *AppState) defaultContext(writer http.ResponseWriter, request *http.Request) *components.TemplateContext {
+	var context components.TemplateContext
 	user, err := app.CurrentUserFromSession(request)
 	if err == nil {
 		context.User = user
@@ -159,8 +115,9 @@ func (app *AppState) defaultContext(writer http.ResponseWriter, request *http.Re
 			context.User.GameSession = &session
 		}
 	}
+
 	// todo cache this, add lang select
-	snippets, err := loadSnippets(German)
+	snippets, err := components.LoadSnippets(string(German), SnippetPath)
 	context.Snippets = snippets
 
 	return &context

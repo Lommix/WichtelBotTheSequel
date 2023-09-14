@@ -1,6 +1,7 @@
 package server
 
 import (
+	"lommix/wichtelbot/server/components"
 	"net/http"
 )
 
@@ -33,7 +34,7 @@ type updateForm struct {
 
 func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) error {
 	form := &updateForm{}
-	err := FromFormData(request, form)
+	err := components.FromFormData(request, form)
 	if err != nil {
 		println(err.Error())
 		return err

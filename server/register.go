@@ -3,6 +3,7 @@ package server
 import (
 	"crypto/sha256"
 	"fmt"
+	"lommix/wichtelbot/server/components"
 	"lommix/wichtelbot/server/store"
 	"net/http"
 )
@@ -16,7 +17,7 @@ type RegisterForm struct {
 
 func (app *AppState) Register(writer http.ResponseWriter, request *http.Request) {
 	var formData RegisterForm
-	err := FromFormData(request, &formData)
+	err := components.FromFormData(request, &formData)
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "Invalid post", http.StatusBadRequest)
@@ -45,9 +46,9 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 
 	var role store.UserRole
 
-	var gameSession store.Party
+	var party store.Party
 	if len(roomKey) == 0 {
-		gameSession, err = store.CreateParty(app.Db)
+		party, err = store.CreateParty(app.Db)
 		role = store.Moderator
 		if err != nil {
 			fmt.Println(err.Error())
@@ -55,7 +56,7 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 			return
 		}
 	} else {
-		gameSession, err = store.FindPartyByKey(roomKey, app.Db)
+		party, err = store.FindPartyByKey(roomKey, app.Db)
 		role = store.DefaultUser
 		if err != nil {
 			http.Error(writer, "invalid room", http.StatusBadRequest)
@@ -66,7 +67,7 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 	hash := sha256.Sum256([]byte(formData.Password))
 	user, err := store.CreateUser(
 		app.Db,
-		gameSession.Id,
+		party.Id,
 		formData.Username,
 		fmt.Sprintf("%x", hash),
 		"",

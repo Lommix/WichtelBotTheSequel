@@ -1,11 +1,9 @@
-package server
+package components
 
 import (
 	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"errors"
-	"lommix/wichtelbot/server/store"
 	"net/http"
 	"time"
 )
@@ -22,11 +20,11 @@ const CookieExpirationaTime time.Duration = time.Hour * 24 * 4
 type Session struct {
 	UserId  int64
 	Created time.Time
-	key     string
+	Key     string
 }
 
 type CookieJar struct {
-	store []Session
+	Store []Session
 }
 
 func (jar *CookieJar) FindByKey(key []byte) (Session, error) {
@@ -45,10 +43,10 @@ func (jar *CookieJar) CreateSession(userId int64) (Session, error) {
 	}
 
 	hash := sha256.Sum256(randomBytes)
-	session.key = hex.EncodeToString(hash[:])
+	session.Key = hex.EncodeToString(hash[:])
 	session.Created = time.Now()
 
-	jar.store = append(jar.store, session)
+	jar.Store = append(jar.Store, session)
 
 	return session, nil
 }
@@ -56,7 +54,7 @@ func (jar *CookieJar) CreateSession(userId int64) (Session, error) {
 func (session *Session) IntoCookie() http.Cookie {
 	return http.Cookie{
 		Name:     "user",
-		Value:    session.key,
+		Value:    session.Key,
 		Path:     "/",
 		Expires:  time.Now().Add(CookieExpirationaTime),
 		HttpOnly: true,
@@ -65,26 +63,11 @@ func (session *Session) IntoCookie() http.Cookie {
 	}
 }
 
-func (app *AppState) CurrentUserFromSession(request *http.Request) (store.User, error) {
-	var user store.User
-	cookie, err := request.Cookie("user")
-	if err != nil {
-		return user, err
-	}
-
-	for _, session := range app.Sessions.store {
-		if session.key == cookie.Value {
-			return store.FindUserById(session.UserId, app.Db)
-		}
-	}
-
-	return user, errors.New("Not Found")
-}
 
 func (app *CookieJar) DeleteSession(userId int64) error {
-	for i := 0; i < len(app.store); i++ {
-		if app.store[i].UserId == userId {
-			app.store = append(app.store[:i], app.store[i+1:]...)
+	for i := 0; i < len(app.Store); i++ {
+		if app.Store[i].UserId == userId {
+			app.Store = append(app.Store[:i], app.Store[i+1:]...)
 			i--
 		}
 	}
@@ -92,9 +75,9 @@ func (app *CookieJar) DeleteSession(userId int64) error {
 }
 
 func (app *CookieJar) CleanupExpired() {
-	for i := 0; i < len(app.store); i++ {
-		if app.store[i].Created.Unix() > time.Now().Add(-CookieExpirationaTime).Unix() {
-			app.store = append(app.store[:i], app.store[i+1:]...)
+	for i := 0; i < len(app.Store); i++ {
+		if app.Store[i].Created.Unix() > time.Now().Add(-CookieExpirationaTime).Unix() {
+			app.Store = append(app.Store[:i], app.Store[i+1:]...)
 			i--
 		}
 	}

@@ -1,15 +1,37 @@
-package server
+package components
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 	"strings"
 )
 
+// load snippet from json file
+func LoadSnippets(lang string, path string) ( map[string]interface{}, error ) {
+
+	var out = make(map[string] interface{})
+	// read a file from disc
+	snippets, err := os.ReadFile(path)
+	if err != nil {
+		return out, err
+	}
+	s := string(snippets)
+	var data map[string]map[string]string
+	json.Unmarshal([]byte(s), &data)
+
+	for key, snippet := range data {
+		out[key] = snippet[string(lang)]
+	}
+
+	return out, nil
+}
 
 
+// load from data from request into any interface respecting required attributes: `required:"true"`
 func FromFormData(r *http.Request, s interface{}) error {
 	v := reflect.ValueOf(s).Elem()
 	t := v.Type()
@@ -35,7 +57,8 @@ func FromFormData(r *http.Request, s interface{}) error {
 }
 
 
-func getFirstSlug(urlString string) string {
+// reading the frist slug from an url
+func GetFirstSlug(urlString string) string {
 	parsedURL, err := url.Parse(urlString)
 	if err != nil {
 		return ""

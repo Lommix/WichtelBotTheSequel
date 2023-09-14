@@ -1,9 +1,16 @@
 {{ template "layout.html" . }}
 {{ define "content" }}
-<div class="bg-indigo-800 rounded-tl-lg rounded-tr-lg" data-key="{{.User.GameSession.Key}}">
+<div class="bg-indigo-800 pb-2 relative rounded-tl-lg rounded-tr-lg group hover:bg-indigo-700" data-key="{{.User.GameSession.Key}}">
 	{{ template "room" .User.GameSession }}
+	<p class="text-xs absolute bottom-1 left-10">{{ .Snippets.profile_invite }}</p>
 </div>
+
+
 <div id="user-detail"  class="px-2">
-	{{ template "user" . }}
+	{{ if eq .User.PartnerId 0}}
+		{{ template "user" . }}
+	{{ else }}
+		{{ template "result" . }}
+	{{ end }}
 </div>
 {{end}}

@@ -3,11 +3,15 @@
 <div class="w-full my-2 flex-col flex space-y-4 max-w-lg">
 
 	<h1 class="font-bold text-xl"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
+	<p class="text-sm" >{{ .Snippets.profile_wait_info }}</p>
+	<a class="text-xs text-center font-bold bg-blue-500 hover:bg-blue-400 p-2 rounded-md" target="_blank" onclick="saveToClipboard(event,this)" href="/login/{{.User.GameSession.Key}}">Link kopieren</a>
 
 	{{ if .User.Role }}
-	<button class="bg-green-800 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
-		hx-trigger="click" hx-swap="none">
-		<img src="/static/images/dice.svg"/><p class="w-full">{{ .Snippets.button_play }}</p></button>
+	<button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
+		hx-trigger="click" hx-swap="innerHTML" hx-get="/roll" hx-ext="response-targets" hx-target-502="#roll-error">
+		<img src="/static/images/dice.svg"/><p class="w-full">{{ .Snippets.button_play }}</button>
+
+	<p id="roll-error" class="font-bold text-red-500"></p>
 	{{ end }}
 
 	<form id="user-detail-edit" hx-put="/user" hx-swap="innerHTML" hx-target="#user-detail" hx-ext="response-targets"
@@ -31,7 +35,12 @@
 			</p>
 		</div>
 
-		<label class="font-bold" for="Exclude">{{ .Snippets.field_exclude }}</label>
+		<div class="w-full flex justify-between flex-row mt-1">
+			<label class="font-bold" for="Exclude">{{ .Snippets.field_exclude }}</label>
+			<div class="px-1">
+				{{ template "info" .Snippets.field_exclude_info }}
+			</div>
+		</div>
 		<div class="w-full flex-col">
 			<select class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show" type="text"
 				name="ExcludeId" placeholder="Exclude">

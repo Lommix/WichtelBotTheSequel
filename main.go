@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"html/template"
 	"lommix/wichtelbot/server"
+	"lommix/wichtelbot/server/components"
 	"lommix/wichtelbot/server/store"
 	"os"
 
@@ -31,7 +32,7 @@ func main() {
 		store.SchemaUp(db)
 	case "dev":
 
-		tmpl := server.Templates{}
+		tmpl := &components.Templates{}
 		err = tmpl.Load()
 
 		if err != nil {
@@ -43,7 +44,7 @@ func main() {
 			Db:   db,
 			Templates: tmpl,
 			Mode: server.Debug,
-			Sessions: server.CookieJar{},
+			Sessions: &components.CookieJar{},
 		}
 
 		// println("starting cleaner")

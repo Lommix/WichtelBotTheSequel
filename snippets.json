@@ -48,8 +48,8 @@
 		"en": "Roll the dice!"
 	},
 	"button_play_description": {
-		"de": "Lass die Würfe rollen! Danach ist das Spiel abgeschlossen und eure Zugänge noch 3 Tage gültig.",
-		"en": "Let the dice roll! Then the game is over and your access is still valid for 3 days."
+		"de": "Lass die Würfe rollen! Danach ist das Spiel abgeschlossen und es werden eure Partner angezeigt. Eure Zugänge sind dann noch 3 Tage gültig.",
+		"en": "Let the dice roll! Then the game is over. Your partners will be shown and your access is still valid for 3 days."
 	},
 	"field_name":{
 		"de": "Name",
@@ -91,8 +91,28 @@
 		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein!",
 		"en": "Create a new group and invite your friends!"
 	},
+	"profile_invite" : {
+		"de": "Einladen",
+		"en": "Invite"
+	},
+	"profile_wait_info" : {
+		"de": "Passe dein Profil an! Wenn das Spiel vorbei ist, siehst du hier deinen Partner. Mit dem folgenden Link kannst du dich jederzeit wieder einloggen:",
+		"en": "Edit your profile! If the game is over, you will see your partner here. With the following link you can log in again anytime:"
+	},
 	"profile_welcome" : {
 		"de": "Wilkommen",
 		"en": "Welcome"
+	},
+	"result_notice" : {
+		"de": "Hinweis für dich",
+		"en": "Notice for you"
+	},
+	"result_name" : {
+		"de": "Dein Partner",
+		"en": "Your Partner"
+	},
+	"result_title" : {
+		"de": "Das Spiel ist beendet! Dein Login bleibt noch 3 Tage gültig!",
+		"en": "The Game is over. Your login is still valid for 3 days!"
 	}
 }

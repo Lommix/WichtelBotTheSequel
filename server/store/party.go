@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"errors"
 	"math/rand"
 	"time"
 )
@@ -160,12 +161,44 @@ func (party *Party) RollPartners(db *sql.DB) error {
 		return err
 	}
 
+	if len(users) < 2 {
+		return errors.New("Not enough players in party")
+	}
+
 	for _, user := range users {
-		user.PartnerId = 69
+
+		var potentialPartner []User
+
+//&& (user.ExcludeId != u.Id && party.RuleSet == WithBlacklist)
+
+
+		for _, u := range users {
+			if user.Id != u.Id && u.PartnerId == 0 {
+				potentialPartner = append(potentialPartner, u)
+			}
+		}
+
+		if len(potentialPartner) == 0 {
+			return errors.New("No potential partners found, did you all blacklist the same person?")
+		}
+
+		partner := potentialPartner[rand.Intn(len(potentialPartner))]
+
+		user.PartnerId = partner.Id
 		user.Update(db)
 	}
 
 	return nil
+}
+
+func filter(slice []interface{}, fn func(interface{}) bool) []interface{} {
+	var out []any
+	for _, item := range slice {
+		if fn(item) {
+			out = append(out, item)
+		}
+	}
+	return out
 }
 
 func FindExpiredParties(db *sql.DB) ([]Party, error) {
@@ -210,8 +243,6 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 
 	return parties, nil
 }
-
-
 
 func createRandomKey() string {
 	chars := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
