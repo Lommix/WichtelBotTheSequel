@@ -45,9 +45,9 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 
 	var role store.UserRole
 
-	var gameSession store.GameSession
+	var gameSession store.Party
 	if len(roomKey) == 0 {
-		gameSession, err = store.CreateSession(app.Db)
+		gameSession, err = store.CreateParty(app.Db)
 		role = store.Moderator
 		if err != nil {
 			fmt.Println(err.Error())
@@ -55,7 +55,7 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 			return
 		}
 	} else {
-		gameSession, err = store.FindSessionByKey(roomKey, app.Db)
+		gameSession, err = store.FindPartyByKey(roomKey, app.Db)
 		role = store.DefaultUser
 		if err != nil {
 			http.Error(writer, "invalid room", http.StatusBadRequest)

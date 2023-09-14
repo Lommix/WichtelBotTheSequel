@@ -1,0 +1,223 @@
+package store
+
+import (
+	"database/sql"
+	"math/rand"
+	"time"
+)
+
+type GameState int
+
+const (
+	Created GameState = iota
+	Joining
+	Played
+)
+
+const (
+	CreatedTimeoutDuration time.Duration = time.Hour * 8
+	JoiningTimeoutDuration time.Duration = time.Hour * 24
+	PlayedTimeoutDuration  time.Duration = time.Hour * 72
+)
+
+type GameRuleSet int
+
+const (
+	Default GameRuleSet = iota
+	WithBlacklist
+)
+
+type Party struct {
+	Id      int64
+	Created int64
+	Key     string
+	State   GameState
+	RuleSet GameRuleSet
+
+	Users *[]User
+}
+
+func FindPartyByID(id int64, db *sql.DB) (Party, error) {
+	var party Party
+	sql := `SELECT * FROM parties WHERE id=?`
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return party, err
+	}
+
+	row := stmt.QueryRow(id)
+	err = row.Scan(
+		&party.Id,
+		&party.Created,
+		&party.State,
+		&party.Key,
+		&party.RuleSet,
+	)
+
+	if err != nil {
+		return party, err
+	}
+
+	users, err := FindUsersByPartyId(party.Id, db)
+	if err == nil {
+		party.Users = &users
+	}
+
+	return party, nil
+}
+
+func FindPartyByKey(key string, db *sql.DB) (Party, error) {
+	var party Party
+	sql := `SELECT * FROM parties WHERE key=?`
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return party, err
+	}
+
+	row := stmt.QueryRow(key)
+	err = row.Scan(
+		&party.Id,
+		&party.Created,
+		&party.State,
+		&party.Key,
+		&party.RuleSet,
+	)
+
+	if err != nil {
+		return party, err
+	}
+
+	return party, nil
+}
+
+func CreateParty(db *sql.DB) (Party, error) {
+	var party Party
+	sql := `INSERT INTO parties (created, state, key, rule_set) VALUES(?,?,?,?)`
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		return party, err
+	}
+
+	party.Created = time.Now().Unix()
+	party.State = Created
+
+	// fix potential collions at some point
+	party.Key = createRandomKey()
+	party.RuleSet = Default
+
+	result, err := stmt.Exec(
+		&party.Created,
+		&party.State,
+		&party.Key,
+		&party.RuleSet,
+	)
+	if err != nil {
+		return party, err
+	}
+
+	party.Id, err = result.LastInsertId()
+	if err != nil {
+		return party, err
+	}
+
+	return party, nil
+}
+
+func (party *Party) Delete(db *sql.DB) error {
+	sql := `PRAGMA foreign_keys = ON;DELETE FROM parties WHERE id = ?`
+	_, err := db.Exec(sql, party.Id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (party *Party) Update(db *sql.DB) error {
+	sql := `
+		UPDATE parties SET state=? rule_set=? WHERE id=?
+		WHERE users.id=?`
+	stm, err := db.Prepare(sql)
+	if err != nil {
+		return err
+	}
+
+	_, err = stm.Exec(
+		&party.State,
+		&party.RuleSet,
+		&party.Id,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (party *Party) RollPartners(db *sql.DB) error {
+	users, err := FindUsersByPartyId(party.Id, db)
+	if err != nil {
+		return err
+	}
+
+	for _, user := range users {
+		user.PartnerId = 69
+		user.Update(db)
+	}
+
+	return nil
+}
+
+func FindExpiredParties(db *sql.DB) ([]Party, error) {
+	var parties []Party
+
+	sql := `
+		SELECT *
+		FROM parties
+		WHERE (state = 0 AND created > ?)
+		OR (state = 1 AND created > ?)
+		OR (state = 2 AND created > ?)
+	`
+
+	now := time.Now()
+
+	result, err := db.Query(
+		sql,
+		now.Add(-CreatedTimeoutDuration).Unix(),
+		now.Add(-JoiningTimeoutDuration).Unix(),
+		now.Add(-PlayedTimeoutDuration).Unix(),
+	)
+	if err != nil {
+		return parties, err
+	}
+
+	for result.Next() {
+		var party Party
+		err = result.Scan(
+			&party.Id,
+			&party.Created,
+			&party.State,
+			&party.Key,
+			&party.RuleSet,
+		)
+
+		if err != nil {
+			return parties, err
+		}
+
+		parties = append(parties, party)
+	}
+
+	return parties, nil
+}
+
+
+
+func createRandomKey() string {
+	chars := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
+	randomString := make([]byte, 16)
+	for i := range randomString {
+		randomString[i] = chars[rand.Intn(len(chars))]
+	}
+	return string(randomString)
+}

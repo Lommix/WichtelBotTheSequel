@@ -2,12 +2,13 @@
 {{ define "content" }}
 <h1 class="font-bold text-4xl text-center w-full">{{.Snippets.title}}</h1>
 <hr class="w-full" />
-<form class="flex flex-col mt-4 space-y-1" hx-post="/login/" hx-swap="none" hx-ext="response-targets" hx-target-400="#login-error"
+<p class="w-full text-center mt-2">Login</p>
+<form class="px-2 flex flex-col mt-4 space-y-1" hx-post="/login/" hx-swap="none" hx-ext="response-targets" hx-target-400="#login-error"
 	class="flex flex-col space-y-1">
-	<input id="RoomKey" class="p-1 text-black" type="text" id="RoomKey" name="RoomKey" placeholder="{{.Snippets.field_key}}" />
-	<input id="Username" class="p-1 text-black" type="text" name="Username" placeholder="{{.Snippets.field_name}}" />
-	<input id="Password" class="p-1 text-black" type="password" name="Password" placeholder="{{.Snippets.field_password}}" />
+	<input id="RoomKey" class="p-1 text-black rounded-sm" type="text" id="RoomKey" name="RoomKey" placeholder="{{.Snippets.field_key}}" />
+	<input id="Username" class="p-1 text-black rounded-sm" type="text" name="Username" placeholder="{{.Snippets.field_name}}" />
+	<input id="Password" class="p-1 text-black rounded-sm" type="password" name="Password" placeholder="{{.Snippets.field_password}}" />
 	<p id="login-error" class="text-red-500 font-bold"></p>
-	<button type="submit" class="p-2 text-xl bg-blue-500 hover:bg-blue-700 text-white font-bold">{{.Snippets.button_login}}</button>
+	<button type="submit" class="p-2 text-xl bg-blue-500 hover:bg-blue-700 text-white rounded-sm font-bold">{{.Snippets.button_login}}</button>
 </form>
 {{end}}

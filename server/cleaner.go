@@ -13,7 +13,7 @@ func (app *AppState) CleanupRoutine() {
 		time.Sleep(time.Minute)
 
 		// cleaning up any left over game sessions
-		expiredSessions, err := store.FindExpiredSessions(app.Db)
+		expiredSessions, err := store.FindExpiredParties(app.Db)
 		if err != nil {
 			panic(err)
 		}
@@ -21,7 +21,7 @@ func (app *AppState) CleanupRoutine() {
 		if len(expiredSessions) > 0 {
 			fmt.Printf("Cleaning %d expired sessions\n", len(expiredSessions))
 			for _, session := range expiredSessions {
-				err = store.DeleteUsersInSession(app.Db, session.Id)
+				err = store.DeleteUsersInParty(app.Db, session.Id)
 				if err != nil {
 					panic(err)
 				}

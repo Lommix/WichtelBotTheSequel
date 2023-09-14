@@ -13,17 +13,17 @@ const (
 )
 
 type User struct {
-	Id         int64
-	Session_id int64
-	Created    int64
-	Name       string
-	Password   string
-	PartnerId  int64
-	ExcludeId  int64
-	Notice     string
-	Role       UserRole
+	Id        int64
+	PartyId   int64
+	Created   int64
+	Name      string
+	Password  string
+	PartnerId int64
+	ExcludeId int64
+	Notice    string
+	Role      UserRole
 
-	GameSession *GameSession
+	GameSession *Party
 }
 
 func FindUserById(id int64, db *sql.DB) (User, error) {
@@ -32,7 +32,7 @@ func FindUserById(id int64, db *sql.DB) (User, error) {
 	row := db.QueryRow(query, id)
 	err := row.Scan(
 		&user.Id,
-		&user.Session_id,
+		&user.PartyId,
 		&user.Created,
 		&user.Name,
 		&user.Password,
@@ -45,7 +45,7 @@ func FindUserById(id int64, db *sql.DB) (User, error) {
 		return user, err
 	}
 
-	session, err := FindSessionByID(user.Session_id, db)
+	session, err := FindPartyByID(user.PartyId, db)
 	if err == nil {
 		user.GameSession = &session
 	}
@@ -53,9 +53,9 @@ func FindUserById(id int64, db *sql.DB) (User, error) {
 	return user, nil
 }
 
-func FindUsersBySessionId(id int64, db *sql.DB) ([]User, error) {
+func FindUsersByPartyId(id int64, db *sql.DB) ([]User, error) {
 	var users []User
-	sql := `SELECT * FROM users WHERE session_id=?`
+	sql := `SELECT * FROM users WHERE party_id=?`
 	result, err := db.Query(sql, id)
 	if err != nil {
 		return users, err
@@ -64,7 +64,7 @@ func FindUsersBySessionId(id int64, db *sql.DB) ([]User, error) {
 		var user User
 		err = result.Scan(
 			&user.Id,
-			&user.Session_id,
+			&user.PartyId,
 			&user.Created,
 			&user.Name,
 			&user.Password,
@@ -85,12 +85,12 @@ func FindUsersBySessionId(id int64, db *sql.DB) ([]User, error) {
 func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, error) {
 	var user User
 	query := `SELECT users.* FROM users
-			  INNER JOIN sessions ON users.session_id = sessions.id
-			  WHERE users.name = ? AND sessions.key = ?;`
+			  INNER JOIN parties ON users.party_id = parties.id
+			  WHERE users.name = ? AND parties.key = ?;`
 	row := db.QueryRow(query, name, roomKey)
 	err := row.Scan(
 		&user.Id,
-		&user.Session_id,
+		&user.PartyId,
 		&user.Created,
 		&user.Name,
 		&user.Password,
@@ -107,14 +107,14 @@ func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, er
 
 func CreateUser(
 	db *sql.DB,
-	session_id int64,
+	partyId int64,
 	name string,
 	password string,
 	notice string,
 	role UserRole,
 ) (User, error) {
 	var user User
-	sql := `INSERT INTO users (session_id, created, name, password, notice, role)
+	sql := `INSERT INTO users (party_id, created, name, password, notice, role)
 			VALUES (?,?,?,?,?,?);`
 	stm, err := db.Prepare(sql)
 	if err != nil {
@@ -122,7 +122,7 @@ func CreateUser(
 	}
 
 	result, err := stm.Exec(
-		session_id,
+		partyId,
 		time.Now().Unix(),
 		name,
 		password,
@@ -134,7 +134,7 @@ func CreateUser(
 	}
 
 	user.Id, _ = result.LastInsertId()
-	user.Session_id = session_id
+	user.PartyId = partyId
 	user.Name = name
 	user.Password = password
 	user.Notice = notice
@@ -177,9 +177,8 @@ func (user *User) Delete(db *sql.DB) error {
 	return nil
 }
 
-
-func DeleteUsersInSession(db *sql.DB, sessionId int64) error {
-	sql := `DELETE FROM users WHERE session_id=?`
+func DeleteUsersInParty(db *sql.DB, sessionId int64) error {
+	sql := `DELETE FROM users WHERE party_id=?`
 	_, err := db.Exec(sql, sessionId)
 	if err != nil {
 		return err

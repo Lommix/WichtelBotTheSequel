@@ -36,8 +36,9 @@ type AppState struct {
 func (app *AppState) ListenAndServe(adr string) {
 	// pages
 	http.HandleFunc("/profile", app.Profile)
-	http.HandleFunc("/", app.Home)
+	http.HandleFunc("/", app.Create)
 	http.HandleFunc("/login/", app.Login)
+	http.HandleFunc("/join/", app.Join)
 
 	// static
 	fs := http.FileServer(http.Dir("static"))
@@ -53,8 +54,8 @@ func (app *AppState) ListenAndServe(adr string) {
 }
 
 // ----------------------------------
-// home page
-func (app *AppState) Home(writer http.ResponseWriter, request *http.Request) {
+// create page
+func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 	path := request.URL.Path
 	if path != "/" && !strings.HasPrefix(path, "/key/") {
 		return
@@ -64,12 +65,27 @@ func (app *AppState) Home(writer http.ResponseWriter, request *http.Request) {
 		app.Templates.Load()
 	}
 
-	err := app.Templates.Render(writer, "home.html", app.defaultContext(writer, request))
+	err := app.Templates.Render(writer, "create.html", app.defaultContext(writer, request))
+
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "Bad Request", http.StatusBadRequest)
 	}
 }
+
+func (app *AppState) Join (writer http.ResponseWriter, request *http.Request) {
+	if app.Mode == Debug {
+		app.Templates.Load()
+	}
+
+	err := app.Templates.Render(writer, "join.html", app.defaultContext(writer, request))
+
+	if err != nil {
+		println(err.Error())
+		http.Error(writer, "Bad Request", http.StatusBadRequest)
+	}
+}
+
 
 // ----------------------------------
 // profile page
@@ -138,7 +154,7 @@ func (app *AppState) defaultContext(writer http.ResponseWriter, request *http.Re
 	user, err := app.CurrentUserFromSession(request)
 	if err == nil {
 		context.User = user
-		session, err := store.FindSessionByID(user.Session_id, app.Db)
+		session, err := store.FindPartyByID(user.PartyId, app.Db)
 		if err == nil {
 			context.User.GameSession = &session
 		}
