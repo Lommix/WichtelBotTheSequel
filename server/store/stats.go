@@ -2,6 +2,7 @@ package store
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 )
 
@@ -47,12 +48,14 @@ func AddGamePlayed(db *sql.DB) error {
 func AddUserRegistered(db *sql.DB) error {
 	stats, err := FindOrCreateStats(db)
 	if err != nil {
+		fmt.Println(err.Error())
 		return err
 	}
 
 	stats.user_registered = stats.user_registered + 1
 	err = stats.Update(db)
 	if err != nil {
+		fmt.Println(err.Error())
 		return err
 	}
 	return nil
@@ -62,16 +65,17 @@ func FindOrCreateStats(db *sql.DB) (Stats, error) {
 	var stats Stats
 	now := time.Now()
 	stats.created = time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
-	row := db.QueryRow(`SELECT * FROM stats WHERE created=?`, stats.created.Unix())
+	row := db.QueryRow(`SELECT id, games_played, user_registered FROM stats WHERE created = ?`, stats.created.Unix())
 
 	err := row.Scan(
 		&stats.id,
-		&stats.created,
 		&stats.games_played,
 		&stats.user_registered,
 	)
+
 	if err != nil {
-		result, err := db.Exec(`INSERT INTO stats (created, games_played, user_registered) VALUES(?,0,0)`)
+		println(err.Error())
+		result, err := db.Exec(`INSERT INTO stats (created, games_played, user_registered) VALUES(?,0,0)`, stats.created.Unix())
 		if err != nil {
 			return stats, err
 		}
@@ -86,5 +90,10 @@ func FindOrCreateStats(db *sql.DB) (Stats, error) {
 }
 
 func (stats *Stats) Update(db *sql.DB) error {
+	sql := `UPDATE stats SET games_played=?, user_registered=? WHERE id=?`
+	_, err := db.Exec(sql, &stats.games_played, &stats.user_registered, &stats.id)
+	if err != nil {
+		return err
+	}
 	return nil
 }

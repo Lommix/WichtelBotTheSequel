@@ -82,6 +82,8 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		role,
 	)
 
+	store.AddUserRegistered(app.Db)
+
 	session, err := app.Sessions.CreateSession(user.Id)
 	cookie := session.IntoCookie()
 	http.SetCookie(writer, &cookie)

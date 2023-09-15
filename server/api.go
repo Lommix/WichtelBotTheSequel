@@ -145,12 +145,12 @@ func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request)
 	}
 
 	err = user.Party.RollPartners(app.Db, withBlacklist)
-
 	if err != nil {
 		msq, _ := app.Snippets.Get("error_roll", components.German)
 		http.Error(writer, msq, http.StatusExpectationFailed)
 		return
 	}
 
+	store.AddGamePlayed(app.Db)
 	writer.Header().Add("HX-Refresh", "true")
 }
