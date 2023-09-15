@@ -3,6 +3,7 @@ package server
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"lommix/wichtelbot/server/components"
 	"lommix/wichtelbot/server/store"
 	"net/http"
@@ -109,6 +110,33 @@ func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request
 // ----------------------------------
 // Play
 func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request) {
+
+	if request.Method != http.MethodPost {
+		http.Error(writer, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	type rollPostData struct {
+		Rule string
+	}
+
+	var formData rollPostData
+	err := components.FromFormData(request, &formData)
+
+	if err != nil {
+		http.Error(writer, "invalid data", http.StatusBadRequest)
+		return
+	}
+
+	withBlacklist := func()bool{
+		if formData.Rule == "blacklist" {
+			return true
+		}
+		return false
+	}()
+
+	fmt.Println("Blackilist:", withBlacklist)
+
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil || user.Role != store.Moderator {
 		msq, _ := app.Snippets.Get("error_credentials", components.German)
@@ -116,7 +144,8 @@ func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request)
 		return
 	}
 
-	err = user.Party.RollPartners(app.Db)
+	err = user.Party.RollPartners(app.Db, withBlacklist)
+
 	if err != nil {
 		msq, _ := app.Snippets.Get("error_roll", components.German)
 		http.Error(writer, msq, http.StatusExpectationFailed)

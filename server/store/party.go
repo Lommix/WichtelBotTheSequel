@@ -20,18 +20,11 @@ const (
 	Played
 )
 
-type GameRuleSet int
-const (
-	Default GameRuleSet = iota
-	WithBlacklist
-)
-
 type Party struct {
 	Id      int64
 	Created int64
 	Key     string
 	State   GameState
-	RuleSet GameRuleSet
 
 	Users *[]User
 }
@@ -50,7 +43,6 @@ func FindPartyByID(id int64, db *sql.DB) (Party, error) {
 		&party.Created,
 		&party.State,
 		&party.Key,
-		&party.RuleSet,
 	)
 
 	if err != nil {
@@ -79,7 +71,6 @@ func FindPartyByKey(key string, db *sql.DB) (Party, error) {
 		&party.Created,
 		&party.State,
 		&party.Key,
-		&party.RuleSet,
 	)
 
 	if err != nil {
@@ -96,7 +87,7 @@ func FindPartyByKey(key string, db *sql.DB) (Party, error) {
 
 func CreateParty(db *sql.DB) (Party, error) {
 	var party Party
-	sql := `INSERT INTO parties (created, state, key, rule_set) VALUES(?,?,?,?)`
+	sql := `INSERT INTO parties (created, state, key) VALUES(?,?,?)`
 	stmt, err := db.Prepare(sql)
 	if err != nil {
 		return party, err
@@ -104,7 +95,6 @@ func CreateParty(db *sql.DB) (Party, error) {
 
 	party.Created = time.Now().Unix()
 	party.State = Created
-	party.RuleSet = Default
 
 	party.Key , err = createRandomUniqueKey(db)
 	if err != nil {
@@ -115,7 +105,6 @@ func CreateParty(db *sql.DB) (Party, error) {
 		&party.Created,
 		&party.State,
 		&party.Key,
-		&party.RuleSet,
 	)
 	if err != nil {
 		return party, err
@@ -139,7 +128,7 @@ func (party *Party) Delete(db *sql.DB) error {
 }
 
 func (party *Party) Update(db *sql.DB) error {
-	sql := `UPDATE parties SET state=?, rule_set=? WHERE id=?`
+	sql := `UPDATE parties SET state=? WHERE id=?`
 	stm, err := db.Prepare(sql)
 	if err != nil {
 		return err
@@ -147,7 +136,6 @@ func (party *Party) Update(db *sql.DB) error {
 
 	_, err = stm.Exec(
 		&party.State,
-		&party.RuleSet,
 		&party.Id,
 	)
 
@@ -158,7 +146,7 @@ func (party *Party) Update(db *sql.DB) error {
 	return nil
 }
 
-func (party *Party) RollPartners(db *sql.DB) error {
+func (party *Party) RollPartners(db *sql.DB, allowBlacklist bool) error {
 	users, err := FindUsersByPartyId(db, party.Id)
 	if err != nil {
 		return err
@@ -172,7 +160,7 @@ func (party *Party) RollPartners(db *sql.DB) error {
 
 		var potentialPartner []User
 		for _, u := range users {
-			if user.ExcludeId == u.Id && party.RuleSet == WithBlacklist {
+			if allowBlacklist && user.ExcludeId == u.Id {
 				continue
 			}
 			if user.Id != u.Id && u.PartnerId == 0 {
@@ -233,7 +221,6 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 			&party.Created,
 			&party.State,
 			&party.Key,
-			&party.RuleSet,
 		)
 
 		if err != nil {

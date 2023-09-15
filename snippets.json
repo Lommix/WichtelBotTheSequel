@@ -55,6 +55,10 @@
 		"de": "Lass die Würfe rollen! Danach ist das Spiel abgeschlossen und es werden eure Partner angezeigt. Eure Zugänge sind dann noch 3 Tage gültig.",
 		"en": "Let the dice roll! Then the game is over. Your partners will be shown and your access is still valid for 3 days."
 	},
+	"confirm_play":{
+		"de": "Bitte bestätigen. Mit der Rollen sind ist das Spiel beendet und eure Partner werden angezeigt",
+		"en": "Please confirm. With the roll, the game is over and your partners will be shown"
+	},
 	"field_name":{
 		"de": "Name",
 		"en": "Name"
@@ -74,6 +78,10 @@
 	"field_notice_info":{
 		"de": "Hinterlasse deinem Gönner einen Hinweis oder eine Notiz! z.B. Allergien oder Wünsche.",
 		"en": "Leave the person gifting you a hint or notice! For example allergies or wishes."
+	},
+	"checkbox_exclude":{
+		"de": "Schwarze Liste erlauben",
+		"en": "Allow blacklist"
 	},
 	"field_exclude":{
 		"de": "Schwarze Liste",

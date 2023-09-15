@@ -95,7 +95,7 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 	context.User, _ = app.CurrentUserFromSession(request)
 
 	if !context.IsLoggedIn() {
-		http.Redirect(writer, request, "/login", http.StatusUnauthorized)
+		http.Redirect(writer, request, "/login", http.StatusMovedPermanently)
 		return
 	}
 

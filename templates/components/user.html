@@ -66,7 +66,7 @@
 			{{ end }}
 
 		</div>
-		<p class="text-red-500 font-bold" id="update-error"></p>
+		<p class="text-red-400 font-bold" id="update-error"></p>
 		<div class="">
 			<input
 				class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-2 font-bold py-2 px-4 rounded cursor-pointer"
@@ -77,19 +77,27 @@
 
 
 {{ if .User.Role }}
+<hr>
 <div class="w-full flex justify-center flex-col space-y-2 mt-4 edit-hide">
-	<p>{{ .Snippets.profile_moderator_info }}</p>
-	<button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
-		hx-trigger="click"
+	<form
+		class="w-full"
 		hx-swap="innerHTML"
-		hx-get="/roll"
+		hx-post="/roll"
 		hx-ext="response-targets"
 		hx-target-417="#roll-error"
 		hx-target-401="#roll-error"
+		hx-confirm="{{ .Snippets.confirm_play }}"
 		>
-		<img src="/static/images/dice.svg"/><p class="w-full">{{ .Snippets.button_play }}</button>
-
-	<p id="roll-error" class="font-bold text-red-500"></p>
+		<div class="w-full flex flex-row justify-center items-center space-x-3">
+			<label class="font-bold" for="Rule">{{ .Snippets.checkbox_exclude }}</label>
+			<input class="w-8 h-8" type="checkbox" name="Rule" id="Rule" value="blacklist" />
+		</div>
+		<button type="submit" class="bg-green-600 mt-4 w-full hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center">
+			<img src="/static/images/dice.svg"/>
+			<p class="w-full">{{ .Snippets.button_play }}</p>
+		</button>
+	</form>
+	<p id="roll-error" class="font-bold text-red-400"></p>
 </div>
 {{ end }}
 

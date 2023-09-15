@@ -8,9 +8,9 @@ func SchemaUp(db *sql.DB) error {
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
 			state INTEGER NOT NULL,
-			key STRING NOT NULL,
-			rule_set INTEGER DEFAULT 0
+			key STRING NOT NULL
 		);
+
 		CREATE TABLE IF NOT EXISTS users (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			party_id INTEGER NOT NULL,
@@ -23,6 +23,7 @@ func SchemaUp(db *sql.DB) error {
 			role INTEGER DEFAULT 0,
 			CONSTRAINT party_fg FOREIGN KEY (party_id) REFERENCES parties(id) ON DELETE CASCADE
 		);
+
 		CREATE TABLE IF NOT EXISTS stats (
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
