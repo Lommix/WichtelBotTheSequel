@@ -4,7 +4,7 @@
 
 	<h1 class="font-bold text-xl mt-4"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
 	<p class="text-sm" >{{ .Snippets.profile_wait_info }}</p>
-	<a class="text-xs text-center font-bold bg-blue-500 hover:bg-blue-400 p-2 rounded-md" target="_blank" onclick="saveToClipboard(event,this)" href="/login/{{.User.Party.Key}}">Link kopieren</a>
+	<a class="text-xs text-center font-bold bg-blue-500 hover:bg-blue-400 p-2 rounded-md" target="_blank" onclick="saveToClipboard(event,this)" href="/login/{{.User.Party.Key}}">{{ .Snippets.button_login_link }}</a>
 
 
 	<form id="user-detail-edit" hx-put="/user" hx-swap="innerHTML" hx-target="#user-detail" hx-ext="response-targets"
@@ -67,7 +67,7 @@
 
 		</div>
 		<p class="text-red-500 font-bold" id="update-error"></p>
-		<div class="h-10">
+		<div class="">
 			<input
 				class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-2 font-bold py-2 px-4 rounded cursor-pointer"
 				type="submit" value="{{ .Snippets.button_save }}" />
@@ -78,6 +78,7 @@
 
 {{ if .User.Role }}
 <div class="w-full flex justify-center flex-col space-y-2 mt-4 edit-hide">
+	<p>{{ .Snippets.profile_moderator_info }}</p>
 	<button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
 		hx-trigger="click"
 		hx-swap="innerHTML"

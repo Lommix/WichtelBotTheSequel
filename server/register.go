@@ -63,15 +63,14 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 			http.Error(writer, msq, http.StatusConflict)
 			return
 		}
-	}
-
-	for _, u := range *party.Users {
-		if u.Name == formData.Username {
-			msq, _ := app.Snippets.Get("error_name_taken", components.German)
-			http.Error(writer, msq, http.StatusConflict)
-			return
+		for _, u := range *party.Users {
+			if u.Name == formData.Username {
+				msq, _ := app.Snippets.Get("error_name_taken", components.German)
+				http.Error(writer, msq, http.StatusConflict)
+			}
 		}
 	}
+
 
 	hash := sha256.Sum256([]byte(formData.Password))
 	user, err := store.CreateUser(

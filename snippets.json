@@ -23,6 +23,10 @@
 		"de": "Bearbeiten",
 		"en": "Edit"
 	},
+	"button_login_link": {
+		"de": "Login Link deiner Gruppe kopieren",
+		"en": "Copy login link of your group"
+	},
 	"button_logout": {
 		"de": "Abmelden",
 		"en": "Logout"
@@ -92,16 +96,16 @@
 		"en": "Create a new group and invite your friends!"
 	},
 	"profile_moderator_info" : {
-		"de": "Du bist Moderator. Wenn die Gruppe bereit ist, kannst du die Zuweisung starten. Danach ist das Spiel abgeschlossen und es werden euch eure Partner angezeigt.",
-		"en": "You are a moderator. If the group is ready, you can start the assignment. Then the game is over and your partners will be shown."
+		"de": "Wenn dein Gruppe bereit ist, kannst du als Moderator die Zuweisung starten.",
+		"en": "If your group is ready, you can assign members."
 	},
 	"profile_invite" : {
 		"de": "Freunde einladen",
 		"en": "Invite friends"
 	},
 	"profile_wait_info" : {
-		"de": "Passe dein Profil an! Wenn das Spiel vorbei ist, siehst du hier deinen Partner. Mit dem folgenden Link kann deine Gruppe sich jederzeit wieder einloggen:",
-		"en": "Edit your profile! If the game is over, you will see your partner here. With the following link you can log in again anytime]"
+		"de": "Bitte warte, bis die Gruppe bereit ist! In der Zwischenzeit kannst du dein Profil bearbeiten.",
+		"en": "Please wait until the group is ready! You can edit your profile in the meantime."
 	},
 	"profile_welcome" : {
 		"de": "Wilkommen",

@@ -1,12 +1,10 @@
 {{ template "layout.html" . }}
 {{ define "content" }}
-<h1 class="font-bold text-4xl text-center w-full">{{.Snippets.title}}</h1>
-<hr class="w-full" />
 <p class="w-full text-center mt-2">Login</p>
 <form class="px-2 flex flex-col mt-4 space-y-1" hx-post="/login/" hx-swap="innerHTML" hx-ext="response-targets"
 	hx-target-401="#login-error"
 	hx-target-409="#login-error"
-	class="flex flex-col space-y-1">
+	class="flex flex-col space-y-2">
 	<input id="RoomKey" class="p-1 text-black rounded-sm" type="text" id="RoomKey" name="RoomKey" required
 		placeholder="{{.Snippets.field_key}}" />
 	<input id="Username" class="p-1 text-black rounded-sm" type="text" name="Username" required

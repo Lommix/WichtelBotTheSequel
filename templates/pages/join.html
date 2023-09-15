@@ -1,7 +1,5 @@
 {{ template "layout.html" . }}
 {{ define "content" }}
-<h1 class="font-bold text-4xl text-center w-full">{{.Snippets.title}}</h1>
-<hr class="w-full" />
 <div class="px-2">
 	<p class="py-3">{{.Snippets.home_join_info}}</p>
 	<div class="flex flex-col mt-4" id="register-form">
@@ -15,7 +13,7 @@
 				<input class="p-1 rounded-sm" type="text" name="Username" placeholder="{{.Snippets.field_name}}" />
 				<input class="p-1 rounded-sm" type="password" name="Password" placeholder="{{.Snippets.field_password}}" />
 				<input class="p-1 rounded-sm" type="password" name="Retry" placeholder="{{.Snippets.field_retry}}" />
-				<p id="join-error" class="text-red-500 font-bold"></p>
+				<p id="join-error" class="rounded-sm font-bold text-lg w-full text-center py-2 text-red-300"></p>
 				<button type="submit"
 					class="p-2 text-xl rounded-sm bg-blue-500 hover:bg-blue-700 text-white font-bold">{{ .Snippets.button_join }}</button>
 		</form>
