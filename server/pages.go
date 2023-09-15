@@ -1,7 +1,6 @@
 package server
 
 import (
-	"lommix/wichtelbot/server/store"
 	"net/http"
 	"strings"
 )
@@ -18,7 +17,7 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 		app.Templates.Load()
 	}
 
-	err := app.Templates.Render(writer, "create.html", app.defaultContext(writer, request))
+	err := app.Templates.Render(writer, "create.html", app.defaultContext(request))
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "Bad Request", http.StatusBadRequest)
@@ -32,7 +31,7 @@ func (app *AppState) Join(writer http.ResponseWriter, request *http.Request) {
 		app.Templates.Load()
 	}
 
-	err := app.Templates.Render(writer, "join.html", app.defaultContext(writer, request))
+	err := app.Templates.Render(writer, "join.html", app.defaultContext(request))
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "Bad Request", http.StatusBadRequest)
@@ -50,7 +49,7 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 			app.Templates.Load()
 		}
 
-		err := app.Templates.Render(writer, "login.html", app.defaultContext(writer, request))
+		err := app.Templates.Render(writer, "login.html", app.defaultContext(request))
 		if err != nil {
 			println(err.Error())
 			http.Error(writer, "Bad Request", http.StatusBadRequest)
@@ -69,15 +68,8 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 		app.Templates.Load()
 	}
 
-	context := app.defaultContext(writer, request)
-	if context.User.PartnerId != 0 {
-		partner, err := store.FindUserById(context.User.PartnerId, app.Db)
-		if err == nil {
-			context.User.Partner = &partner
-		}
-	}
-
-	if context.User.Id == 0 {
+	context := app.defaultContext(request)
+	if !context.IsLoggedIn() {
 		http.Redirect(writer, request, "/login", http.StatusFound)
 		return
 	}

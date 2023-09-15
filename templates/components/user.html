@@ -4,7 +4,7 @@
 
 	<h1 class="font-bold text-xl"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
 	<p class="text-sm" >{{ .Snippets.profile_wait_info }}</p>
-	<a class="text-xs text-center font-bold bg-blue-500 hover:bg-blue-400 p-2 rounded-md" target="_blank" onclick="saveToClipboard(event,this)" href="/login/{{.User.GameSession.Key}}">Link kopieren</a>
+	<a class="text-xs text-center font-bold bg-blue-500 hover:bg-blue-400 p-2 rounded-md" target="_blank" onclick="saveToClipboard(event,this)" href="/login/{{.User.Party.Key}}">Link kopieren</a>
 
 	{{ if .User.Role }}
 	<button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
@@ -23,7 +23,7 @@
 		</div>
 
 		<div class="w-full">
-			<textarea class="p-1 h-32 text-sm text-black rounded-sm w-full resize-none hidden edit-show rounded-sm"
+			<textarea class="p-1 h-32 text-sm text-black w-full resize-none hidden edit-show rounded-sm"
 				id="Notice" type="text" name="Notice"
 				placeholder="{{.Snippets.field_notice_info}}">{{.User.Notice}}</textarea>
 			<p class="edit-hide h-32 text-sm bg-sky-600 w-full block p-1 rounded-sm overflow-scroll">
@@ -47,7 +47,7 @@
 				<option value="0">-</option>
 				{{ $ownId := .User.Id}}
 				{{ $exlude := .User.ExcludeId}}
-				{{ range .User.GameSession.Users}}
+				{{ range .User.Party.Users}}
 				{{ if ne $ownId .Id}}
 				<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}  >{{.Name}}</option>
 				{{ end }}
@@ -55,7 +55,7 @@
 			</select>
 
 			{{ $excludeName := "" }}
-			{{ range .User.GameSession.Users}}
+			{{ range .User.Party.Users}}
 			{{ if eq $exlude .Id}}
 			{{ $excludeName = .Name }}
 			{{ end }}
@@ -89,5 +89,4 @@
 	hx-trigger="every 5s"
 	hx-swap="innerHTML"
 	></div>
-
 {{end}}

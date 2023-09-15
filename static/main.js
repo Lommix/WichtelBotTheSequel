@@ -37,6 +37,22 @@ function setVisibilty(event, id, state) {
 }
 
 /**
+ * saves key to local storage
+ * @param {string} key
+ */
+function saveRoomKey(key) {
+	localStorage.setItem("room", key);
+}
+
+/**
+ * saves key to local storage
+ * @return {string} key
+ */
+function loadRoomKey() {
+	return localStorage.getItem("room") || "";
+}
+
+/**
  * toggles element visibility
  * @param {Event} event
  * @param {string} element_id
@@ -73,13 +89,18 @@ function getRoomKeyFromUrl() {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-	const roomKeyInput = document.getElementById("RoomKey");
+	const roomNode = document.getElementById("RoomContainer");
+	if (roomNode) {
+		saveRoomKey(roomNode.dataset.key);
+	}
 
+	const roomKeyInput = document.getElementById("RoomKey");
 	if (!roomKeyInput) {
 		return;
 	}
 
-	roomKeyInput.value = getRoomKeyFromUrl();
+	roomKeyInput.value = loadRoomKey() || getRoomKeyFromUrl();
+
 	if (roomKeyInput.value != "") {
 		roomKeyInput.type = "hidden";
 	}

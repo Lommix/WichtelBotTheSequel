@@ -96,7 +96,7 @@ func (app *AppState) CurrentUserFromSession(request *http.Request) (store.User, 
 
 	for _, session := range app.Sessions.Store {
 		if session.Key == cookie.Value {
-			return store.FindUserById(session.UserId, app.Db)
+			return store.FindUserWithPartyFast(app.Db,session.UserId)
 		}
 	}
 
@@ -106,14 +106,16 @@ func (app *AppState) CurrentUserFromSession(request *http.Request) (store.User, 
 // ----------------------------------
 // helper function
 
-func (app *AppState) defaultContext(writer http.ResponseWriter, request *http.Request) *components.TemplateContext {
+func (app *AppState) defaultContext(request *http.Request) *components.TemplateContext {
 	var context components.TemplateContext
 	user, err := app.CurrentUserFromSession(request)
+
+	fmt.Print(user)
 	if err == nil {
 		context.User = user
 		session, err := store.FindPartyByID(user.PartyId, app.Db)
 		if err == nil {
-			context.User.GameSession = &session
+			context.User.Party = &session
 		}
 	}
 

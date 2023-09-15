@@ -19,6 +19,10 @@ type TemplateContext struct {
 	User     store.User
 }
 
+func (ctx *TemplateContext) IsLoggedIn() bool {
+	return ctx.User.Id > 0
+}
+
 type Templates struct {
 	shared *template.Template
 	pages  map[string]*template.Template

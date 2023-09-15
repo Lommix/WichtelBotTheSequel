@@ -26,7 +26,7 @@ func Login(app *AppState, writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	user, err := store.FindUserByNameAndRoomKey(form.Username, form.RoomKey, app.Db)
+	user, err := store.FindUserByNameAndRoomKey(app.Db,form.Username, form.RoomKey)
 	if err != nil {
 		println(err.Error())
 		http.Error(writer, "invalid credentials", http.StatusBadRequest)
@@ -64,7 +64,7 @@ func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 		app.Sessions.DeleteSession(user.Id)
 	}
 
-	writer.Header().Add("HX-Redirect", "/login/" + user.GameSession.Key)
+	writer.Header().Add("HX-Redirect", "/login/" + user.Party.Key)
 }
 
 // ----------------------------------
@@ -76,7 +76,7 @@ func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request
 		return
 	}
 
-	if user.GameSession.State != store.Played {
+	if user.Party.State != store.Played {
 		http.Error(writer, "not played yet", http.StatusNoContent)
 		return
 	}
@@ -95,7 +95,7 @@ func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request)
 
 	println("roll dice")
 
-	err = user.GameSession.RollPartners(app.Db)
+	err = user.Party.RollPartners(app.Db)
 	if err != nil {
 		http.Error(writer, err.Error(), http.StatusBadGateway)
 		return

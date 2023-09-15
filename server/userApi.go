@@ -54,7 +54,7 @@ func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) e
 		return err
 	}
 
-	err = app.Templates.Render(writer, "user", app.defaultContext(writer, request))
+	err = app.Templates.Render(writer, "user", app.defaultContext(request))
 	if err != nil {
 		return err
 	}
@@ -69,7 +69,7 @@ func UserGet(app *AppState, writer http.ResponseWriter, request *http.Request) e
 	}
 
 	if user.PartnerId != 0 {
-		partner, err := store.FindUserById(user.PartnerId, app.Db)
+		partner, err := store.FindUserById(app.Db, user.PartnerId)
 		if err == nil {
 			user.Partner = &partner
 		}

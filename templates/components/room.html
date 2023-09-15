@@ -1,5 +1,5 @@
 {{ define "room" }}
-<div class="flex flex-row h-12">
+<div class="flex flex-row h-12" id="RoomContainer" data-key="{{.Key}}">
 	<a
 		onclick="saveToClipboard(event,this)"
 		href="/join/{{.Key}}"

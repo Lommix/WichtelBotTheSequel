@@ -23,11 +23,11 @@ type User struct {
 	Notice    string
 	Role      UserRole
 
-	GameSession *Party
+	Party *Party
 	Partner     *User
 }
 
-func FindUserById(id int64, db *sql.DB) (User, error) {
+func FindUserById(db *sql.DB, id int64) (User, error) {
 	var user User
 	query := "SELECT * FROM users WHERE id = ?"
 	row := db.QueryRow(query, id)
@@ -48,14 +48,14 @@ func FindUserById(id int64, db *sql.DB) (User, error) {
 
 	session, err := FindPartyByID(user.PartyId, db)
 	if err == nil {
-		user.GameSession = &session
+		user.Party = &session
 	}
 
 
 	return user, nil
 }
 
-func FindUsersByPartyId(id int64, db *sql.DB) ([]User, error) {
+func FindUsersByPartyId(db *sql.DB, id int64) ([]User, error) {
 	var users []User
 	sql := `SELECT * FROM users WHERE party_id=?`
 	result, err := db.Query(sql, id)
@@ -84,7 +84,7 @@ func FindUsersByPartyId(id int64, db *sql.DB) ([]User, error) {
 	return users, nil
 }
 
-func FindUserByNameAndRoomKey(name string, roomKey string, db *sql.DB) (User, error) {
+func FindUserByNameAndRoomKey(db *sql.DB, name string, roomKey string) (User, error) {
 	var user User
 	query := `SELECT users.* FROM users
 			  INNER JOIN parties ON users.party_id = parties.id
@@ -186,4 +186,67 @@ func DeleteUsersInParty(db *sql.DB, sessionId int64) error {
 		return err
 	}
 	return nil
+}
+
+// TODO: full switch
+// optimizing db calls for one query per request
+func FindUserWithPartyFast(db *sql.DB, userId int64) (User, error) {
+	var requestedUser User
+	var members []User
+	var party Party
+	sql := `SELECT * FROM users
+			JOIN parties ON users.party_id = parties.id
+			WHERE party_id = (SELECT party_id FROM users WHERE id = ?)`
+
+	result, err := db.Query(sql, userId)
+	if err != nil {
+		return requestedUser, err
+	}
+
+	for result.Next(){
+		var u User
+		err := result.Scan(
+			&u.Id,
+			&u.PartyId,
+			&u.Created,
+			&u.Name,
+			&u.Password,
+			&u.PartnerId,
+			&u.ExcludeId,
+			&u.Notice,
+			&u.Role,
+			&party.Id,
+			&party.Created,
+			&party.State,
+			&party.Key,
+			&party.RuleSet,
+		)
+
+		if err != nil {
+			return u, err
+		}
+
+		u.Party = &party
+		members = append(members, u)
+	}
+
+	party.Users = &members
+
+	// find requested user
+	for _, user := range members {
+		if user.Id == userId {
+			requestedUser = user
+		}
+	}
+
+	// find requested user partner
+	if requestedUser.PartyId != 0 {
+		for _, user := range members {
+			if user.Id == requestedUser.PartnerId {
+				requestedUser.Partner = &user
+			}
+		}
+	}
+
+	return requestedUser, nil
 }

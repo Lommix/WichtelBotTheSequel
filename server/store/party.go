@@ -57,7 +57,7 @@ func FindPartyByID(id int64, db *sql.DB) (Party, error) {
 		return party, err
 	}
 
-	users, err := FindUsersByPartyId(party.Id, db)
+	users, err := FindUsersByPartyId(db, party.Id)
 	if err == nil {
 		party.Users = &users
 	}
@@ -167,7 +167,7 @@ func (party *Party) Update(db *sql.DB) error {
 }
 
 func (party *Party) RollPartners(db *sql.DB) error {
-	users, err := FindUsersByPartyId(party.Id, db)
+	users, err := FindUsersByPartyId(db, party.Id)
 	if err != nil {
 		return err
 	}
