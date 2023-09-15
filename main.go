@@ -34,9 +34,15 @@ func main() {
 
 		tmpl := &components.Templates{}
 		err = tmpl.Load()
-
 		if err != nil {
 			fmt.Println("Failed to load Templates: ", err)
+			return
+		}
+
+		snippets := &components.Snippets{}
+		err = snippets.Load()
+		if err != nil {
+			fmt.Println("Failed to load Snippets: ", err)
 			return
 		}
 
@@ -44,6 +50,7 @@ func main() {
 			Db:   db,
 			Templates: tmpl,
 			Mode: server.Debug,
+			Snippets: snippets,
 			Sessions: &components.CookieJar{},
 		}
 

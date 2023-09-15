@@ -17,19 +17,13 @@ const (
 	Prod
 )
 
-type Language string
-
-const (
-	German  Language = "de"
-	English Language = "en"
-)
-
 const SnippetPath string = "snippets.json"
 
 type AppState struct {
 	Db        *sql.DB
 	Templates *components.Templates
 	Sessions  *components.CookieJar
+	Snippets  *components.Snippets
 	Mode      RunState
 }
 
@@ -120,8 +114,8 @@ func (app *AppState) defaultContext(request *http.Request) *components.TemplateC
 	}
 
 	// todo cache this, add lang select
-	snippets, err := components.LoadSnippets(string(German), SnippetPath)
-	context.Snippets = snippets
+	// snippets, err := components.LoadSnippets(string(components.German), SnippetPath)
+	// context.Snippets = *snippets
 
 	return &context
 }

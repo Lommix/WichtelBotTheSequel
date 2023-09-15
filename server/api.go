@@ -28,8 +28,8 @@ func Login(app *AppState, writer http.ResponseWriter, request *http.Request) {
 
 	user, err := store.FindUserByNameAndRoomKey(app.Db,form.Username, form.RoomKey)
 	if err != nil {
-		println(err.Error())
-		http.Error(writer, "invalid credentials", http.StatusBadRequest)
+		msq, _ := app.Snippets.Get("error_party_expired", components.German)
+		http.Error(writer, msq, http.StatusConflict)
 		return
 	}
 
@@ -37,7 +37,8 @@ func Login(app *AppState, writer http.ResponseWriter, request *http.Request) {
 	pw := hex.EncodeToString(hash[:])
 
 	if user.Password != pw {
-		http.Error(writer, "invalid credentials", http.StatusBadRequest)
+		msq, _ := app.Snippets.Get("error_credentials", components.German)
+		http.Error(writer, msq, http.StatusUnauthorized)
 		return
 	}
 
@@ -58,8 +59,8 @@ func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	http.SetCookie(writer, &cookie)
-
 	user, err := app.CurrentUserFromSession(request)
+
 	if err == nil {
 		app.Sessions.DeleteSession(user.Id)
 	}
@@ -68,11 +69,32 @@ func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 }
 
 // ----------------------------------
+// Logout
+func (app *AppState) User(writer http.ResponseWriter, request *http.Request) {
+	switch request.Method {
+	case http.MethodGet:
+		err := UserGet(app, writer, request)
+		if err != nil {
+			http.Error(writer, "forbidden", http.StatusForbidden)
+		}
+	case http.MethodPut:
+		err := userPut(app, writer, request)
+		if err != nil {
+			println(err.Error())
+			http.Error(writer, "forbidden", http.StatusForbidden)
+		}
+	default:
+		http.Error(writer, "forbidden", http.StatusMethodNotAllowed)
+		return
+	}
+}
+// ----------------------------------
 // Ping Party
 func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request) {
+
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil {
-		http.Error(writer, "not authorized", http.StatusForbidden)
+		http.Error(writer, "not authorized", http.StatusUnauthorized)
 		return
 	}
 
@@ -89,15 +111,15 @@ func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request
 func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request) {
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil || user.Role != store.Moderator {
-		http.Error(writer, "not authorized", http.StatusForbidden)
+		msq, _ := app.Snippets.Get("error_credentials", components.German)
+		http.Error(writer, msq, http.StatusUnauthorized)
 		return
 	}
 
-	println("roll dice")
-
 	err = user.Party.RollPartners(app.Db)
 	if err != nil {
-		http.Error(writer, err.Error(), http.StatusBadGateway)
+		msq, _ := app.Snippets.Get("error_roll", components.German)
+		http.Error(writer, msq, http.StatusExpectationFailed)
 		return
 	}
 

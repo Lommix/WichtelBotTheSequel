@@ -86,6 +86,11 @@ func FindPartyByKey(key string, db *sql.DB) (Party, error) {
 		return party, err
 	}
 
+	user, err := FindUsersByPartyId(db, party.Id)
+	if err == nil {
+		party.Users = &user
+	}
+
 	return party, nil
 }
 
@@ -99,25 +104,12 @@ func CreateParty(db *sql.DB) (Party, error) {
 
 	party.Created = time.Now().Unix()
 	party.State = Created
-
-	var key string
-	// timeout := 0
-	// for {
-	key = createRandomKey()
-	// 	_, err := FindPartyByKey(key, db)
-	// 	if err != nil {
-	// 		timeout ++
-	// 		continue
-	// 	}
-	//
-	// 	if timeout > 50 {
-	// 		return party, errors.New("Server are busy")
-	// 	}
-	// 	break
-	// }
-
-	party.Key = key
 	party.RuleSet = Default
+
+	party.Key , err = createRandomUniqueKey(db)
+	if err != nil {
+		return party, err
+	}
 
 	result, err := stmt.Exec(
 		&party.Created,
@@ -179,10 +171,10 @@ func (party *Party) RollPartners(db *sql.DB) error {
 	for _, user := range users {
 
 		var potentialPartner []User
-
-//&& (user.ExcludeId != u.Id && party.RuleSet == WithBlacklist)
-
 		for _, u := range users {
+			if user.ExcludeId == u.Id && party.RuleSet == WithBlacklist {
+				continue
+			}
 			if user.Id != u.Id && u.PartnerId == 0 {
 				potentialPartner = append(potentialPartner, u)
 			}
@@ -220,17 +212,16 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 		FROM parties
 		WHERE (state = 0 AND created > ?)
 		OR (state = 1 AND created > ?)
-		OR (state = 2 AND created > ?)
-	`
+		OR (state = 2 AND created > ?)`
 
 	now := time.Now()
-
 	result, err := db.Query(
 		sql,
 		now.Add(-CreatedTimeoutDuration).Unix(),
 		now.Add(-JoiningTimeoutDuration).Unix(),
 		now.Add(-PlayedTimeoutDuration).Unix(),
 	)
+
 	if err != nil {
 		return parties, err
 	}
@@ -254,6 +245,37 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 
 	return parties, nil
 }
+
+
+func partyKeyExists(db *sql.DB, key string) bool {
+	sql := `SELECT * FROM parties WHERE key=?`
+	stmt, err := db.Prepare(sql)
+	if err != nil {
+		// if this ever fails, no reason to use that key
+		return true
+	}
+	_, err = stmt.Query(key)
+	if err != nil {
+		return true
+	}
+	return false
+}
+
+
+func createRandomUniqueKey(db *sql.DB) (string,error) {
+	key := createRandomKey()
+	timeout := 0
+	for partyKeyExists(db, key) {
+		key = createRandomKey()
+		timeout ++
+		if timeout > 50 {
+			return "", errors.New("Server are busy")
+		}
+	}
+
+	return key, nil
+}
+
 
 func createRandomKey() string {
 	chars := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

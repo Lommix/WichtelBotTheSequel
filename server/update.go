@@ -7,7 +7,7 @@ import (
 
 // ----------------------------------
 // User endpoint
-func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) error {
+func UserPut(app *AppState, writer http.ResponseWriter, request *http.Request) error {
 	type updateForm struct {
 		Notice    string
 		ExcludeId int
@@ -41,7 +41,7 @@ func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) e
 	return nil
 }
 
-func userGet(app *AppState, writer http.ResponseWriter, request *http.Request) error {
+func UserGet(app *AppState, writer http.ResponseWriter, request *http.Request) error {
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil {
 		return err

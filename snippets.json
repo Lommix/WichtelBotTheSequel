@@ -68,16 +68,16 @@
 		"en": "Notice"
 	},
 	"field_notice_info":{
-		"de": "Hinterlasse deinem Gönner einen Hinweis oder eine Notiz!",
-		"en": "Leave the person gifting you a hint or notice!"
+		"de": "Hinterlasse deinem Gönner einen Hinweis oder eine Notiz! z.B. Allergien oder Wünsche.",
+		"en": "Leave the person gifting you a hint or notice! For example allergies or wishes."
 	},
 	"field_exclude":{
 		"de": "Schwarze Liste",
 		"en": "Blacklist"
 	},
 	"field_exclude_info":{
-		"de": "Eine Person die du nicht ziehen kannst! Zum Beispiel deine Partner. Das wäre langweilig.",
-		"en": "A person you cannot gift! For example your partner. That would be boring."
+		"de": "Eine Person die du nicht ziehen kannst! Zum Beispiel deinen Partner. Das wäre doch langweilig.",
+		"en": "A person you cannot be assigned to! For example your partner. That would be boring."
 	},
 	"field_retry":{
 		"de": "Passwort wiederholen",
@@ -91,12 +91,16 @@
 		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein!",
 		"en": "Create a new group and invite your friends!"
 	},
+	"profile_moderator_info" : {
+		"de": "Du bist Moderator. Wenn die Gruppe bereit ist, kannst du die Zuweisung starten. Danach ist das Spiel abgeschlossen und es werden euch eure Partner angezeigt.",
+		"en": "You are a moderator. If the group is ready, you can start the assignment. Then the game is over and your partners will be shown."
+	},
 	"profile_invite" : {
 		"de": "Freunde einladen",
 		"en": "Invite friends"
 	},
 	"profile_wait_info" : {
-		"de": "Passe dein Profil an! Wenn das Spiel vorbei ist, siehst du hier deinen Partner. Mit dem folgenden Link kannst du dich jederzeit wieder einloggen:",
+		"de": "Passe dein Profil an! Wenn das Spiel vorbei ist, siehst du hier deinen Partner. Mit dem folgenden Link kann deine Gruppe sich jederzeit wieder einloggen:",
 		"en": "Edit your profile! If the game is over, you will see your partner here. With the following link you can log in again anytime]"
 	},
 	"profile_welcome" : {
@@ -114,5 +118,25 @@
 	"result_title" : {
 		"de": "Das Spiel ist beendet! Dein Login bleibt noch 3 Tage gültig!",
 		"en": "The Game is over. Your login is still valid for 3 days!"
+	},
+	"error_name_taken":{
+		"de": "Der Name ist bereits vergeben!",
+		"en": "The name is already taken!"
+	},
+	"error_retry":{
+		"de": "Deine Passwörter stimmen nicht überein!",
+		"en": "Your passwords do not match!"
+	},
+	"error_roll":{
+		"de": "Für einen Spieler kann kein Partner gefunden werden. Habe alle die gleiche Person auf der Schwarzen Liste?",
+		"en": "At least one member of your party has no valid partner. Did you all blacklist the same person?"
+	},
+	"error_party_expired":{
+		"de": "Die Party ist abgelaufen oder existiert nicht.",
+		"en": "The party has expired or does not exist."
+	},
+	"error_credentials":{
+		"de": "Deine Zugangsdaten sind falsch!",
+		"en": "Your credentials are wrong!"
 	}
 }

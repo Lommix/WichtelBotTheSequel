@@ -85,7 +85,16 @@ function saveToClipboard(event, element) {
  */
 function getRoomKeyFromUrl() {
 	const url = new URL(window.location.href);
-	return url.pathname.split("/").pop();
+
+	if (url.toString().includes("/join/")) {
+		return url.pathname.split("/join/").pop();
+	}
+
+	if (url.toString().includes("/login/")) {
+		return url.pathname.split("/login/").pop();
+	}
+
+	return "";
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -99,7 +108,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		return;
 	}
 
-	roomKeyInput.value = loadRoomKey() || getRoomKeyFromUrl();
+	roomKeyInput.value = loadRoomKey();
+	urlKey = getRoomKeyFromUrl();
+	if (urlKey) {
+		console.log(urlKey);
+		roomKeyInput.value = urlKey;
+	}
 
 	if (roomKeyInput.value != "") {
 		roomKeyInput.type = "hidden";

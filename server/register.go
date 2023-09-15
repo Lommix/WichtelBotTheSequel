@@ -19,18 +19,15 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 	var formData RegisterForm
 	err := components.FromFormData(request, &formData)
 	if err != nil {
-		println(err.Error())
-		http.Error(writer, "Invalid post", http.StatusBadRequest)
+		http.Error(writer, "Invalid post", http.StatusUnauthorized)
 		return
 	}
 
 	if formData.Password != formData.Retry {
-		writer.Header().Add("HX-Target", "#create-error")
-		writer.Header().Add("HX-Swap", "innerHTML")
-		http.Error(writer, "Passwords not matching", http.StatusBadRequest)
+		msq, _ := app.Snippets.Get("error_retry", components.German)
+		http.Error(writer, msq, http.StatusUnauthorized)
 		return
 	}
-
 
 	roomKey := func() string {
 		if len(formData.RoomKey) > 0 {
@@ -51,18 +48,27 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 		role = store.Moderator
 		if err != nil {
 			fmt.Println(err.Error())
-			http.Error(writer, "something went wrong", http.StatusBadRequest)
+			http.Error(writer, "Server busy", http.StatusBadRequest)
 			return
 		}
 	} else {
 		party, err = store.FindPartyByKey(roomKey, app.Db)
 		role = store.DefaultUser
+		msq, _ := app.Snippets.Get("error_party_expired", components.German)
 		if err != nil {
-			http.Error(writer, "invalid room", http.StatusBadRequest)
+			http.Error(writer, msq, http.StatusConflict)
 			return
 		}
 		if party.State == store.Played {
-			http.Error(writer, "The party played without you", http.StatusBadRequest)
+			http.Error(writer, msq, http.StatusConflict)
+			return
+		}
+	}
+
+	for _, u := range *party.Users {
+		if u.Name == formData.Username {
+			msq, _ := app.Snippets.Get("error_name_taken", components.German)
+			http.Error(writer, msq, http.StatusConflict)
 			return
 		}
 	}
@@ -80,5 +86,5 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 	session, err := app.Sessions.CreateSession(user.Id)
 	cookie := session.IntoCookie()
 	http.SetCookie(writer, &cookie)
-	writer.Header().Add("HX-Redirect","/profile")
+	writer.Header().Add("HX-Redirect", "/profile")
 }

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"lommix/wichtelbot/server/components"
 	"net/http"
 	"strings"
 )
@@ -15,12 +16,17 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 
 	if app.Mode == Debug {
 		app.Templates.Load()
+		app.Snippets.Load()
 	}
 
-	err := app.Templates.Render(writer, "create.html", app.defaultContext(request))
+	var err error
+	context := components.TemplateContext{}
+	context.Snippets = app.Snippets.GetList(components.German)
+	context.User, _ = app.CurrentUserFromSession(request)
+
+	err = app.Templates.Render(writer, "create.html", context)
 	if err != nil {
-		println(err.Error())
-		http.Error(writer, "Bad Request", http.StatusBadRequest)
+		http.Error(writer, "Not found", http.StatusNotFound)
 	}
 }
 
@@ -29,31 +35,46 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 func (app *AppState) Join(writer http.ResponseWriter, request *http.Request) {
 	if app.Mode == Debug {
 		app.Templates.Load()
+		app.Snippets.Load()
 	}
 
-	err := app.Templates.Render(writer, "join.html", app.defaultContext(request))
+	var err error
+	context := components.TemplateContext{}
+	context.Snippets = app.Snippets.GetList(components.German)
+
+	err = app.Templates.Render(writer, "join.html", context)
 	if err != nil {
-		println(err.Error())
-		http.Error(writer, "Bad Request", http.StatusBadRequest)
+		http.Error(writer, "Not found", http.StatusNotFound)
 	}
 }
 
 // ----------------------------------
 // login page
 func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
-	println("requesting login")
-
 	switch request.Method {
 	case http.MethodGet:
+
 		if app.Mode == Debug {
 			app.Templates.Load()
+			app.Snippets.Load()
 		}
 
-		err := app.Templates.Render(writer, "login.html", app.defaultContext(request))
-		if err != nil {
-			println(err.Error())
-			http.Error(writer, "Bad Request", http.StatusBadRequest)
+
+		var err error
+		context := components.TemplateContext{}
+		context.Snippets = app.Snippets.GetList(components.German)
+		context.User, _ = app.CurrentUserFromSession(request)
+
+		if context.IsLoggedIn() {
+			http.Redirect(writer, request, "/profile", http.StatusMovedPermanently)
+			return
 		}
+
+		err = app.Templates.Render(writer, "login.html", context)
+		if err != nil {
+			http.Error(writer, "Not found", http.StatusNotFound)
+		}
+
 	case http.MethodPost:
 		Login(app, writer, request)
 	default:
@@ -68,15 +89,18 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 		app.Templates.Load()
 	}
 
-	context := app.defaultContext(request)
+	var err error
+	context := components.TemplateContext{}
+	context.Snippets = app.Snippets.GetList(components.German)
+	context.User, _ = app.CurrentUserFromSession(request)
+
 	if !context.IsLoggedIn() {
-		http.Redirect(writer, request, "/login", http.StatusFound)
+		http.Redirect(writer, request, "/login", http.StatusUnauthorized)
 		return
 	}
 
-	err := app.Templates.Render(writer, "profile.html", context)
+	err = app.Templates.Render(writer, "profile.html", context)
 	if err != nil {
-		println(err.Error())
-		http.Error(writer, "forbidden", http.StatusBadRequest)
+		http.Error(writer, "Not found", http.StatusNotFound)
 	}
 }

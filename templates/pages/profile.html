@@ -1,8 +1,8 @@
 {{ template "layout.html" . }}
 {{ define "content" }}
-<div class="bg-indigo-800 h-55 relative rounded-tl-lg rounded-tr-lg group hover:bg-indigo-700" data-key="{{.User.Party.Key}}">
+<div class="bg-indigo-800 relative rounded-tl-lg rounded-tr-lg block h-16" data-key="{{.User.Party.Key}}">
 	{{ template "room" .User.Party }}
-	<p class="text-xs absolute bottom-1 left-12 px-2">{{ .Snippets.profile_invite }}</p>
+	<p class="text-xs absolute bottom-2 left-12 px-2">{{ .Snippets.profile_invite }}</p>
 </div>
 
 <div id="user-detail"  class="px-2">

@@ -2,17 +2,10 @@
 
 <div class="w-full my-2 flex-col flex space-y-4 max-w-lg">
 
-	<h1 class="font-bold text-xl"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
+	<h1 class="font-bold text-xl mt-4"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
 	<p class="text-sm" >{{ .Snippets.profile_wait_info }}</p>
 	<a class="text-xs text-center font-bold bg-blue-500 hover:bg-blue-400 p-2 rounded-md" target="_blank" onclick="saveToClipboard(event,this)" href="/login/{{.User.Party.Key}}">Link kopieren</a>
 
-	{{ if .User.Role }}
-	<button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
-		hx-trigger="click" hx-swap="innerHTML" hx-get="/roll" hx-ext="response-targets" hx-target-502="#roll-error">
-		<img src="/static/images/dice.svg"/><p class="w-full">{{ .Snippets.button_play }}</button>
-
-	<p id="roll-error" class="font-bold text-red-500"></p>
-	{{ end }}
 
 	<form id="user-detail-edit" hx-put="/user" hx-swap="innerHTML" hx-target="#user-detail" hx-ext="response-targets"
 		hx-target-403="#update-error" class="flex flex-col w-full">
@@ -81,6 +74,23 @@
 		</div>
 	</form>
 </div>
+
+
+{{ if .User.Role }}
+<div class="w-full flex justify-center flex-col space-y-2 mt-4 edit-hide">
+	<button class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center"
+		hx-trigger="click"
+		hx-swap="innerHTML"
+		hx-get="/roll"
+		hx-ext="response-targets"
+		hx-target-417="#roll-error"
+		hx-target-401="#roll-error"
+		>
+		<img src="/static/images/dice.svg"/><p class="w-full">{{ .Snippets.button_play }}</button>
+
+	<p id="roll-error" class="font-bold text-red-500"></p>
+</div>
+{{ end }}
 
 <div
 	hx-get="/ping"
