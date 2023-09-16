@@ -27,7 +27,7 @@ type AppState struct {
 	Mode      RunState
 }
 
-func (app *AppState) ListenAndServe(adr string) {
+func (app *AppState) RegisterHandler() {
 	// pages
 	http.HandleFunc("/profile", app.Profile)
 	http.HandleFunc("/", app.Create)
@@ -45,8 +45,6 @@ func (app *AppState) ListenAndServe(adr string) {
 	http.HandleFunc("/roll", app.RollDice)
 	http.HandleFunc("/ping", app.PingParty)
 
-	println("staring server, listing on: ", adr)
-	http.ListenAndServe(adr, nil)
 }
 
 

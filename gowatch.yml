@@ -19,7 +19,7 @@ watch_exts:
 
 # Additional parameters that need to be added when running the application
 cmd_args:
-    - dev
+    - prod
 
 # Additional parameters that need to be added when building the application
 # build_args:

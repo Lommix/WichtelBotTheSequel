@@ -1,6 +1,7 @@
 package components
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -31,11 +32,36 @@ func LoadSnippets(lang string, path string) ( map[string]interface{}, error ) {
 }
 
 
+// read lang from browser
 func LangFromRequest(r *http.Request) Language {
 	if r.Header.Get("Accept-Language") == "de" {
 		return German
 	}
 	return English
+}
+
+
+
+// load env
+func LoadEnv() {
+    file, err := os.Open(".env")
+    if err != nil {
+        panic(err)
+    }
+    defer file.Close()
+    scanner := bufio.NewScanner(file)
+    for scanner.Scan() {
+        line := scanner.Text()
+        parts := strings.SplitN(line, "=", 2)
+        if len(parts) != 2 {
+            continue
+        }
+        key, value := parts[0], parts[1]
+        os.Setenv(key, value)
+    }
+    if err := scanner.Err(); err != nil {
+        panic(err)
+    }
 }
 
 
