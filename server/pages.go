@@ -19,9 +19,10 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 		app.Snippets.Load()
 	}
 
+	lang := components.LangFromRequest(request)
 	var err error
 	context := components.TemplateContext{}
-	context.Snippets = app.Snippets.GetList(components.German)
+	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
 
 	err = app.Templates.Render(writer, "create.html", context)
@@ -38,9 +39,10 @@ func (app *AppState) Join(writer http.ResponseWriter, request *http.Request) {
 		app.Snippets.Load()
 	}
 
+	lang := components.LangFromRequest(request)
 	var err error
 	context := components.TemplateContext{}
-	context.Snippets = app.Snippets.GetList(components.German)
+	context.Snippets = app.Snippets.GetList(lang)
 
 	err = app.Templates.Render(writer, "join.html", context)
 	if err != nil {
@@ -60,9 +62,10 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 		}
 
 
+		lang := components.LangFromRequest(request)
 		var err error
 		context := components.TemplateContext{}
-		context.Snippets = app.Snippets.GetList(components.German)
+		context.Snippets = app.Snippets.GetList(lang)
 		context.User, _ = app.CurrentUserFromSession(request)
 
 		if context.IsLoggedIn() {
@@ -89,9 +92,10 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 		app.Templates.Load()
 	}
 
+	lang := components.LangFromRequest(request)
 	var err error
 	context := components.TemplateContext{}
-	context.Snippets = app.Snippets.GetList(components.German)
+	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
 
 	if !context.IsLoggedIn() {

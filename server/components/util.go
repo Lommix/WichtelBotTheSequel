@@ -31,6 +31,14 @@ func LoadSnippets(lang string, path string) ( map[string]interface{}, error ) {
 }
 
 
+func LangFromRequest(r *http.Request) Language {
+	if r.Header.Get("Accept-Language") == "de" {
+		return German
+	}
+	return English
+}
+
+
 // load from data from request into any interface respecting required attributes: `required:"true"`
 func FromFormData(r *http.Request, s interface{}) error {
 	v := reflect.ValueOf(s).Elem()

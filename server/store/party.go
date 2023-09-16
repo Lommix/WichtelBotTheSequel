@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	CreatedTimeoutDuration time.Duration = time.Hour * 8
-	JoiningTimeoutDuration time.Duration = time.Hour * 24
+	CreatedTimeoutDuration time.Duration = time.Hour * 24
+	JoiningTimeoutDuration time.Duration = time.Hour * 72
 	PlayedTimeoutDuration  time.Duration = time.Hour * 72
 )
 
@@ -198,9 +198,9 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 	sql := `
 		SELECT *
 		FROM parties
-		WHERE (state = 0 AND created > ?)
-		OR (state = 1 AND created > ?)
-		OR (state = 2 AND created > ?)`
+		WHERE (state = 0 AND created < ?)
+		OR (state = 1 AND created < ?)
+		OR (state = 2 AND created < ?)`
 
 	now := time.Now()
 	result, err := db.Query(
@@ -238,7 +238,6 @@ func partyKeyExists(db *sql.DB, key string) bool {
 	sql := `SELECT * FROM parties WHERE key=?`
 	stmt, err := db.Prepare(sql)
 	if err != nil {
-		// if this ever fails, no reason to use that key
 		return true
 	}
 	_, err = stmt.Query(key)
@@ -255,6 +254,7 @@ func createRandomUniqueKey(db *sql.DB) (string,error) {
 	for partyKeyExists(db, key) {
 		key = createRandomKey()
 		timeout ++
+		// practical engineering, math is hard
 		if timeout > 50 {
 			return "", errors.New("Server are busy")
 		}

@@ -15,11 +15,11 @@ const (
 	User
 	Moderator
 )
-const CookieExpirationaTime time.Duration = time.Hour * 24 * 4
+const CookieExpirationaTime time.Duration = time.Hour * 24 * 30
 
 type Session struct {
 	UserId  int64
-	Created time.Time
+	Created int64
 	Key     string
 }
 
@@ -44,7 +44,7 @@ func (jar *CookieJar) CreateSession(userId int64) (Session, error) {
 
 	hash := sha256.Sum256(randomBytes)
 	session.Key = hex.EncodeToString(hash[:])
-	session.Created = time.Now()
+	session.Created = time.Now().Unix()
 
 	jar.Store = append(jar.Store, session)
 
@@ -74,11 +74,16 @@ func (app *CookieJar) DeleteSession(userId int64) error {
 	return nil
 }
 
-func (app *CookieJar) CleanupExpired() {
+func (app *CookieJar) CleanupExpired() int {
+	count := 0
+	timeOffset := time.Now().Add(-CookieExpirationaTime).Unix()
+
 	for i := 0; i < len(app.Store); i++ {
-		if app.Store[i].Created.Unix() > time.Now().Add(-CookieExpirationaTime).Unix() {
+		if app.Store[i].Created < timeOffset  {
 			app.Store = append(app.Store[:i], app.Store[i+1:]...)
+			count++
 			i--
 		}
 	}
+	return count
 }

@@ -24,7 +24,8 @@ func userPut(app *AppState, writer http.ResponseWriter, request *http.Request) e
 		return err
 	}
 
-	context.Snippets = app.Snippets.GetList(components.German)
+	lang := components.LangFromRequest(request)
+	context.Snippets = app.Snippets.GetList(lang)
 	context.User.Notice = form.Notice
 	context.User.ExcludeId = int64(form.ExcludeId)
 

@@ -53,22 +53,22 @@ func (app *AppState) ListenAndServe(adr string) {
 // Game and Session Garbage Collector
 func (app *AppState) CleanupRoutine() {
 	for {
-
-		time.Sleep(time.Minute)
-
+		time.Sleep(time.Second * 3)
 		// cleaning up any left over game sessions
-		expiredSessions, err := store.FindExpiredParties(app.Db)
+		expiredParties, err := store.FindExpiredParties(app.Db)
 		if err != nil {
 			panic(err)
 		}
 
-		if len(expiredSessions) > 0 {
-			fmt.Printf("Cleaning %d expired sessions\n", len(expiredSessions))
-			for _, session := range expiredSessions {
+		if len(expiredParties) > 0 {
+			fmt.Printf("cleaned %d expired parties \n", len(expiredParties))
+			for _, session := range expiredParties {
+
 				err = store.DeleteUsersInParty(app.Db, session.Id)
 				if err != nil {
 					panic(err)
 				}
+
 				err = session.Delete(app.Db)
 				if err != nil {
 					panic(err)
@@ -77,7 +77,8 @@ func (app *AppState) CleanupRoutine() {
 		}
 
 		// cleaning session memeory
-		app.Sessions.CleanupExpired()
+		count := app.Sessions.CleanupExpired()
+		fmt.Printf("cleaned %d cookies\n", count)
 	}
 }
 
@@ -95,27 +96,4 @@ func (app *AppState) CurrentUserFromSession(request *http.Request) (store.User, 
 	}
 
 	return user, errors.New("Not Found")
-}
-
-// ----------------------------------
-// helper function
-
-func (app *AppState) defaultContext(request *http.Request) *components.TemplateContext {
-	var context components.TemplateContext
-	user, err := app.CurrentUserFromSession(request)
-
-	fmt.Print(user)
-	if err == nil {
-		context.User = user
-		session, err := store.FindPartyByID(user.PartyId, app.Db)
-		if err == nil {
-			context.User.Party = &session
-		}
-	}
-
-	// todo cache this, add lang select
-	// snippets, err := components.LoadSnippets(string(components.German), SnippetPath)
-	// context.Snippets = *snippets
-
-	return &context
 }

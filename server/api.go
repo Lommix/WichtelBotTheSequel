@@ -19,6 +19,7 @@ func Login(app *AppState, writer http.ResponseWriter, request *http.Request) {
 		RoomKey  string `required:"true"`
 	}
 
+	lang := components.LangFromRequest(request)
 	form := &LoginForm{}
 	components.FromFormData(request, form)
 
@@ -29,7 +30,7 @@ func Login(app *AppState, writer http.ResponseWriter, request *http.Request) {
 
 	user, err := store.FindUserByNameAndRoomKey(app.Db,form.Username, form.RoomKey)
 	if err != nil {
-		msq, _ := app.Snippets.Get("error_party_expired", components.German)
+		msq, _ := app.Snippets.Get("error_party_expired", lang)
 		http.Error(writer, msq, http.StatusConflict)
 		return
 	}
@@ -38,7 +39,7 @@ func Login(app *AppState, writer http.ResponseWriter, request *http.Request) {
 	pw := hex.EncodeToString(hash[:])
 
 	if user.Password != pw {
-		msq, _ := app.Snippets.Get("error_credentials", components.German)
+		msq, _ := app.Snippets.Get("error_credentials", lang)
 		http.Error(writer, msq, http.StatusUnauthorized)
 		return
 	}
@@ -136,17 +137,17 @@ func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request)
 	}()
 
 	fmt.Println("Blackilist:", withBlacklist)
-
+		lang := components.LangFromRequest(request)
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil || user.Role != store.Moderator {
-		msq, _ := app.Snippets.Get("error_credentials", components.German)
+		msq, _ := app.Snippets.Get("error_credentials", lang)
 		http.Error(writer, msq, http.StatusUnauthorized)
 		return
 	}
 
 	err = user.Party.RollPartners(app.Db, withBlacklist)
 	if err != nil {
-		msq, _ := app.Snippets.Get("error_roll", components.German)
+		msq, _ := app.Snippets.Get("error_roll", lang)
 		http.Error(writer, msq, http.StatusExpectationFailed)
 		return
 	}
