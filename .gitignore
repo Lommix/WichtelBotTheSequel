@@ -2,5 +2,4 @@
 main
 *.db
 .env
-/static/compiled.css
 uberwichtelbot
