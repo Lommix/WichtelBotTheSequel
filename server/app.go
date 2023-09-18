@@ -51,7 +51,7 @@ func (app *AppState) RegisterHandler() {
 // Game and Session Garbage Collector
 func (app *AppState) CleanupRoutine() {
 	for {
-		time.Sleep(time.Second * 3)
+		time.Sleep(time.Second * 10)
 		// cleaning up any left over game sessions
 		expiredParties, err := store.FindExpiredParties(app.Db)
 		if err != nil {
@@ -76,7 +76,9 @@ func (app *AppState) CleanupRoutine() {
 
 		// cleaning session memeory
 		count := app.Sessions.CleanupExpired()
-		fmt.Printf("cleaned %d cookies\n", count)
+		if count > 0 {
+			fmt.Printf("cleaned %d cookies\n", count)
+		}
 	}
 }
 

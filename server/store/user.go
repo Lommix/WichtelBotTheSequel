@@ -234,9 +234,7 @@ func FindUserWithPartyFast(db *sql.DB, userId int64) (User, error) {
 
 	party.Users = &members
 
-	// find requested user
 	requestedUser = userMap[userId]
-	// find requested user partner
 	if requestedUser.PartnerId != 0 {
 		partner := userMap[requestedUser.PartnerId]
 		requestedUser.Partner = &partner
