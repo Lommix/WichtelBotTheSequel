@@ -100,8 +100,8 @@
 		"en": "Join an existing group! You need a valid key."
 	},
 	"home_create_info": {
-		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein!",
-		"en": "Create a new group and invite your friends!"
+		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein! Eure Party ist 3 Tage gültig.",
+		"en": "Also known as Secret Santa. Create a new group and invite your friends! Your party is valid for 3 days."
 	},
 	"profile_moderator_info" : {
 		"de": "Wenn dein Gruppe bereit ist, kannst du als Moderator die Zuweisung starten.",
