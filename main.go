@@ -27,12 +27,10 @@ func main() {
 
 	switch command {
 	// -------------------------------------
-	// init database
+	// database commands
 	// -------------------------------------
 	case "init":
-		store.SchemaDown(db)
 		store.SchemaUp(db)
-
 	// -------------------------------------
 	// start dev server
 	// -------------------------------------
@@ -112,7 +110,7 @@ func main() {
 
 		println("starting https")
 		app.RegisterHandler()
-		err := http.ListenAndServeTLS(":"+https_port, "localhost.crt", "localhost.key", nil)
+		err := http.ListenAndServeTLS(":"+https_port, cert, key, nil)
 		if err != nil {
 			fmt.Println(err)
 		}

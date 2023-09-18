@@ -3,3 +3,5 @@ main
 *.db
 .env
 uberwichtelbot
+*.crt
+*.key

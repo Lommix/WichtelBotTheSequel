@@ -11,6 +11,7 @@ Each user will now see the assigned person. The party will persist for 3 Days. T
 ## Features
 - <b>Notice</b>: Each player can leave a notice. Mainly used for allergies and picky family members.
 - <b>Blacklist</b>: Additionally, each player can blacklist another. This feature has to be enabled by the moderator. This is very handy for parties with many couples, who want to exclude each other to make it more fun.
+- <b>English & German</b>: Multi language support. Renders German if your browser is German.
 
 ## Technologies
 Frontend with HTMX and Tailwind. Backend in go using only the standard libraries. The only exception is the sqlite3 driver.
