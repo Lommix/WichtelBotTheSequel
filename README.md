@@ -3,6 +3,8 @@
 Christmas is nice and all. But finding gifts for everybody sucks, especial if your family is getting bigger each year.
 That's why I came up with a solution. Battle tested on my own family 3 years in a row and now usable for everybody.
 
+![](docs/wichtelbot.jpeg)
+
 ## How to play
 Wichtelbot is App used to randomly assign Partners. Like Secret Santa.
 The moderator registers a new party and then sends out invitations. When everybody is registered, the moderator presses the play button.
