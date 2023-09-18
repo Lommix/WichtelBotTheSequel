@@ -189,12 +189,14 @@ func DeleteUsersInParty(db *sql.DB, sessionId int64) error {
 }
 
 // TODO: full switch
-// optimizing db calls for one query per request
+// optimizing db calls for one query per page request
 func FindUserWithPartyFast(db *sql.DB, userId int64) (User, error) {
 	var requestedUser User
 	var members []User
 	var party Party
-	sql := `SELECT * FROM users
+	userMap := make(map[int64]User)
+	sql := `SELECT *
+			FROM users
 			JOIN parties ON users.party_id = parties.id
 			WHERE party_id = (SELECT party_id FROM users WHERE id = ?)`
 
@@ -227,24 +229,17 @@ func FindUserWithPartyFast(db *sql.DB, userId int64) (User, error) {
 
 		u.Party = &party
 		members = append(members, u)
+		userMap[u.Id] = u
 	}
 
 	party.Users = &members
 
 	// find requested user
-	for _, user := range members {
-		if user.Id == userId {
-			requestedUser = user
-		}
-	}
-
+	requestedUser = userMap[userId]
 	// find requested user partner
-	if requestedUser.PartyId != 0 {
-		for _, user := range members {
-			if user.Id == requestedUser.PartnerId {
-				requestedUser.Partner = &user
-			}
-		}
+	if requestedUser.PartnerId != 0 {
+		partner := userMap[requestedUser.PartnerId]
+		requestedUser.Partner = &partner
 	}
 
 	return requestedUser, nil

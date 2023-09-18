@@ -1,6 +1,7 @@
 package server
 
 import (
+	// "fmt"
 	"lommix/wichtelbot/server/components"
 	"net/http"
 	"strings"
@@ -97,6 +98,8 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 	context := components.TemplateContext{}
 	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
+
+	// fmt.Print(context.User.Partner.Name)
 
 	if !context.IsLoggedIn() {
 		http.Redirect(writer, request, "/login", http.StatusMovedPermanently)

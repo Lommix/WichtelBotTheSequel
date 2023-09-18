@@ -6,7 +6,6 @@ import (
 	"lommix/wichtelbot/server/store"
 	"math/rand"
 	"testing"
-	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -118,7 +117,6 @@ func TestBlacklistPlay(t *testing.T) {
 	for i := 0; i < TestPartySize; i++ {
 		idStack[i] = int64(i + 1)
 	}
-	rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(idStack), func(i, j int) {
 		idStack[i], idStack[j] = idStack[j], idStack[i]
 	})
@@ -148,4 +146,56 @@ func TestBlacklistPlay(t *testing.T) {
 		t.Fatal("blacklist failed, not all users have partners")
 	}
 
+}
+
+// testing single sql query page load
+func TestFastQuery(t *testing.T){
+	db := OpenTestDb(t)
+	party,err := store.CreateParty(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < TestPartySize; i++ {
+		_, err = store.CreateUser(
+			db,
+			party.Id,
+			fmt.Sprint("test_name_",i),
+			"test",
+			"test_notice",
+			store.DefaultUser,
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	err = party.RollPartners(db, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	user, err := store.FindUserWithPartyFast(db, 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if len(*user.Party.Users) < TestPartySize {
+		t.Fatal("missing party members")
+	}
+
+	if user.PartnerId == 0 {
+		t.Fatal("no partner id")
+	}
+
+	if user.Party == nil {
+		t.Fatal("no party")
+	}
+
+	if user.Partner == nil {
+		t.Fatal("no partner")
+	}
+
+	if user.Partner.Id != user.PartnerId{
+		t.Fatal("partner id does not match partner")
+	}
 }

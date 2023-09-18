@@ -3,7 +3,6 @@ package server
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"lommix/wichtelbot/server/components"
 	"lommix/wichtelbot/server/store"
 	"net/http"
@@ -73,23 +72,49 @@ func (app *AppState) Logout(writer http.ResponseWriter, request *http.Request) {
 // ----------------------------------
 // Logout
 func (app *AppState) User(writer http.ResponseWriter, request *http.Request) {
-	switch request.Method {
-	case http.MethodGet:
-		err := UserGet(app, writer, request)
-		if err != nil {
-			http.Error(writer, "forbidden", http.StatusForbidden)
-		}
-	case http.MethodPut:
-		err := userPut(app, writer, request)
-		if err != nil {
-			println(err.Error())
-			http.Error(writer, "forbidden", http.StatusForbidden)
-		}
-	default:
-		http.Error(writer, "forbidden", http.StatusMethodNotAllowed)
+
+	if request.Method != http.MethodPut {
+		http.Error(writer, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	type updateForm struct {
+		Notice    string
+		ExcludeId int
+	}
+	form := &updateForm{}
+	err := components.FromFormData(request, form)
+	if err != nil {
+		http.Error(writer, "invalid data", http.StatusBadRequest)
+		return
+	}
+
+	var context components.TemplateContext
+	context.User, err = app.CurrentUserFromSession(request)
+	if err != nil {
+		http.Error(writer, "forbidden", http.StatusUnauthorized)
+		return
+	}
+
+
+	lang := components.LangFromRequest(request)
+	context.Snippets = app.Snippets.GetList(lang)
+	context.User.Notice = form.Notice
+	context.User.ExcludeId = int64(form.ExcludeId)
+
+	err = context.User.Update(app.Db)
+	if err != nil {
+		http.Error(writer, "something went wrong", http.StatusBadRequest)
+		return
+	}
+
+	err = app.Templates.Render(writer, "user", context)
+	if err != nil {
+		http.Error(writer, "unknown template", http.StatusBadRequest)
 		return
 	}
 }
+
 // ----------------------------------
 // Ping Party
 func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request) {
@@ -136,8 +161,7 @@ func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request)
 		return false
 	}()
 
-	fmt.Println("Blackilist:", withBlacklist)
-		lang := components.LangFromRequest(request)
+	lang := components.LangFromRequest(request)
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil || user.Role != store.Moderator {
 		msq, _ := app.Snippets.Get("error_credentials", lang)
