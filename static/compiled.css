@@ -550,8 +550,20 @@ video {
   top: -0.75rem;
 }
 
+.-top-40 {
+  top: -10rem;
+}
+
+.-top-44 {
+  top: -11rem;
+}
+
 .bottom-2 {
   bottom: 0.5rem;
+}
+
+.left-0 {
+  left: 0px;
 }
 
 .left-12 {
@@ -566,8 +578,128 @@ video {
   top: 0.25rem;
 }
 
+.-top-36 {
+  top: -9rem;
+}
+
+.-top-32 {
+  top: -8rem;
+}
+
+.-top-24 {
+  top: -6rem;
+}
+
+.-top-20 {
+  top: -5rem;
+}
+
+.-top-16 {
+  top: -4rem;
+}
+
+.left-16 {
+  left: 4rem;
+}
+
+.left-20 {
+  left: 5rem;
+}
+
+.-top-14 {
+  top: -3.5rem;
+}
+
+.-top-48 {
+  top: -12rem;
+}
+
+.top-\[-3rem\] {
+  top: -3rem;
+}
+
+.top-\[-8rem\] {
+  top: -8rem;
+}
+
+.top-\[-4rem\] {
+  top: -4rem;
+}
+
+.top-\[-4\.7rem\] {
+  top: -4.7rem;
+}
+
+.top-\[-4\.1rem\] {
+  top: -4.1rem;
+}
+
+.left-\[1rem\] {
+  left: 1rem;
+}
+
+.left-\[2rem\] {
+  left: 2rem;
+}
+
+.left-\[3rem\] {
+  left: 3rem;
+}
+
+.top-\[-4\.0rem\] {
+  top: -4.0rem;
+}
+
+.top-\[-4\.5rem\] {
+  top: -4.5rem;
+}
+
+.left-\[4rem\] {
+  left: 4rem;
+}
+
+.left-\[5rem\] {
+  left: 5rem;
+}
+
+.top-\[-4\.2rem\] {
+  top: -4.2rem;
+}
+
+.top-\[-3\.8rem\] {
+  top: -3.8rem;
+}
+
+.top-\[-3\.7rem\] {
+  top: -3.7rem;
+}
+
+.left-\[6rem\] {
+  left: 6rem;
+}
+
+.left-\[5\.8rem\] {
+  left: 5.8rem;
+}
+
+.left-\[2\.8rem\] {
+  left: 2.8rem;
+}
+
+.left-\[3\.5rem\] {
+  left: 3.5rem;
+}
+
+.-z-10 {
+  z-index: -10;
+}
+
 .z-0 {
   z-index: 0;
+}
+
+.z-10 {
+  z-index: 10;
 }
 
 .my-2 {
