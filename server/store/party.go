@@ -156,26 +156,29 @@ func (party *Party) RollPartners(db *sql.DB, allowBlacklist bool) error {
 		return errors.New("Not enough players in party")
 	}
 
-	for _, user := range users {
+	availablePartners := make([]User, len(users))
+	copy(availablePartners, users)
 
-		var potentialPartner []User
-		for _, u := range users {
+	for _, user := range users {
+		var indexList []int
+		for i, u := range availablePartners {
 			if allowBlacklist && user.ExcludeId == u.Id {
 				continue
 			}
-			if user.Id != u.Id && u.PartnerId == 0 {
-				potentialPartner = append(potentialPartner, u)
+			if user.Id != u.Id {
+				indexList = append(indexList, i)
 			}
 		}
 
-		if len(potentialPartner) == 0 {
+		if len(indexList) == 0 {
 			return errors.New("No potential partners found, did you all blacklist the same person?")
 		}
 
-		partner := potentialPartner[rand.Intn(len(potentialPartner))]
-
-		user.PartnerId = partner.Id
+		partnerIndex := indexList[rand.Intn(len(indexList))]
+		user.PartnerId = availablePartners[partnerIndex].Id
 		user.Update(db)
+
+		availablePartners = append(availablePartners[:partnerIndex], availablePartners[partnerIndex+1:]...)
 	}
 
 	party.State = Played
