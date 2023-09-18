@@ -128,8 +128,8 @@
 		"en": "Your Partner"
 	},
 	"result_title" : {
-		"de": "Das Spiel ist beendet! Dein Login bleibt noch 3 Tage gültig!",
-		"en": "The Game is over. Your login is still valid for 3 days!"
+		"de": "Das Spiel ist beendet! Dein Benutzer wird nach 72 Stunden gelöscht!",
+		"en": "The Game is over. Your User witll be delted within 72 hours!"
 	},
 	"error_name_taken":{
 		"de": "Der Name ist bereits vergeben!",

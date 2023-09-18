@@ -1,7 +1,7 @@
 {{ define "result" }}
 <div class="w-full">
-	<p class="mt-4 text-center text-md">{{ .Snippets.result_title }}</p>
-	{{ .User.Name }}
+	<h1 class="font-bold text-xl mt-4 "> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
+	<p class="mt-4 text-md">{{ .Snippets.result_title }}</p>
 	<div class="mt-12 relative w-full flex justify-center border-2 border-white rounded-lg">
 		<div class="absolute bg-blue-600 -top-3 font-bold px-1">
 			{{ .Snippets.result_name }}
