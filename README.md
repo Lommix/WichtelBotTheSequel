@@ -5,6 +5,9 @@ That's why I came up with a solution. Battle tested on my own family 3 years in 
 
 ![](docs/wichtelbot.jpeg)
 
+
+## [Play live on www.wichtelbot.com](https://www.wichtelbot.com/)
+
 ## How to play
 Wichtelbot is App used to randomly assign Partners. Like Secret Santa.
 The moderator registers a new party and then sends out invitations. When everybody is registered, the moderator presses the play button.

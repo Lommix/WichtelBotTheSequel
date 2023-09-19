@@ -750,6 +750,10 @@ video {
   top: 0.5rem;
 }
 
+.bottom-1 {
+  bottom: 0.25rem;
+}
+
 .-z-10 {
   z-index: -10;
 }
@@ -1150,6 +1154,10 @@ video {
 
 .text-center {
   text-align: center;
+}
+
+.text-end {
+  text-align: end;
 }
 
 .text-4xl {
