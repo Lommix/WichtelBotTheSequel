@@ -34,8 +34,11 @@ func LoadSnippets(lang string, path string) ( map[string]interface{}, error ) {
 
 // read lang from browser
 func LangFromRequest(r *http.Request) Language {
-	if r.Header.Get("Accept-Language") == "de" {
-		return German
+	s := strings.Split(r.Header.Get("Accept-Language"), ",")
+	for _, lang := range s {
+		if lang == "de" {
+			return German
+		}
 	}
 	return English
 }
