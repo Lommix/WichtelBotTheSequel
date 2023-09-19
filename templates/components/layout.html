@@ -10,28 +10,31 @@
 
 <body class="bg-blue-600">
 	<div class="wrapper w-full h-full">
-		<div class="w-full h-full flex justify-center items-center">
-				<div class="w-[320px] relative border-white shadow-lg bg-blue-600 shadow-blue-900 flex flex-col border-4 rounded-lg text-white">
-					<div class="w-full h-0 relative">
-						<img class="-top-44 -z-10 left-0 absolute" src="/static/images/gopher.svg" />
-						<img class="top-[-5rem] z-10 left-[3rem] absolute" src="/static/images/gift.svg" />
+		<div class="w-full h-full flex">
+				<div class="flex flex-col m-auto">
+					<div class="w-full h-[12rem] relative flex justify-center flex-row z-10">
+						<img class="absolute top-2" src="/static/images/gopher.svg" />
 					</div>
-					<a href="/" class="font-bold py-4 text-4xl text-center w-full cursor-pointer">{{.Snippets.title}}</a>
-					<hr class="w-full" />
+					<div class="max-w-[420px] min-w-[320px] relative border-white shadow-lg bg-blue-600 shadow-blue-900 flex flex-col border-4 rounded-lg text-white">
+						<div class="w-full top-0 h-0 relative flex flex-row justify-center">
+						</div>
+						<a href="/" class="font-bold py-6 text-4xl text-center w-full cursor-pointer">{{.Snippets.title}}</a>
+						<hr class="w-full" />
 
-					{{ block "content" . }}
-					{{ end }}
-					<hr class="my-2 border-dashed">
-					<div class="w-full flex-row flex justify-between px-4 py-2">
-						<a href="https://lommix.de/donate" target="_blank" class="">
-							<img class="-mt-1" src="/static/images/coffee.svg"/>
-						</a>
-						<a href="https://github.com/lommix" target="_blank" class="">
-							<img src="/static/images/git.svg"/>
-						</a>
-						{{ if .User.Id }}
-						<a class="cursor-pointer" hx-get="/logout" hx-trigger="click" hx-swap="none"><img src="/static/images/logout.svg"/></a>
+						{{ block "content" . }}
 						{{ end }}
+						<hr class="my-2 border-dashed">
+						<div class="w-full flex-row flex justify-between px-4 py-2">
+							<a href="https://lommix.de/donate" target="_blank" class="">
+								<img class="-mt-1" src="/static/images/coffee.svg"/>
+							</a>
+							<a href="https://github.com/lommix" target="_blank" class="">
+								<img src="/static/images/git.svg"/>
+							</a>
+							{{ if .User.Id }}
+							<a class="cursor-pointer" hx-get="/logout" hx-trigger="click" hx-swap="none"><img src="/static/images/logout.svg"/></a>
+							{{ end }}
+					</div>
 				</div>
 			</div>
 		</div>

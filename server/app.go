@@ -37,6 +37,7 @@ func (app *AppState) RegisterHandler() {
 	// static
 	fs := http.FileServer(http.Dir("static"))
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
+	http.Handle("/favicon.ico", fs)
 
 	// api
 	http.HandleFunc("/logout", app.Logout)
