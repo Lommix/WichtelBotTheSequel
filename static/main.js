@@ -74,9 +74,17 @@ function toggleVisibilty(event, id) {
 function saveToClipboard(event, element) {
 	event.preventDefault();
 	const link = element.href;
-
+	//desktop
 	navigator.clipboard.writeText(link);
-	alert("Link copied to clipboard " + link);
+	//mobile
+	const clipElement = document.createElement("input");
+	clipElement.value = link;
+	clipElement.classList.value = "p-1 absolute w-full h-fit left-0 top-0";
+	clipElement.onblur = () => {
+		element.removeChild(clipElement)
+	}
+	element.appendChild(clipElement);
+	clipElement.select();
 }
 
 /**

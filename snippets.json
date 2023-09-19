@@ -24,8 +24,8 @@
 		"en": "Edit"
 	},
 	"button_login_link": {
-		"de": "Login Link deiner Gruppe kopieren",
-		"en": "Copy login link of your group"
+		"de": "Jemanden hat den Login-Link vergessen?",
+		"en": "Someone forgot the login url?"
 	},
 	"button_logout": {
 		"de": "Abmelden",
