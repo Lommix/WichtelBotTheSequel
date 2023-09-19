@@ -1,9 +1,9 @@
 {{ define "room" }}
-<div class="flex flex-row h-12" id="RoomContainer" data-key="{{.Key}}">
+<div class="flex flex-row h-12 z-20" id="Room" data-key="{{.Key}}">
 	<a
 		onclick="saveToClipboard(event,this)"
 		href="/join/{{.Key}}"
-		class="w-full flex flex-row items-center space-x-1 justify-start cursor-pointer"
+		class="w-full z-30 flex flex-row items-center space-x-1 justify-start cursor-pointer"
 		>
 		<img class="ml-1 px-2 mt-2" src="/static/images/key.svg"/>
 		<span class="font-bold">{{ .Key }}</span>

@@ -4,8 +4,12 @@
   <title>gopther</title>
   <ellipse style="paint-order: stroke; fill: rgb(134, 212, 222); stroke-width: 10px; stroke: rgb(255, 255, 255);" cx="100.881" cy="60.529" rx="29.981" ry="34.657"/>
   <path style="paint-order: stroke; fill: rgb(134, 212, 222); stroke: rgb(255, 255, 255); stroke-width: 14px;" d="M 307.485 228.556 C 242.759 229.545 171.081 228.621 80.966 228.071 C 83.847 193.322 85.307 158.309 81.116 132.138 C 56.719 6.955 243.154 -24.897 288.644 78.435 C 308.35 123.195 311.328 176.354 307.485 228.556 Z"/>
-  <ellipse style="fill: rgb(255, 255, 255); paint-order: stroke; stroke-width: 6px; stroke: rgb(255, 255, 255);" cx="128.673" cy="96.792" rx="33.576" ry="31.428"/>
-  <ellipse style="fill: rgb(255, 255, 255); paint-order: stroke; stroke-width: 6px; stroke: rgb(255, 255, 255);" cx="214.759" cy="97.916" rx="37.804" ry="35.406"/>
+  <ellipse style="fill: rgb(255, 255, 255); paint-order: stroke; stroke-width: 6px; stroke: rgb(255, 255, 255);" cx="128.673" cy="96.792" rx="33.576" ry="31.428">
+    <animate attributeName="ry" values="31.428;31.428;28;31.428;31.428" dur="3s" fill="freeze" repeatCount="indefinite" keyTimes="0; 0.44184; 0.50392; 0.55565; 1"/>
+  </ellipse>
+  <ellipse style="fill: rgb(255, 255, 255); paint-order: stroke; stroke-width: 6px; stroke: rgb(255, 255, 255); transform-box: fill-box; transform-origin: 50% 50%;" cx="214.759" cy="97.916" rx="37.804" ry="35.406">
+    <animate attributeName="ry" values="35.406;35;30;35;35.406" dur="3s" fill="freeze" keyTimes="0; 0.44359; 0.49067; 0.53621; 1" repeatCount="indefinite" calcMode="spline" keySplines="0.42 0 1 1; 0.42 0 1 1; 0 0 1 1; 0 0 1 1"/>
+  </ellipse>
   <path style="fill: rgb(255, 255, 255); paint-order: stroke; stroke-width: 5px; stroke: rgb(255, 255, 255);" d="M 148.684 141.007 C 148.49 141.559 147.79 149.994 147.79 151.006 C 147.79 151.208 147.714 156.289 147.714 157.601 C 147.714 158.903 147.333 161.579 148.76 166.323 C 149.638 169.254 149.541 169.632 150.699 171.43 C 152.219 173.787 157.921 174.394 160.17 171.217 C 161.897 168.78 162.395 162.147 162.409 161.963 C 162.825 156.15 162.781 149.654 162.781 147.707 C 162.781 147.525 161.915 141.579 161.364 140.794 C 160.265 139.226 148.76 139.503 148.76 141.007"/>
   <g>
     <g>
@@ -68,8 +72,11 @@
         <path style="opacity: 0.03; --darkreader-inline-fill: #dfddd9; fill: rgb(53, 168, 68);" d="M474.416,157.623v73.221c0,2.788-0.41,5.493-1.147,8.117 c-3.198,11.151-12.955,19.597-24.844,21.072v232.699c0,10.577-8.609,19.268-19.268,19.268H45.261 c-10.659,0-19.268-8.691-19.268-19.268v-25.5l163.085-163.086l6.478-6.477l37.225-37.225l80.928-80.928l51.492-51.492h79.616 C461.133,128.023,474.416,141.388,474.416,157.623z" data-darkreader-inline-fill=""/>
       </g>
     </g>
+    <animateTransform type="translate" additive="sum" attributeName="transform" values="0 0;0 30;0 -10;0 0" begin="0s" dur="1s" fill="freeze" keyTimes="0; 0.33106; 0.689761; 1" calcMode="spline" keySplines="0.42 0 0.58 1; 0 0 0.58 1; 0 0 0.58 1" repeatCount="indefinite"/>
   </g>
-  <path style="fill: rgb(250, 220, 164); stroke: rgb(255, 255, 255); stroke-width: 3px;" d="M 171.775 192.607 C 157.141 192.032 130.382 207.56 153.844 211.806 C 156.031 211.595 133.852 217.981 160.507 221.519 C 184.179 222.074 206.549 199.17 198.89 197.151 C 181.471 192.56 181.333 193.13 171.775 192.607 Z"/>
+  <path style="fill: rgb(250, 220, 164); stroke: rgb(255, 255, 255); stroke-width: 3px;" d="M 171.775 192.607 C 157.141 192.032 130.382 207.56 153.844 211.806 C 156.031 211.595 133.852 217.981 160.507 221.519 C 184.179 222.074 206.549 199.17 198.89 197.151 C 181.471 192.56 181.333 193.13 171.775 192.607 Z">
+    <animateTransform type="translate" additive="sum" attributeName="transform" values="0 0;0 5;0 -2;0 0" begin="0s" dur="1s" fill="freeze" keyTimes="0; 0.32422; 0.638136; 1" repeatCount="indefinite"/>
+  </path>
   <g id="SVGRepo_bgCarrier" stroke-width="0" transform="matrix(0.397094, 0, 0, 0.3057, -20.025568, 148.326843)" style=""/>
   <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" transform="matrix(0.397094, 0, 0, 0.3057, -20.025568, 148.326843)" style=""/>
 </svg>
