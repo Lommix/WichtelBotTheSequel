@@ -148,6 +148,47 @@ func TestBlacklistPlay(t *testing.T) {
 
 }
 
+// test if the blacklist fails correctly if impossible party
+func TestBlacklistFail(t *testing.T) {
+	db := OpenTestDb(t)
+	party,err := store.CreateParty(db)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for i := 0; i < 3; i++ {
+		_, err = store.CreateUser(
+			db,
+			party.Id,
+			fmt.Sprint("test_name_",i),
+			"test",
+			"test_notice",
+			store.DefaultUser,
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+	}
+
+	users, err := store.FindUsersByPartyId(db, party.Id)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	users[0].ExcludeId = users[2].Id
+	users[1].ExcludeId = users[0].Id
+	users[2].ExcludeId = users[0].Id
+
+	for _, u := range users {
+		u.Update(db)
+	}
+
+	err = party.RollPartners(db, true)
+	if err == nil {
+		t.Fatal("should have failed")
+	}
+}
+
 // testing single sql query page load
 func TestFastQuery(t *testing.T){
 	db := OpenTestDb(t)

@@ -9,7 +9,9 @@
 		<span class="font-bold">{{ .Key }}</span>
 	</a>
 	<div class="w-fit flex flex-row justify-end px-2 mt-1 items-center">
-		<span class="font-bold">{{ len .Users}}</span>
+		<span
+			hx-on="htmx:beforeSwap: checkBlacklist(event)"
+			id="partySize" class="font-bold">{{ len .Users}}</span>
 		<img src="/static/images/group.svg"/>
 	</div>
 </div>

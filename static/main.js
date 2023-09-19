@@ -119,7 +119,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	roomKeyInput.value = loadRoomKey();
 	urlKey = getRoomKeyFromUrl();
 	if (urlKey) {
-		console.log(urlKey);
 		roomKeyInput.value = urlKey;
 	}
 
@@ -127,3 +126,5 @@ document.addEventListener("DOMContentLoaded", function () {
 		roomKeyInput.type = "hidden";
 	}
 });
+
+

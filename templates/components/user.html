@@ -35,16 +35,24 @@
 			</div>
 		</div>
 		<div class="w-full flex-col">
-			<select class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show" type="text"
-				name="ExcludeId" placeholder="Exclude">
-				<option value="0">-</option>
-				{{ $ownId := .User.Id}}
-				{{ $exlude := .User.ExcludeId}}
-				{{ range .User.Party.Users}}
-				{{ if ne $ownId .Id}}
-				<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}  >{{.Name}}</option>
-				{{ end }}
-				{{ end }}
+			<select
+				id="ExcludeOptions"
+				hx-get="/blacklist"
+				hx-swap="innerHTML"
+				hx-target="#ExcludeOptions"
+				hx-trigger="focus"
+				class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show"
+				type="text"
+				name="ExcludeId"
+				placeholder="Exclude">
+					<option value="0">-</option>
+					{{ $ownId := .User.Id}}
+					{{ $exlude := .User.ExcludeId}}
+					{{ range .User.Party.Users}}
+						{{ if ne $ownId .Id}}
+							<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}  >{{.Name}}</option>
+						{{ end }}
+					{{ end }}
 			</select>
 
 			{{ $excludeName := "" }}
@@ -102,10 +110,11 @@
 {{ end }}
 
 <div
+	id="partypoller"
 	hx-get="/ping"
 	hx-ext="response-targets"
-	hx-target="#user-detail"
 	hx-trigger="every 5s"
+	hx-target="#partySize"
 	hx-swap="innerHTML"
 	></div>
 {{end}}

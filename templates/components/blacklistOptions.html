@@ -1,0 +1,14 @@
+{{ define "blacklistOptions" }}
+
+	{{ $ownId := .User.Id}}
+	{{ $exlude := .User.ExcludeId}}
+
+	<option value="0">-</option>
+
+	{{ range .User.Party.Users}}
+	{{ if ne $ownId .Id}}
+	<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}>{{.Name}}</option>
+	{{ end }}
+	{{ end }}
+
+{{ end }}

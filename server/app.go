@@ -39,13 +39,13 @@ func (app *AppState) RegisterHandler() {
 	http.Handle("/static/", http.StripPrefix("/static/", fs))
 	http.Handle("/favicon.ico", fs)
 
-	// api
+	// htmx api
 	http.HandleFunc("/logout", app.Logout)
 	http.HandleFunc("/register", app.Register)
 	http.HandleFunc("/user", app.User)
 	http.HandleFunc("/roll", app.RollDice)
 	http.HandleFunc("/ping", app.PingParty)
-
+	http.HandleFunc("/blacklist", app.GetBlacklistOptions)
 }
 
 

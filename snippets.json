@@ -145,10 +145,10 @@
 	},
 	"error_party_expired":{
 		"de": "Die Party ist abgelaufen oder dein BeNutzer existiert nicht.",
-		"en": "Either the group expired or your user does not exists."
+		"en": "Either the group expired or your user does not exist."
 	},
 	"error_credentials":{
 		"de": "Deine Zugangsdaten sind falsch!",
-		"en": "Your credentials are wrong!"
+		"en": "Your password is wrong!"
 	}
 }

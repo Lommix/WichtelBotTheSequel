@@ -3,6 +3,7 @@ package server
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"lommix/wichtelbot/server/components"
 	"lommix/wichtelbot/server/store"
 	"net/http"
@@ -118,19 +119,35 @@ func (app *AppState) User(writer http.ResponseWriter, request *http.Request) {
 // ----------------------------------
 // Ping Party
 func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request) {
-
+	var err error
 	user, err := app.CurrentUserFromSession(request)
 	if err != nil {
 		http.Error(writer, "not authorized", http.StatusUnauthorized)
 		return
 	}
 
-	if user.Party.State != store.Played {
-		http.Error(writer, "not played yet", http.StatusNoContent)
+	if user.Party.State == store.Played {
+		writer.Header().Add("HX-Refresh", "true")
+	}
+	writer.Header().Add("Content-Type", "text/plain")
+	fmt.Fprintf(writer, "%d", len(*user.Party.Users))
+}
+
+// ----------------------------------
+// Get Blacklist options live
+func (app *AppState) GetBlacklistOptions(writer http.ResponseWriter, request *http.Request) {
+	var context components.TemplateContext
+	var err error
+	context.User, err = app.CurrentUserFromSession(request)
+	if err != nil {
+		http.Error(writer, "not authorized", http.StatusUnauthorized)
 		return
 	}
-
-	writer.Header().Add("HX-Refresh", "true")
+	err = app.Templates.Render(writer, "blacklistOptions", context)
+	if err != nil {
+		http.Error(writer, "unknown template", http.StatusBadRequest)
+		return
+	}
 }
 
 // ----------------------------------
