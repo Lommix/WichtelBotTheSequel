@@ -57,7 +57,7 @@
 	},
 	"confirm_play":{
 		"de": "Bitte bestätigen. Mit der Rollen sind ist das Spiel beendet und eure Partner werden angezeigt",
-		"en": "Please confirm. With the roll, the game is over and your partners will be shown"
+		"en": "Please confirm that everyone has filled in the fields. After your confirmation, the partners and their messages will be assigned."
 	},
 	"field_name":{
 		"de": "Name",
@@ -72,16 +72,16 @@
 		"en": "Group key"
 	},
 	"field_notice":{
-		"de": "Hinweis",
-		"en": "Notice"
+		"de": "Nachricht",
+		"en": "Message"
 	},
 	"field_notice_info":{
 		"de": "Hinterlasse deinem Gönner einen Hinweis oder eine Notiz! z.B. Allergien oder Wünsche.",
-		"en": "Leave the person gifting you a hint or notice! For example allergies or wishes."
+		"en": "Give a hint to the person who will be assigned to you. For example your wishes or allergies."
 	},
 	"checkbox_exclude":{
-		"de": "Schwarze Liste erlauben",
-		"en": "Allow blacklist"
+		"de": "Schwarze Liste aktivieren",
+		"en": "Activate blacklist"
 	},
 	"field_exclude":{
 		"de": "Schwarze Liste",
@@ -89,19 +89,19 @@
 	},
 	"field_exclude_info":{
 		"de": "Eine Person die du nicht ziehen kannst! Zum Beispiel deinen Partner. Das wäre doch langweilig.",
-		"en": "A person you cannot be assigned to! For example your partner. That would be boring."
+		"en": "Choose one person who is not supposed to be assigned to you. For example your own partner, since you (hopefully) have already given each other enough gifts. The moderator has to set this feature to active."
 	},
 	"field_retry":{
 		"de": "Passwort wiederholen",
-		"en": "Password again"
+		"en": "Password confirmation"
 	},
 	"home_join_info": {
 		"de": "Trete einer existierenden Gruppe bei! Du brauchst einen gültigen Schüsselcode.",
-		"en": "Join an existing group! You need a valid key."
+		"en": "You are invited to a Wichtelbot group! Filling in the following fields and join the game."
 	},
 	"home_create_info": {
 		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein! Eure Party ist 3 Tage gültig.",
-		"en": "Also known as Secret Santa. Create a new group and invite your friends! Your party is valid for 3 days."
+		"en": "Also known as Secret Santa. Create a new group and invite your friends! Your game is valid for 3 days."
 	},
 	"profile_moderator_info" : {
 		"de": "Wenn dein Gruppe bereit ist, kannst du als Moderator die Zuweisung starten.",
@@ -109,11 +109,11 @@
 	},
 	"profile_invite" : {
 		"de": "Freunde einladen",
-		"en": "Invite friends"
+		"en": "Invite friends by copying the URL above"
 	},
 	"profile_wait_info" : {
 		"de": "Bitte warte, bis die Gruppe bereit ist! In der Zwischenzeit kannst du dein Profil bearbeiten.",
-		"en": "Please wait until the group is ready! You can edit your profile in the meantime."
+		"en": "Please wait until everyone has joined the group. While waiting, you can start filling in the following fields."
 	},
 	"profile_welcome" : {
 		"de": "Wilkommen",
@@ -121,7 +121,7 @@
 	},
 	"result_notice" : {
 		"de": "Hinweis für dich",
-		"en": "Notice for you"
+		"en": "Message for you"
 	},
 	"result_name" : {
 		"de": "Dein Partner",
@@ -129,7 +129,7 @@
 	},
 	"result_title" : {
 		"de": "Das Spiel ist beendet! Dein Benutzer wird nach 72 Stunden gelöscht!",
-		"en": "The Game is over. Your User witll be delted within 72 hours!"
+		"en": "Take a note or make a screen shot of your partner and the message. The group will expire within 3 days!"
 	},
 	"error_name_taken":{
 		"de": "Der Name ist bereits vergeben!",
@@ -144,8 +144,8 @@
 		"en": "At least one member of your party has no valid partner. Did you all blacklist the same person?"
 	},
 	"error_party_expired":{
-		"de": "Die Party ist abgelaufen oder existiert nicht.",
-		"en": "The party has expired or does not exist."
+		"de": "Die Party ist abgelaufen oder dein BeNutzer existiert nicht.",
+		"en": "Either the group expired or your user does not exists."
 	},
 	"error_credentials":{
 		"de": "Deine Zugangsdaten sind falsch!",
