@@ -26,6 +26,11 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
 
+	if context.IsLoggedIn() {
+		http.Redirect(writer, request, "/profile", http.StatusMovedPermanently)
+		return
+	}
+
 	err = app.Templates.Render(writer, "create.html", context)
 	if err != nil {
 		http.Error(writer, "Not found", http.StatusNotFound)
