@@ -1,18 +1,40 @@
 {{ define "room" }}
-<div class="flex flex-row h-12 z-20" id="Room" data-key="{{.Key}}">
-	<a
-		onclick="saveToClipboard(event,this)"
-		href="/join/{{.Key}}"
-		class="w-full z-30 flex flex-row items-center space-x-1 justify-start cursor-pointer"
-		>
-		<img class="ml-1 px-2 mt-2" src="/static/images/key.svg"/>
-		<span class="font-bold">{{ .Key }}</span>
-	</a>
-	<div class="w-fit flex flex-row justify-end px-2 mt-1 items-center">
-		<span
-			hx-on="htmx:beforeSwap: checkBlacklist(event)"
-			id="partySize" class="font-bold">{{ len .Users}}</span>
-		<img src="/static/images/group.svg"/>
+
+<div class="mt-6 relative w-full flex flex-col justify-center border-2 border-white rounded-lg">
+	<div class="absolute w-full -top-3 left-0 flex-row flex justify-center">
+		<div class="bg-blue-600 font-bold px-1 flex flex-row space-x-3">
+			<span>Party</span>
+			<div class="flex flex-row space-x-1">
+				<img class="h-7" src="/static/images/key.svg"/>
+				<span>{{.User.Party.Key}}</span>
+			</div>
+			<div class="w-fit flex flex-row justify-end">
+				<span
+					hx-on="htmx:beforeSwap: checkBlacklist(event)"
+					id="partySize" class="font-bold">{{ len .User.Party.Users}}</span>
+				<img class="-mt-1 h-7" src="/static/images/group.svg"/>
+			</div>
+		</div>
+	</div>
+	<div class="mt-4 flex flex-row justify-between mx-3">
+		<div></div>
+	</div>
+	<div class="p-2 w-full mb-1">
+		<div class="flex flex-col font-bold text-xl">
+			<a
+				onclick="saveToClipboard(event,this)"
+				href="/join/{{.User.Party.Key}}"
+				class="w-full cursor-pointer text-center bg-blue-400 hover:bg-blue-300 py-2 rounded-md relative"
+				>
+				{{ .Snippets.profile_invite }}
+			</a>
+			<a
+				class="w-full cursor-pointer bg-blue-400 hover:bg-blue-300 text-center mt-1 py-2 rounded-md relative"
+				target="_blank"
+				onclick="saveToClipboard(event,this)"
+				href="/login/{{.User.Party.Key}}">{{.Snippets.button_login_link}}
+			</a>
+		</div>
 	</div>
 </div>
 {{ end }}

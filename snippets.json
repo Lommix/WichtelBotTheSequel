@@ -32,8 +32,8 @@
 		"en": "Edit"
 	},
 	"button_login_link": {
-		"de": "Jemanden hat den Login-Link vergessen?",
-		"en": "Someone forgot the login url?"
+		"de": "Wie man sich einloggt",
+		"en": "How to Login again"
 	},
 	"button_logout": {
 		"de": "Abmelden",
@@ -52,7 +52,7 @@
 		"en": "Register"
 	},
 	"button_invite": {
-		"de": "Einladen",
+		"de": "Einladung senden",
 		"en": "Invite link"
 	},
 	"button_play": {
@@ -116,12 +116,16 @@
 		"en": "If your group is ready, you can assign members."
 	},
 	"profile_invite" : {
-		"de": "Freunde einladen",
-		"en": "Invite friends by copying the URL above"
+		"de": "Einlade Link",
+		"en": "Invite Link"
 	},
 	"profile_wait_info" : {
 		"de": "Bitte warte, bis die Gruppe bereit ist! In der Zwischenzeit kannst du dein Profil bearbeiten.",
 		"en": "Please wait until everyone has joined the group. While waiting, you can start filling in the following fields."
+	},
+	"profile_moderator" : {
+		"de": "Du bist der Moderator. Wenn deine Gruppe bereit ist kannst du die Zuweisung starten. Auch entscheidest du, ob die Schwarze Liste berücksichtigt wird.",
+		"en": "You are the moderator. You decide when to play and if the blacklist is respected."
 	},
 	"profile_welcome" : {
 		"de": "Wilkommen",

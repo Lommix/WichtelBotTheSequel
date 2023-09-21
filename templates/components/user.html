@@ -1,120 +1,93 @@
 {{ define "user" }}
 
-<div class="w-full my-2 flex-col flex space-y-4 max-w-lg">
-
-	<h1 class="font-bold text-xl mt-4"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
-	<p class="text-sm" >{{ .Snippets.profile_wait_info }}</p>
-	<a class="text-xs relative text-center font-bold bg-blue-500 hover:bg-blue-400 p-2 rounded-md" target="_blank" onclick="saveToClipboard(event,this)" href="/login/{{.User.Party.Key}}">{{ .Snippets.button_login_link }}</a>
-
-
-	<form id="user-detail-edit" hx-put="/user" hx-swap="innerHTML" hx-target="#user-detail" hx-ext="response-targets"
-		hx-target-403="#update-error" class="flex flex-col w-full">
-		<div class="flex flex-row justify-between">
-			<label class="font-bold" for="Notice">{{ .Snippets.field_notice }}</label>
-			<button onclick="setEditMode(event,'user-detail-edit', true)" class="edit-hide"><img src="/static/images/edit.svg"/></button>
-			<button onclick="setEditMode(event,'user-detail-edit', false)" class="edit-show hidden"><img src="/static/images/close.svg"/></button>
+<div class="mt-6 relative w-full flex flex-col justify-center border-2 border-white rounded-lg px-2">
+	<div class="absolute w-full -top-3 left-0 flex-row flex justify-center">
+		<div class="bg-blue-600 font-bold px-1 flex flex-row space-x-3">
+			<span>Profil</span>
 		</div>
+	</div>
 
-		<div class="w-full">
-			<textarea class="p-1 h-32 text-sm text-black w-full resize-none hidden edit-show rounded-sm"
-				id="Notice" type="text" name="Notice"
-				placeholder="{{.Snippets.field_notice_info}}">{{.User.Notice}}</textarea>
-			<p class="edit-hide h-32 text-sm bg-sky-600 w-full block p-1 rounded-sm overflow-scroll">
-				{{ if eq .User.Notice ""}}
-				-
-				{{else}}
-				{{.User.Notice}}
-				{{end}}
-			</p>
-		</div>
 
-		<div class="w-full flex justify-between flex-row mt-1">
-			<label class="font-bold" for="Exclude">{{ .Snippets.field_exclude }}</label>
-			<div class="px-1">
-				{{ template "info" .Snippets.field_exclude_info }}
+	<div class="w-full flex flex-col justify-between">
+
+		<h1 class="font-bold text-xl mt-4"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
+		<p class="text-sm">{{ .Snippets.profile_wait_info }}</p>
+
+		<form id="user-detail-edit" hx-put="/user" hx-swap="innerHTML" hx-target="#user-detail"
+			hx-ext="response-targets" hx-target-403="#update-error" class="flex flex-col w-full">
+			<div class="flex flex-row justify-between">
+				<label class="font-bold" for="Notice">{{ .Snippets.field_notice }}</label>
+				<button onclick="setEditMode(event,'user-detail-edit', true)" class="edit-hide"><img
+						src="/static/images/edit.svg" /></button>
+				<button onclick="setEditMode(event,'user-detail-edit', false)" class="edit-show hidden"><img
+						src="/static/images/close.svg" /></button>
 			</div>
-		</div>
-		<div class="w-full flex-col">
-			<select
-				id="ExcludeOptions"
-				hx-get="/blacklist"
-				hx-swap="innerHTML"
-				hx-target="#ExcludeOptions"
-				hx-trigger="focus"
-				class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show"
-				type="text"
-				name="ExcludeId"
-				placeholder="Exclude">
+
+			<div class="w-full">
+				<textarea class="p-1 h-32 text-sm text-black w-full resize-none hidden edit-show rounded-sm" id="Notice"
+					type="text" name="Notice" placeholder="{{.Snippets.field_notice_info}}">{{.User.Notice}}</textarea>
+				<p class="edit-hide h-32 text-sm bg-sky-600 w-full block p-1 rounded-sm overflow-scroll">
+					{{ if eq .User.Notice ""}}
+					-
+					{{else}}
+					{{.User.Notice}}
+					{{end}}
+				</p>
+			</div>
+
+			<div class="w-full flex justify-between flex-row mt-1">
+				<label class="font-bold" for="Exclude">{{ .Snippets.field_exclude }}</label>
+				<div class="px-1">
+					{{ template "info" .Snippets.field_exclude_info }}
+				</div>
+			</div>
+			<div class="w-full flex-col">
+				<select id="ExcludeOptions" hx-get="/blacklist" hx-swap="innerHTML" hx-target="#ExcludeOptions"
+					hx-trigger="focus" class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show"
+					type="text" name="ExcludeId" placeholder="Exclude">
 					<option value="0">-</option>
 					{{ $ownId := .User.Id}}
 					{{ $exlude := .User.ExcludeId}}
 					{{ range .User.Party.Users}}
-						{{ if ne $ownId .Id}}
-							<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}  >{{.Name}}</option>
-						{{ end }}
+					{{ if ne $ownId .Id}}
+					<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}>{{.Name}}</option>
 					{{ end }}
-			</select>
+					{{ end }}
+				</select>
 
-			{{ $excludeName := "" }}
-			{{ range .User.Party.Users}}
-			{{ if eq $exlude .Id}}
-			{{ $excludeName = .Name }}
-			{{ end }}
-			{{ end }}
+				{{ $excludeName := "" }}
+				{{ range .User.Party.Users}}
+				{{ if eq $exlude .Id}}
+				{{ $excludeName = .Name }}
+				{{ end }}
+				{{ end }}
 
-			{{ if ne $excludeName ""}}
-			<div class="edit-hide">
-				<div class="h-8 text-sm pt-2 flex flex-row">
-					<img src="/static/images/user.svg"/>
-					<span class="font-bold">{{ $excludeName }}</span>
+				{{ if ne $excludeName ""}}
+				<div class="edit-hide">
+					<div class="h-8 text-sm pt-2 flex flex-row">
+						<img src="/static/images/user.svg" />
+						<span class="font-bold">{{ $excludeName }}</span>
+					</div>
 				</div>
-			</div>
-			{{ else }}
+				{{ else }}
 				<p class="edit-hide h-8 text-sm p-1">-</p>
-			{{ end }}
+				{{ end }}
 
-		</div>
-		<p class="text-red-400 font-bold" id="update-error"></p>
-		<div class="">
-			<input
-				class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-2 font-bold py-2 px-4 rounded cursor-pointer"
-				type="submit" value="{{ .Snippets.button_save }}" />
-		</div>
-	</form>
+			</div>
+			<p class="text-red-400 font-bold" id="update-error"></p>
+			<div class="">
+				<input
+					class="w-full bg-green-600 edit-show hidden hover:bg-green-700 text-white mt-2 font-bold py-2 px-4 rounded cursor-pointer"
+					type="submit" value="{{ .Snippets.button_save }}" />
+			</div>
+		</form>
+	</div>
 </div>
-
 
 {{ if .User.Role }}
-<hr>
-<div class="w-full flex justify-center flex-col space-y-2 mt-4 edit-hide">
-	<form
-		class="w-full"
-		hx-swap="innerHTML"
-		hx-post="/roll"
-		hx-ext="response-targets"
-		hx-target-417="#roll-error"
-		hx-target-401="#roll-error"
-		hx-confirm="{{ .Snippets.confirm_play }}"
-		>
-		<div class="w-full flex flex-row justify-center items-center space-x-3">
-			<label class="font-bold" for="Rule">{{ .Snippets.checkbox_exclude }}</label>
-			<input class="w-8 h-8" type="checkbox" name="Rule" id="Rule" value="blacklist" />
-		</div>
-		<button type="submit" class="bg-green-600 mt-4 w-full hover:bg-green-700 text-white font-bold py-2 px-4 rounded flex flex-row items-center">
-			<img src="/static/images/dice.svg"/>
-			<p class="w-full">{{ .Snippets.button_play }}</p>
-		</button>
-	</form>
-	<p id="roll-error" class="font-bold text-red-400"></p>
-</div>
+{{ template "moderator" . }}
 {{ end }}
 
-<div
-	id="partypoller"
-	hx-get="/ping"
-	hx-ext="response-targets"
-	hx-trigger="every 5s"
-	hx-target="#partySize"
-	hx-swap="innerHTML"
-	></div>
+<div id="partypoller" hx-get="/ping" hx-ext="response-targets" hx-trigger="every 5s" hx-target="#partySize"
+	hx-swap="innerHTML"></div>
 {{end}}
