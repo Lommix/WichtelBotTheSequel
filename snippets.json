@@ -131,6 +131,10 @@
 		"de": "Wilkommen",
 		"en": "Welcome"
 	},
+	"profile":{
+		"de": "Profil",
+		"en": "Profile"
+	},
 	"result_notice" : {
 		"de": "Hinweis für dich",
 		"en": "Message for you"

@@ -3,11 +3,9 @@
 <div class="mt-6 relative w-full flex flex-col justify-center border-2 border-white rounded-lg px-2">
 	<div class="absolute w-full -top-3 left-0 flex-row flex justify-center">
 		<div class="bg-blue-600 font-bold px-1 flex flex-row space-x-3">
-			<span>Profil</span>
+			<span>{{ .Snippets.profile }}</span>
 		</div>
 	</div>
-
-
 	<div class="w-full flex flex-col justify-between">
 
 		<h1 class="font-bold text-xl mt-4"> {{ .Snippets.profile_welcome }}, {{ .User.Name }} </h1>
@@ -85,7 +83,7 @@
 </div>
 
 {{ if .User.Role }}
-{{ template "moderator" . }}
+	{{ template "moderator" . }}
 {{ end }}
 
 <div id="partypoller" hx-get="/ping" hx-ext="response-targets" hx-trigger="every 5s" hx-target="#partySize"
