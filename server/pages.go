@@ -35,6 +35,8 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Error(writer, "Not found", http.StatusNotFound)
 	}
+
+    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
 
 // ----------------------------------
@@ -54,6 +56,8 @@ func (app *AppState) Join(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Error(writer, "Not found", http.StatusNotFound)
 	}
+
+    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
 
 // ----------------------------------
@@ -89,6 +93,7 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 	default:
 		http.Error(writer, "Method not allowed", http.StatusMethodNotAllowed)
 	}
+    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
 
 // ----------------------------------
@@ -115,4 +120,6 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 	if err != nil {
 		http.Error(writer, "Not found", http.StatusNotFound)
 	}
+
+    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
