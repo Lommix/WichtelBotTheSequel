@@ -1,15 +1,23 @@
 {
+	"meta_title": {
+		"de":"Online Wichteln",
+		"en":"Secret Santa Online"
+	},
+	"meta_description": {
+		"de":"Der Wichtelbot macht online wichteln schnell und unkompliziert. Wunschzettel und eine Schwarze Liste für Pärchen stehe als Feature bereit. Keine Ads, keine E-Mails, kein Tracking.",
+		"en":"The 'Wichtelbot' makes online secret santa quick and uncomplicated. The main features are wishlists and blacklists. No ads, no emails, no tracking."
+	},
 	"title": {
 		"de": "Wichtelbot",
 		"en": "Wichtelbot"
 	},
 	"description": {
 		"de": "Würfel Wichtelpartner mit deinen Freunden online! No tracking, no ads.",
-		"en": "Dice Wichtelpartner with your friends online! No tracking, no ads."
+		"en": "Secret Santa with your friends online! No tracking, no ads."
 	},
 	"keywords": {
-		"de": "Wichtel, Wichtelbot, Würfel, Würfelbot",
-		"en": "Wichtel, Wichtelbot, Dice, Dicebot"
+		"de": "Wichtel, Wichtelbot, Würfel, Würfelbot, online wichteln, wichteln",
+		"en": "Wichtel, Wichtelbot, Dice, Dicebot, secret santa, santa"
 	},
 	"button_join": {
 		"de": "Beitreten",
@@ -100,8 +108,8 @@
 		"en": "You are invited to a Wichtelbot group! Filling in the following fields and join the game."
 	},
 	"home_create_info": {
-		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein! Eure Party ist 3 Tage gültig.",
-		"en": "Also known as Secret Santa. Create a new group and invite your friends! Your game is valid for 3 days."
+		"de": "Erstelle eine neue Gruppe und lade deine Freunde ein! Keine Werbung, keine Tracking. Nach 3 Tagen werden alle Daten gelöscht.",
+		"en": "Also known as Secret Santa. Create a new group and invite your friends! No ads, not tracking. Everything gets deleted after 3 days."
 	},
 	"profile_moderator_info" : {
 		"de": "Wenn dein Gruppe bereit ist, kannst du als Moderator die Zuweisung starten.",
