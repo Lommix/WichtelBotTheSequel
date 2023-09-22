@@ -94,7 +94,7 @@ func main() {
 		app := server.AppState{
 			Db:        db,
 			Templates: tmpl,
-			Mode:      server.Debug,
+			Mode:      server.Prod,
 			Snippets:  snippets,
 			Sessions:  &components.CookieJar{},
 		}
@@ -103,7 +103,7 @@ func main() {
 		go app.CleanupRoutine()
 
 
-		println("starting http")
+		println("starting http redirect")
 		go http.ListenAndServe(":"+http_port, http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			http.Redirect(writer, request, "https://"+request.Host, http.StatusMovedPermanently)
 		}))
@@ -118,8 +118,4 @@ func main() {
 	default:
 		fmt.Println("Invalid command\nOptions are\n'init' 'dev' 'prod' ")
 	}
-}
-
-func redirectHttp(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "https://"+r.Host+r.URL.String(), http.StatusMovedPermanently)
 }

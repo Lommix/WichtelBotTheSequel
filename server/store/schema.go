@@ -8,7 +8,8 @@ func SchemaUp(db *sql.DB) error {
 			id INTEGER PRIMARY KEY UNIQUE NOT NULL,
 			created INTEGER NOT NULL,
 			state INTEGER NOT NULL,
-			key STRING NOT NULL
+			key STRING NOT NULL,
+			blacklist BOOLEAN DEFAULT FALSE
 		);
 
 		CREATE TABLE IF NOT EXISTS users (

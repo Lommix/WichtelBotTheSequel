@@ -14,6 +14,7 @@ const (
 )
 
 type GameState int
+
 const (
 	Created GameState = iota
 	Joining
@@ -21,12 +22,12 @@ const (
 )
 
 type Party struct {
-	Id      int64
-	Created int64
-	Key     string
-	State   GameState
-
-	Users *[]User
+	Id        int64
+	Created   int64
+	Key       string
+	State     GameState
+	Blacklist bool
+	Users     *[]User
 }
 
 func FindPartyByID(id int64, db *sql.DB) (Party, error) {
@@ -43,6 +44,7 @@ func FindPartyByID(id int64, db *sql.DB) (Party, error) {
 		&party.Created,
 		&party.State,
 		&party.Key,
+		&party.Blacklist,
 	)
 
 	if err != nil {
@@ -71,6 +73,7 @@ func FindPartyByKey(key string, db *sql.DB) (Party, error) {
 		&party.Created,
 		&party.State,
 		&party.Key,
+		&party.Blacklist,
 	)
 
 	if err != nil {
@@ -96,7 +99,7 @@ func CreateParty(db *sql.DB) (Party, error) {
 	party.Created = time.Now().Unix()
 	party.State = Created
 
-	party.Key , err = createRandomUniqueKey(db)
+	party.Key, err = createRandomUniqueKey(db)
 	if err != nil {
 		return party, err
 	}
@@ -128,7 +131,7 @@ func (party *Party) Delete(db *sql.DB) error {
 }
 
 func (party *Party) Update(db *sql.DB) error {
-	sql := `UPDATE parties SET state=? WHERE id=?`
+	sql := `UPDATE parties SET state=?, blacklist=? WHERE id=?`
 	stm, err := db.Prepare(sql)
 	if err != nil {
 		return err
@@ -136,6 +139,7 @@ func (party *Party) Update(db *sql.DB) error {
 
 	_, err = stm.Exec(
 		&party.State,
+		&party.Blacklist,
 		&party.Id,
 	)
 
@@ -146,7 +150,7 @@ func (party *Party) Update(db *sql.DB) error {
 	return nil
 }
 
-func (party *Party) RollPartners(db *sql.DB, allowBlacklist bool) error {
+func (party *Party) RollPartners(db *sql.DB) error {
 	users, err := FindUsersByPartyId(db, party.Id)
 	if err != nil {
 		return err
@@ -162,7 +166,7 @@ func (party *Party) RollPartners(db *sql.DB, allowBlacklist bool) error {
 	for _, user := range users {
 		var indexList []int
 		for i, u := range availablePartners {
-			if allowBlacklist && user.ExcludeId == u.Id {
+			if party.Blacklist && user.ExcludeId == u.Id {
 				continue
 			}
 			if user.Id != u.Id {
@@ -224,6 +228,7 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 			&party.Created,
 			&party.State,
 			&party.Key,
+			&party.Blacklist,
 		)
 
 		if err != nil {
@@ -235,7 +240,6 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 
 	return parties, nil
 }
-
 
 func partyKeyExists(db *sql.DB, key string) bool {
 	sql := `SELECT * FROM parties WHERE key=?`
@@ -250,13 +254,12 @@ func partyKeyExists(db *sql.DB, key string) bool {
 	return false
 }
 
-
-func createRandomUniqueKey(db *sql.DB) (string,error) {
+func createRandomUniqueKey(db *sql.DB) (string, error) {
 	key := createRandomKey()
 	timeout := 0
 	for partyKeyExists(db, key) {
 		key = createRandomKey()
-		timeout ++
+		timeout++
 		// practical engineering, math is hard
 		if timeout > 50 {
 			return "", errors.New("Server are busy")
@@ -265,7 +268,6 @@ func createRandomUniqueKey(db *sql.DB) (string,error) {
 
 	return key, nil
 }
-
 
 func createRandomKey() string {
 	chars := "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"

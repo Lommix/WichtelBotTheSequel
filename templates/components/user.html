@@ -26,52 +26,54 @@
 					type="text" name="Notice" placeholder="{{.Snippets.field_notice_info}}">{{.User.Notice}}</textarea>
 				<p class="edit-hide h-32 text-sm bg-sky-600 w-full block p-1 rounded-sm overflow-scroll">
 					{{ if eq .User.Notice ""}}
-					-
+						-
 					{{else}}
-					{{.User.Notice}}
+						{{.User.Notice}}
 					{{end}}
 				</p>
 			</div>
 
-			<div class="w-full flex justify-between flex-row mt-1">
-				<label class="font-bold" for="Exclude">{{ .Snippets.field_exclude }}</label>
-				<div class="px-1">
-					{{ template "info" .Snippets.field_exclude_info }}
-				</div>
-			</div>
-			<div class="w-full flex-col">
-				<select id="ExcludeOptions" hx-get="/blacklist" hx-swap="innerHTML" hx-target="#ExcludeOptions"
-					hx-trigger="focus" class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show"
-					type="text" name="ExcludeId" placeholder="Exclude">
-					<option value="0">-</option>
-					{{ $ownId := .User.Id}}
-					{{ $exlude := .User.ExcludeId}}
-					{{ range .User.Party.Users}}
-					{{ if ne $ownId .Id}}
-					<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}>{{.Name}}</option>
-					{{ end }}
-					{{ end }}
-				</select>
-
-				{{ $excludeName := "" }}
-				{{ range .User.Party.Users}}
-				{{ if eq $exlude .Id}}
-				{{ $excludeName = .Name }}
-				{{ end }}
-				{{ end }}
-
-				{{ if ne $excludeName ""}}
-				<div class="edit-hide">
-					<div class="h-8 text-sm pt-2 flex flex-row">
-						<img src="/static/images/user.svg" />
-						<span class="font-bold">{{ $excludeName }}</span>
+			{{ if eq .User.Party.Blacklist true }}
+				<div class="w-full flex justify-between flex-row mt-1">
+					<label class="font-bold" for="Exclude">{{ .Snippets.field_exclude }}</label>
+					<div class="px-1">
+						{{ template "info" .Snippets.field_exclude_info }}
 					</div>
 				</div>
-				{{ else }}
-				<p class="edit-hide h-8 text-sm p-1">-</p>
-				{{ end }}
+				<div class="w-full flex-col">
+					<select id="ExcludeOptions" hx-get="/blacklist" hx-swap="innerHTML" hx-target="#ExcludeOptions"
+						hx-trigger="focus" class="p-1 h-8 text-black rounded-sm w-full resize-none hidden edit-show"
+						type="text" name="ExcludeId" placeholder="Exclude">
+						<option value="0">-</option>
+						{{ $ownId := .User.Id}}
+						{{ $exlude := .User.ExcludeId}}
+						{{ range .User.Party.Users}}
+							{{ if ne $ownId .Id}}
+								<option value="{{.Id}}" {{if eq $exlude .Id}}selected{{end}}>{{.Name}}</option>
+							{{ end }}
+						{{ end }}
+					</select>
 
-			</div>
+					{{ $excludeName := "" }}
+					{{ range .User.Party.Users}}
+						{{ if eq $exlude .Id}}
+							{{ $excludeName = .Name }}
+						{{ end }}
+					{{ end }}
+
+					{{ if ne $excludeName ""}}
+						<div class="edit-hide">
+							<div class="h-8 text-sm pt-2 flex flex-row">
+								<img src="/static/images/user.svg" />
+								<span class="font-bold">{{ $excludeName }}</span>
+							</div>
+						</div>
+					{{ else }}
+						<p class="edit-hide h-8 text-sm p-1">-</p>
+					{{ end }}
+				</div>
+			{{ end }}
+
 			<p class="text-red-400 font-bold" id="update-error"></p>
 			<div class="">
 				<input
@@ -86,6 +88,8 @@
 	{{ template "moderator" . }}
 {{ end }}
 
-<div id="partypoller" hx-get="/ping" hx-ext="response-targets" hx-trigger="every 5s" hx-target="#partySize"
-	hx-swap="innerHTML"></div>
+<form id="partypoller" hx-get="/ping" hx-ext="response-targets" hx-trigger="every 5s" hx-target="#partySize"
+	hx-swap="innerHTML">
+		<input type="hidden" name="Blacklist" value="{{ .User.Party.Blacklist }}">
+</form>
 {{end}}

@@ -221,6 +221,7 @@ func FindUserWithPartyFast(db *sql.DB, userId int64) (User, error) {
 			&party.Created,
 			&party.State,
 			&party.Key,
+			&party.Blacklist,
 		)
 
 		if err != nil {

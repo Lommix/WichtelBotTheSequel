@@ -88,8 +88,8 @@
 		"en": "Give a hint to the person who will be assigned to you. For example your wishes or allergies."
 	},
 	"checkbox_exclude":{
-		"de": "Schwarze Liste aktivieren",
-		"en": "Activate blacklist"
+		"de": "Schwarze Liste erlauben",
+		"en": "Allow blacklist"
 	},
 	"field_exclude":{
 		"de": "Schwarze Liste",

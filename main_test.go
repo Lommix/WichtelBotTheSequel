@@ -53,7 +53,7 @@ func TestPlay(t *testing.T) {
 	}
 
 
-	err = party.RollPartners(db, false)
+	err = party.RollPartners(db)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -126,7 +126,8 @@ func TestBlacklistPlay(t *testing.T) {
 		u.Update(db)
 	}
 
-	err = party.RollPartners(db, true)
+	party.Blacklist = true
+	err = party.RollPartners(db)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -183,7 +184,8 @@ func TestBlacklistFail(t *testing.T) {
 		u.Update(db)
 	}
 
-	err = party.RollPartners(db, true)
+	party.Blacklist = true
+	err = party.RollPartners(db)
 	if err == nil {
 		t.Fatal("should have failed")
 	}
@@ -210,7 +212,7 @@ func TestFastQuery(t *testing.T){
 		}
 	}
 
-	err = party.RollPartners(db, false)
+	err = party.RollPartners(db)
 	if err != nil {
 		t.Fatal(err)
 	}

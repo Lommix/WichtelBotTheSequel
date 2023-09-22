@@ -45,7 +45,7 @@ func (app *AppState) RegisterHandler() {
 	http.HandleFunc("/user", app.User)
 	http.HandleFunc("/roll", app.RollDice)
 	http.HandleFunc("/ping", app.PingParty)
-	http.HandleFunc("/blacklist", app.GetBlacklistOptions)
+	http.HandleFunc("/blacklist", app.Blacklist)
 }
 
 

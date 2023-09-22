@@ -126,16 +126,28 @@ func (app *AppState) PingParty(writer http.ResponseWriter, request *http.Request
 		return
 	}
 
-	if user.Party.State == store.Played {
+	type userState struct {
+		Blacklist bool
+	}
+
+	var formData userState
+	err = components.FromFormData(request, &formData)
+	if err != nil {
+		http.Error(writer, "invalid data", http.StatusBadRequest)
+		return
+	}
+
+	if user.Party.State == store.Played || user.Party.Blacklist != formData.Blacklist {
 		writer.Header().Add("HX-Refresh", "true")
 	}
+
 	writer.Header().Add("Content-Type", "text/plain")
 	fmt.Fprintf(writer, "%d", len(*user.Party.Users))
 }
 
 // ----------------------------------
 // Get Blacklist options live
-func (app *AppState) GetBlacklistOptions(writer http.ResponseWriter, request *http.Request) {
+func (app *AppState) Blacklist(writer http.ResponseWriter, request *http.Request) {
 	var context components.TemplateContext
 	var err error
 	context.User, err = app.CurrentUserFromSession(request)
@@ -143,10 +155,28 @@ func (app *AppState) GetBlacklistOptions(writer http.ResponseWriter, request *ht
 		http.Error(writer, "not authorized", http.StatusUnauthorized)
 		return
 	}
-	err = app.Templates.Render(writer, "blacklistOptions", context)
-	if err != nil {
-		http.Error(writer, "unknown template", http.StatusBadRequest)
-		return
+
+	switch request.Method {
+	case http.MethodGet:
+		err = app.Templates.Render(writer, "blacklistOptions", context)
+		if err != nil {
+			http.Error(writer, "unknown template", http.StatusBadRequest)
+			return
+		}
+	case http.MethodPost:
+		type rollPostData struct {
+			Blacklist bool
+		}
+		var formData rollPostData
+		err = components.FromFormData(request, &formData)
+		if err != nil {
+			http.Error(writer, "invalid data", http.StatusBadRequest)
+			return
+		}
+
+		context.User.Party.Blacklist = formData.Blacklist
+		context.User.Party.Update(app.Db)
+		writer.Header().Add("HX-Refresh", "true")
 	}
 }
 
@@ -159,24 +189,6 @@ func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request)
 		return
 	}
 
-	type rollPostData struct {
-		Rule string
-	}
-
-	var formData rollPostData
-	err := components.FromFormData(request, &formData)
-
-	if err != nil {
-		http.Error(writer, "invalid data", http.StatusBadRequest)
-		return
-	}
-
-	withBlacklist := func()bool{
-		if formData.Rule == "blacklist" {
-			return true
-		}
-		return false
-	}()
 
 	lang := components.LangFromRequest(request)
 	user, err := app.CurrentUserFromSession(request)
@@ -186,7 +198,7 @@ func (app *AppState) RollDice(writer http.ResponseWriter, request *http.Request)
 		return
 	}
 
-	err = user.Party.RollPartners(app.Db, withBlacklist)
+	err = user.Party.RollPartners(app.Db)
 	if err != nil {
 		msq, _ := app.Snippets.Get("error_roll", lang)
 		http.Error(writer, msq, http.StatusExpectationFailed)

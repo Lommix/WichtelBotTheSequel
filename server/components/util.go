@@ -83,6 +83,8 @@ func FromFormData(r *http.Request, s interface{}) error {
 				intValue := 0
 				fmt.Sscanf(formValue, "%d", &intValue)
 				v.Field(i).SetInt(int64(intValue))
+			case reflect.Bool:
+				v.Field(i).SetBool(formValue == "true")
 			}
 		} else {
 			if t.Field(i).Tag.Get("required") == "true" {
