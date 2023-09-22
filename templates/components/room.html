@@ -21,13 +21,15 @@
 	</div>
 	<div class="p-2 w-full mb-1">
 		<div class="flex flex-col font-bold text-xl">
-			<a
-				onclick="saveToClipboard(event,this)"
-				href="/join/{{.User.Party.Key}}"
-				class="w-full cursor-pointer text-center bg-blue-400 hover:bg-blue-300 py-2 rounded-md relative"
-				>
-				{{ .Snippets.profile_invite }}
-			</a>
+			{{ if ne .User.Party.State 2 }}
+				<a
+					onclick="saveToClipboard(event,this)"
+					href="/join/{{.User.Party.Key}}"
+					class="w-full cursor-pointer text-center bg-blue-400 hover:bg-blue-300 py-2 rounded-md relative"
+					>
+					{{ .Snippets.profile_invite }}
+				</a>
+			{{ end }}
 			<a
 				class="w-full cursor-pointer bg-blue-400 hover:bg-blue-300 text-center mt-1 py-2 rounded-md relative"
 				target="_blank"
