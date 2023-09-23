@@ -26,6 +26,8 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
 
+    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+
 	if context.IsLoggedIn() {
 		http.Redirect(writer, request, "/profile", http.StatusMovedPermanently)
 		return
@@ -35,8 +37,6 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Error(writer, "Not found", http.StatusNotFound)
 	}
-
-    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
 
 // ----------------------------------
@@ -71,6 +71,7 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 			app.Snippets.Load()
 		}
 
+		writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 
 		lang := components.LangFromRequest(request)
 		var err error
@@ -93,7 +94,6 @@ func (app *AppState) Login(writer http.ResponseWriter, request *http.Request) {
 	default:
 		http.Error(writer, "Method not allowed", http.StatusMethodNotAllowed)
 	}
-    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
 
 // ----------------------------------
@@ -109,7 +109,7 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
 
-	// fmt.Print(context.User.Partner.Name)
+    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 
 	if !context.IsLoggedIn() {
 		http.Redirect(writer, request, "/login", http.StatusMovedPermanently)
@@ -121,5 +121,4 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 		http.Error(writer, "Not found", http.StatusNotFound)
 	}
 
-    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
