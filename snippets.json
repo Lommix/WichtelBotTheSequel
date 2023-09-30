@@ -19,6 +19,10 @@
 		"de": "Wichtel, Wichtelbot, Würfel, Würfelbot, online wichteln, wichteln",
 		"en": "Wichtel, Wichtelbot, Dice, Dicebot, secret santa, santa"
 	},
+	"join_create_link": {
+		"de": "Du möchtest eine Gruppe erstellen?",
+		"en": "Do you want to create a group?"
+	},
 	"button_join": {
 		"de": "Beitreten",
 		"en": "Join"
