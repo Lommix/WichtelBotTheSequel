@@ -20,7 +20,7 @@ func main() {
 	}
 	command := os.Args[1]
 
-	db, err := sql.Open("sqlite3", "wichtel.db")
+	db, err := sql.Open("sqlite3", "db/wichtel.db")
 	if err != nil {
 		fmt.Println("Failed to open DB Connection: ", err)
 		return
@@ -107,13 +107,13 @@ func main() {
 		go app.CleanupRoutine()
 
 		if settings.Https != nil {
-		println("starting http redirect")
+			println("starting http redirect")
 			go http.ListenAndServe(":"+strconv.Itoa(settings.Http.Port), http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
-			http.Redirect(writer, request, "https://"+request.Host, http.StatusMovedPermanently)
-		}))
+				http.Redirect(writer, request, "https://"+request.Host, http.StatusMovedPermanently)
+			}))
 
-		println("starting https")
-		app.RegisterHandler()
+			println("starting https")
+			app.RegisterHandler()
 			err := http.ListenAndServeTLS(":"+strconv.Itoa(settings.Https.Port), settings.Https.SslCertPath, settings.Https.SslKeyPath, nil)
 			if err != nil {
 				fmt.Println(err)
@@ -122,9 +122,9 @@ func main() {
 			println("starting http")
 			app.RegisterHandler()
 			err := http.ListenAndServe(":"+strconv.Itoa(settings.Http.Port), nil)
-		if err != nil {
-			fmt.Println(err)
-		}
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 	default:
 		fmt.Println("Invalid command\nOptions are\n'init' 'dev' 'prod' ")
