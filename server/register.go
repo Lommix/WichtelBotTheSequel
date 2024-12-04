@@ -67,6 +67,7 @@ func (app *AppState) Register(writer http.ResponseWriter, request *http.Request)
 			if u.Name == formData.Username {
 				msq, _ := app.Snippets.Get("error_name_taken", components.German)
 				http.Error(writer, msq, http.StatusConflict)
+				return
 			}
 		}
 	}
