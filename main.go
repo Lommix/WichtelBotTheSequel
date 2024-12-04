@@ -8,6 +8,7 @@ import (
 	"lommix/wichtelbot/server/store"
 	"net/http"
 	"os"
+	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -49,11 +50,18 @@ func main() {
 			return
 		}
 
+		components.LoadEnv()
+		settings, err := components.LoadSettingsFromEnv()
+		if err != nil {
+			fmt.Println("Failed to load settings: ", err)
+		}
+
 		app := server.AppState{
 			Db:        db,
 			Templates: tmpl,
 			Mode:      server.Debug,
 			Snippets:  snippets,
+			Settings:  settings,
 			Sessions:  &components.CookieJar{},
 		}
 		println("starting cleaner")
@@ -63,20 +71,9 @@ func main() {
 		app.RegisterHandler()
 		http.ListenAndServe(":3000", nil)
 	// -------------------------------------
-	// start production server in tls mode
+	// start production server
 	// -------------------------------------
 	case "prod":
-		components.LoadEnv()
-		cert := os.Getenv("SSL_CERT")
-		key := os.Getenv("SSL_KEY")
-		http_port := os.Getenv("HTTP_PORT")
-		https_port := os.Getenv("HTTPS_PORT")
-
-		if cert == "" || key == "" || http_port == "" || https_port == "" {
-			fmt.Println("Please provide SSL_CERT, SSL_KEY, HTTP_PORT, HTTPS_PORT")
-			return
-		}
-
 		tmpl := &components.Templates{}
 		err = tmpl.Load()
 		if err != nil {
@@ -91,30 +88,44 @@ func main() {
 			return
 		}
 
+		components.LoadEnv()
+		settings, err := components.LoadSettingsFromEnv()
+		if err != nil {
+			fmt.Println("Failed to load settings: ", err)
+		}
+
 		app := server.AppState{
 			Db:        db,
 			Templates: tmpl,
-			Mode:      server.Prod,
 			Snippets:  snippets,
 			Sessions:  &components.CookieJar{},
+			Settings:  settings,
+			Mode:      server.Prod,
 		}
 
 		println("starting cleaner")
 		go app.CleanupRoutine()
 
-
+		if settings.Https != nil {
 		println("starting http redirect")
-		go http.ListenAndServe(":"+http_port, http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
+			go http.ListenAndServe(":"+strconv.Itoa(settings.Http.Port), http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 			http.Redirect(writer, request, "https://"+request.Host, http.StatusMovedPermanently)
 		}))
 
 		println("starting https")
 		app.RegisterHandler()
-		err := http.ListenAndServeTLS(":"+https_port, cert, key, nil)
+			err := http.ListenAndServeTLS(":"+strconv.Itoa(settings.Https.Port), settings.Https.SslCertPath, settings.Https.SslKeyPath, nil)
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			println("starting http")
+			app.RegisterHandler()
+			err := http.ListenAndServe(":"+strconv.Itoa(settings.Http.Port), nil)
 		if err != nil {
 			fmt.Println(err)
 		}
-
+		}
 	default:
 		fmt.Println("Invalid command\nOptions are\n'init' 'dev' 'prod' ")
 	}
