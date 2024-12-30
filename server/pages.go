@@ -26,7 +26,7 @@ func (app *AppState) Create(writer http.ResponseWriter, request *http.Request) {
 	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
 
-    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+	writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 
 	if context.IsLoggedIn() {
 		http.Redirect(writer, request, "/profile", http.StatusMovedPermanently)
@@ -51,13 +51,14 @@ func (app *AppState) Join(writer http.ResponseWriter, request *http.Request) {
 	var err error
 	context := components.TemplateContext{}
 	context.Snippets = app.Snippets.GetList(lang)
+	context.RoomKey = strings.TrimPrefix(request.URL.Path, "/join/")
 
 	err = app.Templates.Render(writer, "join.html", context)
 	if err != nil {
 		http.Error(writer, "Not found", http.StatusNotFound)
 	}
 
-    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+	writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 }
 
 // ----------------------------------
@@ -109,7 +110,7 @@ func (app *AppState) Profile(writer http.ResponseWriter, request *http.Request) 
 	context.Snippets = app.Snippets.GetList(lang)
 	context.User, _ = app.CurrentUserFromSession(request)
 
-    writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
+	writer.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate") // HTTP 1.1.
 
 	if !context.IsLoggedIn() {
 		http.Redirect(writer, request, "/login", http.StatusMovedPermanently)

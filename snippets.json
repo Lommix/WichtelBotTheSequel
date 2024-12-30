@@ -23,6 +23,10 @@
 		"de": "Du möchtest eine Gruppe erstellen?",
 		"en": "Do you want to create a group?"
 	},
+	"already_registered_link": {
+		"de": "Bereits in dieser Gruppe registriert?",
+		"en": "Already registered in group?"
+	},
 	"button_join": {
 		"de": "Beitreten",
 		"en": "Join"

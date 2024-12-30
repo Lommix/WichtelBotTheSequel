@@ -17,6 +17,7 @@ const (
 type TemplateContext struct {
 	Snippets *map[string]string
 	User     store.User
+	RoomKey  string
 }
 
 func (ctx *TemplateContext) IsLoggedIn() bool {
