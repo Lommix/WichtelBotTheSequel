@@ -58,11 +58,10 @@ func (session *Session) IntoCookie() http.Cookie {
 		Path:     "/",
 		Expires:  time.Now().Add(CookieExpirationaTime),
 		HttpOnly: true,
-		Secure:   true,
+		Secure:   false,
 		SameSite: http.SameSiteStrictMode,
 	}
 }
-
 
 func (app *CookieJar) DeleteSession(userId int64) error {
 	for i := 0; i < len(app.Store); i++ {
@@ -79,7 +78,7 @@ func (app *CookieJar) CleanupExpired() int {
 	timeOffset := time.Now().Add(-CookieExpirationaTime).Unix()
 
 	for i := 0; i < len(app.Store); i++ {
-		if app.Store[i].Created < timeOffset  {
+		if app.Store[i].Created < timeOffset {
 			app.Store = append(app.Store[:i], app.Store[i+1:]...)
 			count++
 			i--
