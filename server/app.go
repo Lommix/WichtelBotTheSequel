@@ -24,6 +24,7 @@ type AppState struct {
 	Templates *components.Templates
 	Sessions  *components.CookieJar
 	Snippets  *components.Snippets
+	Settings  *components.Settings
 	Mode      RunState
 }
 
@@ -54,7 +55,7 @@ func (app *AppState) CleanupRoutine() {
 	for {
 		time.Sleep(time.Second * 10)
 		// cleaning up any left over game sessions
-		expiredParties, err := store.FindExpiredParties(app.Db)
+		expiredParties, err := store.FindExpiredParties(&app.Settings.ExpirySettings, app.Db)
 		if err != nil {
 			panic(err)
 		}

@@ -24,3 +24,35 @@ Frontend with HTMX and Tailwind. Backend in go using only the standard libraries
 ## Privacy
 There are no emails, no tracking and no ads. Members simply register with any imaginary name and a password. 3 Days later it gets deleted.
 This also means there is no safe net. Forget your password and your user is gone.
+
+## Deploy
+### Docker
+Build docker image:
+```sh
+docker build -t wichtelbot .
+```
+
+Copy env-file and change to your needs:
+```sh
+cp .env.dist .env
+```
+
+Initialize database:
+```sh
+docker run -it --rm \
+  --name wichtelbot \
+  -v $PWD/.env:/usr/src/wichtelbot/.env \
+  -v $PWD/db/:/usr/src/wichtelbot/db \
+   wichtelbot init
+```
+
+Run http server:
+```sh
+docker run -it --rm \
+  --name wichtelbot \
+  -p <host_http_port>:<container_http_port> \
+  -p <host_https_port>:<container_https_port> \
+  -v $PWD/.env:/usr/src/wichtelbot/.env \
+  -v $PWD/db/:/usr/src/wichtelbot/db \
+   wichtelbot prod
+```

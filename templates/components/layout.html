@@ -33,6 +33,8 @@
 							</a>
 							{{ if .User.Id }}
 							<a class="cursor-pointer" hx-get="/logout" hx-trigger="click" hx-swap="none"><img src="/static/images/logout.svg"/></a>
+							{{ else }}
+							<a class="cursor-pointer" href="/login"><img src="/static/images/login.svg"/></a>
 							{{ end }}
 					</div>
 				</div>

@@ -7,12 +7,6 @@ import (
 	"time"
 )
 
-const (
-	CreatedTimeoutDuration time.Duration = time.Hour * 24
-	JoiningTimeoutDuration time.Duration = time.Hour * 72
-	PlayedTimeoutDuration  time.Duration = time.Hour * 72
-)
-
 type GameState int
 
 const (
@@ -28,6 +22,12 @@ type Party struct {
 	State     GameState
 	Blacklist bool
 	Users     *[]User
+}
+
+type ExpirySettings struct {
+	CreatedTimeoutDuration time.Duration
+	JoiningTimeoutDuration time.Duration
+	PlayedTimeoutDuration  time.Duration
 }
 
 func FindPartyByID(id int64, db *sql.DB) (Party, error) {
@@ -199,7 +199,7 @@ func filter(slice []interface{}, fn func(interface{}) bool) []interface{} {
 	return out
 }
 
-func FindExpiredParties(db *sql.DB) ([]Party, error) {
+func FindExpiredParties(expirySettings *ExpirySettings, db *sql.DB) ([]Party, error) {
 	var parties []Party
 
 	sql := `
@@ -212,9 +212,9 @@ func FindExpiredParties(db *sql.DB) ([]Party, error) {
 	now := time.Now()
 	result, err := db.Query(
 		sql,
-		now.Add(-CreatedTimeoutDuration).Unix(),
-		now.Add(-JoiningTimeoutDuration).Unix(),
-		now.Add(-PlayedTimeoutDuration).Unix(),
+		now.Add(-expirySettings.CreatedTimeoutDuration).Unix(),
+		now.Add(-expirySettings.JoiningTimeoutDuration).Unix(),
+		now.Add(-expirySettings.PlayedTimeoutDuration).Unix(),
 	)
 
 	if err != nil {
